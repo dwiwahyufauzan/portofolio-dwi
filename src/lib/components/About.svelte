@@ -664,43 +664,54 @@
   @media (max-width: 1024px) {
     .bento {
       grid-template-columns: 1fr 1fr;
+      gap: 20px;
     }
     .about-main {
       grid-column: 1 / 3;
+      grid-row: 1;
     }
-    .about-photo {
-      grid-column: 1 / 3;
-      grid-row: auto;
-      aspect-ratio: 21/9;
-      transform: rotate(0deg); /* Reset tilt on mobile/tablet */
-      padding: 8px; /* Reduce polaroid thickness on small screens */
-    }
-    .about-photo:hover {
-      transform: scale(1.02) translateY(-4px);
-    }
-    .polaroid-tape {
-      display: none;
-    } /* Hide tape on mobile/tablet for space */
     .about-values {
       grid-column: 1;
+      grid-row: 2;
+    }
+    .about-photo {
+      grid-column: 2;
+      grid-row: 2;
+      aspect-ratio: 3/4; /* Portrait aspect ratio prevents cropping */
+      transform: rotate(2deg); /* Subtle tilt for playfulness */
+      padding: 10px;
+      padding-bottom: 32px; /* Polaroid bottom border */
+      overflow: visible;
+    }
+    .about-photo:hover {
+      transform: rotate(0deg) scale(1.02) translateY(-4px);
+    }
+    .polaroid-tape {
+      display: none; /* Hide tape on tablet for space */
     }
     .about-avail {
-      grid-column: 2;
+      grid-column: 1 / 3;
+      grid-row: 3;
     }
   }
 
   @media (max-width: 640px) {
     .bento {
       grid-template-columns: 1fr;
+      gap: 16px;
     }
     .about-main,
     .about-photo,
     .about-values,
     .about-avail {
       grid-column: 1;
+      grid-row: auto;
     }
     .about-photo {
-      aspect-ratio: 4/3;
+      aspect-ratio: 3/4; /* Keeps portrait polaroid aspect ratio on mobile */
+      transform: rotate(0deg); /* Reset tilt on small mobile screens */
+      padding: 8px;
+      padding-bottom: 24px;
     }
   }
 </style>
