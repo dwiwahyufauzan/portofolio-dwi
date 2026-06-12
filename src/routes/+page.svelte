@@ -5,7 +5,6 @@
   import About from "$lib/components/About.svelte";
   import Skills from "$lib/components/Skills.svelte";
   import Projects from "$lib/components/Projects.svelte";
-  import Testimonials from "$lib/components/Testimonials.svelte";
   import Contact from "$lib/components/Contact.svelte";
   import Footer from "$lib/components/Footer.svelte";
   import Game from "$lib/components/Game.svelte";
@@ -40,7 +39,6 @@
   <About />
   <Skills />
   <Projects />
-  <Testimonials />
   <Contact />
   <Game />
 </main>
