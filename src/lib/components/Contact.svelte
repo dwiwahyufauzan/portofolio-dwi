@@ -35,7 +35,7 @@
 
   // Dapatkan Web3Forms Access Key gratis di https://web3forms.com/
   // Anda dapat mengisi key tersebut di sini atau di file .env sebagai VITE_WEB3FORMS_ACCESS_KEY
-  const web3FormsAccessKey = import.meta.env?.VITE_WEB3FORMS_ACCESS_KEY || "";
+  const web3FormsAccessKey = import.meta.env?.VITE_WEB3FORMS_ACCESS_KEY || "c4aac158-0f92-4d1a-bb89-aee70a5375a0";
 
   async function handleSubmit(e: Event) {
     e.preventDefault();
