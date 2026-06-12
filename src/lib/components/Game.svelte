@@ -224,10 +224,16 @@
         lastLogicTime = performance.now();
         animationFrameId = requestAnimationFrame(gameLoop);
 
-        // Auto scroll ke game
-        document
-            .getElementById("game-section")
-            ?.scrollIntoView({ behavior: "smooth", block: "center" });
+        // Auto scroll ke game / remote pada mobile
+        if (window.innerWidth <= 1024) {
+            document
+                .querySelector(".mobile-dpad-grid")
+                ?.scrollIntoView({ behavior: "smooth", block: "center" });
+        } else {
+            document
+                .getElementById("game-section")
+                ?.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
     }
 
     function stopGame() {
