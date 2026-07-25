@@ -250,30 +250,31 @@
   .footer-big-text {
     width: 100%;
     overflow: hidden;
-    margin-top: 48px;
-    padding-top: 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    margin-top: 32px;
+    padding-top: 0;
+    border-top: none;
     text-align: center;
     pointer-events: none;
     user-select: none;
-    line-height: 0.8;
+    line-height: 0.78;
   }
 
   .footer-big-text span {
     font-family: var(--font-head);
-    font-size: clamp(3.8rem, 16vw, 15rem);
+    font-size: clamp(4.5rem, 21vw, 22rem);
     font-weight: 900;
-    letter-spacing: -0.04em;
+    letter-spacing: -0.05em;
     text-transform: uppercase;
     color: transparent;
-    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.18);
+    -webkit-text-stroke: 2px rgba(255, 255, 255, 0.18);
     display: block;
     white-space: nowrap;
+    margin-bottom: -0.04em;
     transition: -webkit-text-stroke 0.4s ease, opacity 0.4s ease;
   }
 
   .site-footer:hover .footer-big-text span {
-    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.4);
+    -webkit-text-stroke: 2px rgba(255, 255, 255, 0.4);
   }
 
   @media (max-width: 768px) {
