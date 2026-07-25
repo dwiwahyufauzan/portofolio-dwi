@@ -374,7 +374,7 @@
     margin-bottom: 22px;
     opacity: 0;
     transform: translateY(10px);
-    transition: opacity 0.5s var(--ease-out) 0.42s, transform 0.5s var(--ease-out) 0.42s;
+    transition: opacity 0.4s var(--ease-out) 0.05s, transform 0.4s var(--ease-out) 0.05s;
   }
 
   .hero-text.visible .hero-role { opacity: 1; transform: translateY(0); }
@@ -396,6 +396,7 @@
   }
 
   .role-pill:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--ink); }
+  .role-pill:active { transform: scale(0.97); }
 
   /* Description */
   .hero-desc {
@@ -406,7 +407,7 @@
     margin-bottom: 32px;
     opacity: 0;
     transform: translateY(10px);
-    transition: opacity 0.5s var(--ease-out) 0.52s, transform 0.5s var(--ease-out) 0.52s;
+    transition: opacity 0.4s var(--ease-out) 0.1s, transform 0.4s var(--ease-out) 0.1s;
   }
 
   .hero-text.visible .hero-desc { opacity: 0.8; transform: translateY(0); }
@@ -420,7 +421,7 @@
     flex-wrap: wrap;
     opacity: 0;
     transform: translateY(10px);
-    transition: opacity 0.5s var(--ease-out) 0.62s, transform 0.5s var(--ease-out) 0.62s;
+    transition: opacity 0.4s var(--ease-out) 0.15s, transform 0.4s var(--ease-out) 0.15s;
   }
 
   .hero-text.visible .hero-btns { opacity: 1; transform: translateY(0); }
@@ -445,6 +446,7 @@
   }
 
   .btn-primary:hover { transform: translate(-3px,-3px); box-shadow: 7px 7px 0 rgba(var(--ink-rgb), 0.22); }
+  .btn-primary:active { transform: scale(0.96); }
 
   .btn-outline {
     display: inline-flex;
@@ -466,6 +468,7 @@
   }
 
   .btn-outline:hover { transform: translate(-3px,-3px); box-shadow: 7px 7px 0 var(--ink); }
+  .btn-outline:active { transform: scale(0.96); }
 
   /* Stats Card */
   .hero-stats-card {
@@ -481,8 +484,8 @@
     opacity: 0;
     transform: translateY(10px);
     transition:
-      opacity 0.5s var(--ease-out) 0.72s,
-      transform 0.5s var(--ease-out) 0.72s,
+      opacity 0.4s var(--ease-out) 0.2s,
+      transform 0.4s var(--ease-out) 0.2s,
       box-shadow 0.22s var(--ease-out);
   }
 
@@ -721,6 +724,12 @@
   @keyframes float {
     0%, 100% { transform: translateY(0); }
     50%       { transform: translateY(-7px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-float-tag { animation: none; }
+    .deck { transform: none !important; }
+    .deck-card-0, .deck-card-1, .deck-card-2 { transform: none !important; }
   }
 
   /* ══ LIGHTBOX MODAL ══════════════════════════════════════ */

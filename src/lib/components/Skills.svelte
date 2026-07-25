@@ -94,7 +94,7 @@
     </div>
 
     <!-- Asymmetric Bento Grid -->
-    <div class="bento-grid reveal reveal-slide-up">
+    <div class="bento-grid animate-on-scroll anim-in">
       {#each techGroups as group}
         <div class="bento-card bento-{group.span}">
 

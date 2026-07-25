@@ -136,7 +136,7 @@
           text-anchor="middle"
           class="wordmark-text"
         >
-          PORTFOLIO
+          PORTOFOLIO
         </text>
       </svg>
     </div>
@@ -168,6 +168,10 @@
     to {
       box-shadow: 0 0 0 8px rgba(37, 99, 235, 0);
     }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .live-dot-pulse { animation: none; }
   }
 
   .footer-inner {

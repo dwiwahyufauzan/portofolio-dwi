@@ -173,7 +173,7 @@
         <div
           animate:flip={{ duration: 400 }}
           transition:scale={{ duration: 300, start: 0.95 }}
-          class="proj-card reveal reveal-zoom-in"
+          class="proj-card animate-on-scroll anim-zoom"
           class:featured={i === 0}
           role="button"
           tabindex="0"

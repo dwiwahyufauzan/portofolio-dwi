@@ -9,25 +9,24 @@
   import Footer from "$lib/components/Footer.svelte";
 
   onMount(() => {
-    // ── Scroll reveal ─────────────────────────────────
-    const revealObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add("visible");
-          } else {
-            e.target.classList.remove("visible");
-          }
-        });
-      },
-      { threshold: 0.01 },
-    );
+    // ── animation-on-scroll Skill IntersectionObserver ──────────────────
+    const observerOptions = { threshold: 0.15, rootMargin: "0px 0px -10% 0px" };
+
+    const inViewIO = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("animate", "visible");
+          inViewIO.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
     document
-      .querySelectorAll(".section")
-      .forEach((el) => revealObserver.observe(el));
+      .querySelectorAll(".animate-on-scroll, .reveal, .section")
+      .forEach((el) => inViewIO.observe(el));
 
     return () => {
-      revealObserver.disconnect();
+      inViewIO.disconnect();
     };
   });
 </script>

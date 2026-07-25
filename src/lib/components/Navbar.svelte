@@ -154,7 +154,7 @@
     border: 1px solid rgba(var(--ink-rgb), 0.08);
     border-radius: 99px; /* Pill shape */
     box-shadow: 0 4px 20px -2px rgba(var(--ink-rgb), 0.05);
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: top 0.4s var(--ease-drawer), height 0.4s var(--ease-drawer), background 0.4s var(--ease-drawer), box-shadow 0.4s var(--ease-drawer);
   }
 
   .navbar.scrolled {
@@ -213,7 +213,7 @@
     background: var(--ink);
     opacity: 0;
     transform: scale(0.8) translateY(5px);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: opacity 0.3s var(--ease-bounce), transform 0.3s var(--ease-bounce);
     z-index: -1;
   }
 
@@ -368,7 +368,10 @@
     padding: 10px 24px;
     border-radius: 99px;
     border: 2px solid transparent;
-    transition: all 0.3s ease;
+    transition: background 0.3s var(--ease-out), color 0.3s var(--ease-out), border-color 0.3s var(--ease-out), transform 0.15s var(--ease-out);
+  }
+  .nav-cta:active {
+    transform: scale(0.96);
   }
 
   .cta-icon {
