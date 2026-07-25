@@ -133,7 +133,7 @@
   .site-footer {
     background: var(--footer-bg);
     color: var(--footer-text);
-    padding: 60px 0 0 0;
+    padding: 60px 0 36px 0;
     position: relative;
     overflow: hidden;
   }
@@ -269,7 +269,7 @@
     -webkit-text-stroke: 2px rgba(255, 255, 255, 0.18);
     display: block;
     white-space: nowrap;
-    margin-bottom: -0.04em;
+    margin-bottom: 0.05em;
     transition: -webkit-text-stroke 0.4s ease, opacity 0.4s ease;
   }
 
