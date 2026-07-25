@@ -21,7 +21,6 @@
 </script>
 
 <footer class="site-footer">
-  <div class="footer-line" aria-hidden="true"></div>
   <div class="container">
     <div class="footer-inner">
       <!-- Brand -->
@@ -123,25 +122,20 @@
       </div>
     </div>
   </div>
+
+  <!-- Giant Editorial Text at Footer Bottom -->
+  <div class="footer-big-text" aria-hidden="true">
+    <span>PORTFOLIO</span>
+  </div>
 </footer>
 
 <style>
   .site-footer {
     background: var(--footer-bg);
     color: var(--footer-text);
-    padding: 60px 0;
+    padding: 60px 0 0 0;
     position: relative;
     overflow: hidden;
-  }
-
-  .footer-line {
-    display: none;
-  }
-
-  @keyframes expand-line {
-    to {
-      transform: scaleX(1);
-    }
   }
 
   .live-dot-pulse {
@@ -247,9 +241,39 @@
 
   .social-btn:hover {
     transform: scale(1.15) rotate(8deg);
-    border-color: var(--accent);
-    color: var(--white);
-    background-color: var(--accent);
+    border-color: var(--white);
+    color: var(--footer-bg);
+    background-color: var(--white);
+  }
+
+  /* ── GIANT EDITORIAL FOOTER TEXT ── */
+  .footer-big-text {
+    width: 100%;
+    overflow: hidden;
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    text-align: center;
+    pointer-events: none;
+    user-select: none;
+    line-height: 0.8;
+  }
+
+  .footer-big-text span {
+    font-family: var(--font-head);
+    font-size: clamp(3.8rem, 16vw, 15rem);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.18);
+    display: block;
+    white-space: nowrap;
+    transition: -webkit-text-stroke 0.4s ease, opacity 0.4s ease;
+  }
+
+  .site-footer:hover .footer-big-text span {
+    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.4);
   }
 
   @media (max-width: 768px) {
