@@ -126,12 +126,12 @@
     <div class="footer-wordmark-wrap" aria-hidden="true">
       <svg
         class="footer-wordmark-svg"
-        viewBox="0 0 1000 240"
+        viewBox="0 0 1000 280"
         preserveAspectRatio="xMidYMid meet"
       >
         <text
           x="50%"
-          y="50%"
+          y="52%"
           dominant-baseline="central"
           text-anchor="middle"
           class="wordmark-text"
@@ -276,15 +276,16 @@
   .footer-wordmark-svg {
     width: 100%;
     height: auto;
-    max-height: 480px;
+    max-height: 420px;
     display: block;
+    overflow: visible;
   }
 
   .wordmark-text {
     font-family: var(--font-head);
-    font-size: 260px;
+    font-size: 200px;
     font-weight: 900;
-    letter-spacing: -6px;
+    letter-spacing: -4px;
     fill: none;
     stroke: rgba(255, 255, 255, 0.22);
     stroke-width: 2px;
