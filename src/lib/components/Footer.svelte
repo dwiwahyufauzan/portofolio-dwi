@@ -261,9 +261,9 @@
 
   .footer-big-text span {
     font-family: var(--font-head);
-    font-size: clamp(3.6rem, 18.2vw, 22rem);
+    font-size: clamp(3.5rem, 17vw, 20rem);
     font-weight: 900;
-    letter-spacing: 0.02em;
+    letter-spacing: -0.06em;
     text-transform: uppercase;
     color: transparent;
     -webkit-text-stroke: 2px rgba(255, 255, 255, 0.18);
