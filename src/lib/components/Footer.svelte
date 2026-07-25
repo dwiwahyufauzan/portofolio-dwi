@@ -133,7 +133,7 @@
   .site-footer {
     background: var(--footer-bg);
     color: var(--footer-text);
-    padding: 60px 0 20px 0;
+    padding: 60px 0 0 0;
     position: relative;
     overflow: hidden;
   }
@@ -270,7 +270,7 @@
     display: block;
     white-space: nowrap;
     width: 100%;
-    margin-bottom: 0.02em;
+    margin-bottom: -0.05em;
     transition:
       -webkit-text-stroke 0.4s ease,
       opacity 0.4s ease;
