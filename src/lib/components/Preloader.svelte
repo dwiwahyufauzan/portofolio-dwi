@@ -128,28 +128,27 @@
 
     <!-- ─── HUD Terminal Grid Content ───────────────────── -->
     <div class="hud-container" class:fade-out={loaded}>
-      <!-- Top Bar: Coordinates & System Status -->
+
+      <!-- Top Bar -->
       <div class="hud-top">
         <div class="hud-brand">
-          <Cpu size={14} />
+          <Cpu size={13} />
           <span>DWISYCOO // SYSTEM OS</span>
         </div>
-        
         <div class="hud-matrix-chip">
-          <Terminal size={12} />
+          <Terminal size={11} />
           <span class="matrix-code">{matrixText}</span>
         </div>
-
         <div class="hud-time">
           <span class="pulse-dot"></span>
-          <span>JAKARTA, ID (UTC+7)</span>
+          <span class="hud-time-label">JKT UTC+7</span>
         </div>
       </div>
 
-      <!-- Center Bento HUD: Main Counter & Visualizers -->
+      <!-- Center: Desktop = 3 col, Mobile = stacked counter only -->
       <div class="hud-center">
-        <!-- Left Visualizer: Equalizer Waveform -->
-        <div class="hud-side-widget left-widget">
+        <!-- Left Visualizer (Desktop only) -->
+        <div class="hud-side-widget desktop-only">
           <span class="widget-label">SPECTRUM</span>
           <div class="eq-bars">
             <div class="eq-bar" style="--h: 60%; --d: 0.1s;"></div>
@@ -161,67 +160,87 @@
           <span class="widget-val">48.0 kHz</span>
         </div>
 
-        <!-- Center: Giant Counter & Step Title -->
+        <!-- Main Counter -->
         <div class="hud-main-counter">
           <div class="counter-num-wrap">
             <span class="counter-num">{String(Math.floor(pct)).padStart(3, "0")}</span>
             <span class="counter-unit">%</span>
           </div>
-
           <div class="step-badge">
-            <Activity size={12} class="spin-icon" />
-            <span>{steps[currentStepIndex].label}</span>
+            <Activity size={11} class="spin-icon" />
+            <span class="step-label">{steps[currentStepIndex].label}</span>
           </div>
         </div>
 
-        <!-- Right Visualizer: Circular Progress Ring -->
-        <div class="hud-side-widget right-widget">
+        <!-- Right Visualizer (Desktop only) -->
+        <div class="hud-side-widget desktop-only">
           <span class="widget-label">PROGRESS</span>
           <div class="ring-wrap">
             <svg viewBox="0 0 44 44" class="progress-ring">
               <circle cx="22" cy="22" r="18" class="ring-bg"></circle>
               <circle
-                cx="22"
-                cy="22"
-                r="18"
+                cx="22" cy="22" r="18"
                 class="ring-fill"
                 style="stroke-dashoffset: {113 - (113 * pct) / 100}"
               ></circle>
             </svg>
-            <Zap size={12} class="ring-icon" />
+            <Zap size={11} class="ring-icon" />
           </div>
           <span class="widget-val">{Math.floor(pct)} / 100</span>
         </div>
       </div>
 
-      <!-- Bottom Bar: Tech Stack Marquee & Progress Track -->
+      <!-- Mobile Mini-Widgets Row (hidden on desktop) -->
+      <div class="mobile-widgets">
+        <div class="mini-widget">
+          <span class="widget-label">SPECTRUM</span>
+          <div class="eq-bars">
+            <div class="eq-bar" style="--h: 60%; --d: 0.1s;"></div>
+            <div class="eq-bar" style="--h: 90%; --d: 0.3s;"></div>
+            <div class="eq-bar" style="--h: 45%; --d: 0.2s;"></div>
+            <div class="eq-bar" style="--h: 100%; --d: 0.4s;"></div>
+            <div class="eq-bar" style="--h: 75%; --d: 0.15s;"></div>
+          </div>
+        </div>
+        <div class="mini-widget">
+          <span class="widget-label">PROGRESS</span>
+          <div class="ring-wrap">
+            <svg viewBox="0 0 44 44" class="progress-ring">
+              <circle cx="22" cy="22" r="18" class="ring-bg"></circle>
+              <circle
+                cx="22" cy="22" r="18"
+                class="ring-fill"
+                style="stroke-dashoffset: {113 - (113 * pct) / 100}"
+              ></circle>
+            </svg>
+            <Zap size={10} class="ring-icon" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Bar -->
       <div class="hud-bottom">
         <div class="hud-progress-bar">
           <div class="progress-fill-glow" style="width: {pct}%;"></div>
         </div>
-
         <div class="hud-footer-row">
           <div class="stack-marquee">
             <div class="marquee-track">
               {#each techStack as tech}
-                <span class="stack-chip">
-                  <Code2 size={11} /> {tech}
-                </span>
+                <span class="stack-chip"><Code2 size={10} /> {tech}</span>
               {/each}
               {#each techStack as tech}
-                <span class="stack-chip">
-                  <Code2 size={11} /> {tech}
-                </span>
+                <span class="stack-chip"><Code2 size={10} /> {tech}</span>
               {/each}
             </div>
           </div>
-
-          <div class="hud-copy">
-            <ShieldCheck size={13} />
+          <div class="hud-copy desktop-only">
+            <ShieldCheck size={12} />
             <span>FULLSTACK PORTFOLIO 2026</span>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 {/if}
@@ -583,11 +602,99 @@
   }
 
   /* ══ RESPONSIVE ══════════════════════════════════════════ */
+
+  /* Desktop: hide mobile-widgets row */
+  .mobile-widgets { display: none; }
+
+  /* ─── Tablet (≤ 900px) ─── */
   @media (max-width: 900px) {
-    .hud-side-widget { display: none; }
-    .hud-container { padding: 32px 24px; }
+    .desktop-only { display: none !important; }
+    .hud-container { padding: 32px 20px; gap: 0; }
+    .hud-top { font-size: 0.65rem; letter-spacing: 0.1em; }
+    .hud-matrix-chip { padding: 3px 8px; font-size: 0.6rem; }
+    .matrix-code { min-width: 50px; }
+    .hud-center { justify-content: center; }
     .stack-marquee { max-width: 100%; }
     .hud-copy { display: none; }
+  }
+
+  /* ─── Mobile (≤ 600px) ─── */
+  @media (max-width: 600px) {
+    .desktop-only { display: none !important; }
+    .hud-container { padding: 28px 20px 24px; }
+
+    /* Top bar: stack brand alone, hide time on very small screens */
+    .hud-top {
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+    }
+    .hud-time-label { display: none; }
+    .hud-matrix-chip { padding: 3px 8px; font-size: 0.58rem; box-shadow: 1px 1px 0 var(--ink); }
+    .matrix-code { min-width: 44px; }
+
+    /* Center: tighten the counter */
+    .hud-center { justify-content: center; }
+    .counter-num { font-size: clamp(5rem, 25vw, 7rem) !important; }
+    .counter-unit { font-size: clamp(1.5rem, 7vw, 2.5rem) !important; margin-top: 8px; }
+
+    /* Step badge: allow wrap, smaller text */
+    .step-badge {
+      padding: 6px 14px;
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      box-shadow: 2px 2px 0 var(--ink);
+      text-align: center;
+    }
+    .step-label {
+      display: block;
+      max-width: 200px;
+      white-space: normal;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    /* Show mini-widgets row on mobile */
+    .mobile-widgets {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .mini-widget {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 16px;
+      background: var(--bg);
+      border: 1.5px solid var(--ink);
+      border-radius: 14px;
+      box-shadow: 2px 2px 0 var(--ink);
+      width: 100px;
+    }
+
+    /* Shrink eq bars on mini-widget */
+    .mini-widget .eq-bars { height: 26px; }
+    .mini-widget .eq-bar { width: 3px; }
+    .mini-widget .ring-wrap { width: 36px; height: 36px; }
+
+    /* Bottom bar: marquee full width */
+    .stack-marquee { max-width: 100%; }
+    .hud-footer-row { justify-content: center; }
+    .hud-bottom { gap: 14px; }
+    .hud-progress-bar { height: 2px; }
+  }
+
+  /* ─── Very small screens (≤ 380px) ─── */
+  @media (max-width: 380px) {
+    .hud-container { padding: 24px 16px 20px; }
+    .counter-num { font-size: clamp(4rem, 26vw, 5.5rem) !important; }
+    .step-badge { font-size: 0.55rem; padding: 5px 12px; }
+    .mini-widget { width: 88px; padding: 10px 12px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
