@@ -121,11 +121,25 @@
         </a>
       </div>
     </div>
-  </div>
 
-  <!-- Giant Full-Bleed Editorial Footer Text (Stretches edge-to-edge) -->
-  <div class="footer-big-text" aria-hidden="true">
-    <span>PORTFOLIO</span>
+    <!-- Laravel.com Style SVG Wordmark (Scales 100% Perfectly on All Screens) -->
+    <div class="footer-wordmark-wrap" aria-hidden="true">
+      <svg
+        class="footer-wordmark-svg"
+        viewBox="0 0 1000 140"
+        preserveAspectRatio="xMidYMid meet"
+      >
+        <text
+          x="50%"
+          y="50%"
+          dominant-baseline="central"
+          text-anchor="middle"
+          class="wordmark-text"
+        >
+          PORTFOLIO
+        </text>
+      </svg>
+    </div>
   </div>
 </footer>
 
@@ -133,7 +147,7 @@
   .site-footer {
     background: var(--footer-bg);
     color: var(--footer-text);
-    padding: 60px 0 0 0;
+    padding: 60px 0 28px 0;
     position: relative;
     overflow: hidden;
   }
@@ -246,38 +260,41 @@
     background-color: var(--white);
   }
 
-  /* ── FULL-BLEED GIANT EDITORIAL FOOTER TEXT ── */
-  .footer-big-text {
+  /* ── LARAVEL.COM STYLE WORDMARK SVG ── */
+  .footer-wordmark-wrap {
     width: 100%;
-    overflow: hidden;
     margin-top: 40px;
-    padding: 0;
-    border-top: none;
-    text-align: center;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    justify-content: center;
+    align-items: center;
     pointer-events: none;
     user-select: none;
-    line-height: 0.78;
   }
 
-  .footer-big-text span {
-    font-family: var(--font-head);
-    font-size: clamp(1.8rem, 17.5vw, 26rem);
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    text-transform: uppercase;
-    color: transparent;
-    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.18);
-    display: block;
-    white-space: nowrap;
+  .footer-wordmark-svg {
     width: 100%;
-    margin-bottom: -0.05em;
+    height: auto;
+    max-height: 160px;
+    display: block;
+  }
+
+  .wordmark-text {
+    font-family: var(--font-head);
+    font-size: 148px;
+    font-weight: 900;
+    letter-spacing: -3px;
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.2);
+    stroke-width: 1.5px;
     transition:
-      -webkit-text-stroke 0.4s ease,
+      stroke 0.4s ease,
       opacity 0.4s ease;
   }
 
-  .site-footer:hover .footer-big-text span {
-    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.38);
+  .site-footer:hover .wordmark-text {
+    stroke: rgba(255, 255, 255, 0.42);
   }
 
   @media (max-width: 768px) {
@@ -286,12 +303,9 @@
       align-items: flex-start;
       gap: 24px;
     }
-  }
-
-  @media (max-width: 640px) {
-    .footer-big-text span {
-      font-size: 15vw;
-      letter-spacing: -0.04em;
+    .footer-wordmark-wrap {
+      margin-top: 28px;
+      padding-top: 18px;
     }
   }
 </style>
