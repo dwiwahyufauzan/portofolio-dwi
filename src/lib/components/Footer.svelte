@@ -261,7 +261,7 @@
 
   .footer-big-text span {
     font-family: var(--font-head);
-    font-size: clamp(4.2rem, 20.2vw, 26rem);
+    font-size: clamp(1.8rem, 17.5vw, 26rem);
     font-weight: 900;
     letter-spacing: -0.02em;
     text-transform: uppercase;
@@ -285,6 +285,13 @@
       flex-direction: column;
       align-items: flex-start;
       gap: 24px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .footer-big-text span {
+      font-size: 15vw;
+      letter-spacing: -0.04em;
     }
   }
 </style>
