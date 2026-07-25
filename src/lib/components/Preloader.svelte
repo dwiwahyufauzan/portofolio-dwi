@@ -148,7 +148,7 @@
     background-image: 
       linear-gradient(to right, rgba(var(--ink-rgb), 0.02) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(var(--ink-rgb), 0.02) 1px, transparent 1px);
-    transition: transform 1s cubic-bezier(0.85, 0, 0.15, 1);
+    transition: transform 0.65s var(--ease-drawer);
     will-change: transform;
     z-index: 1;
     border-right: 1px solid rgba(var(--ink-rgb), 0.04);
@@ -161,9 +161,9 @@
 
   /* Alternating slide directions for ultra-modern entrance */
   .preloader.loaded .pane-1 { transform: translateY(-100%); transition-delay: 0.0s; }
-  .preloader.loaded .pane-2 { transform: translateY(100%); transition-delay: 0.08s; }
-  .preloader.loaded .pane-3 { transform: translateY(-100%); transition-delay: 0.16s; }
-  .preloader.loaded .pane-4 { transform: translateY(100%); transition-delay: 0.24s; }
+  .preloader.loaded .pane-2 { transform: translateY(100%); transition-delay: 0.05s; }
+  .preloader.loaded .pane-3 { transform: translateY(-100%); transition-delay: 0.1s; }
+  .preloader.loaded .pane-4 { transform: translateY(100%); transition-delay: 0.15s; }
 
   /* Content Container overlay */
   .preloader-content {

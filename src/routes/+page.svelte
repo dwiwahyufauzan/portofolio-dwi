@@ -7,7 +7,6 @@
   import Projects from "$lib/components/Projects.svelte";
   import Contact from "$lib/components/Contact.svelte";
   import Footer from "$lib/components/Footer.svelte";
-  import Game from "$lib/components/Game.svelte";
 
   onMount(() => {
     // ── Scroll reveal ─────────────────────────────────
@@ -40,6 +39,5 @@
   <Skills />
   <Projects />
   <Contact />
-  <Game />
 </main>
 <Footer />

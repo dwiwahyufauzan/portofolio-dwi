@@ -2,10 +2,11 @@
   import { onMount } from "svelte";
   import { fade, scale } from "svelte/transition";
   import { flip } from "svelte/animate";
-  import { Flame, FolderOpen, Eye, Wrench, ExternalLink } from "@lucide/svelte";
+  import { Flame, FolderOpen, Eye, Wrench, ExternalLink, Sparkles } from "@lucide/svelte";
 
   const projects = [
     {
+      id: "pzn",
       title: "Programmer Zaman Now — Online Course Frontend & Backend",
       category: "Web App",
       catColor: "var(--blue)",
@@ -20,6 +21,7 @@
       demo: "https://web.kelas.programmerzamannow.com",
     },
     {
+      id: "glamstitch",
       title: "Glamstitch POS — Convection Point of Sale Frontend",
       category: "Mobile",
       catColor: "var(--purple)",
@@ -34,6 +36,7 @@
       demo: "#",
     },
     {
+      id: "dp2kbp3a",
       title: "DP2KBP3A — Sistem Pelaporan Kegiatan Lapangan",
       category: "Backend",
       catColor: "var(--green)",
@@ -48,6 +51,7 @@
       demo: "",
     },
     {
+      id: "sahabat-anak",
       title: "Sahabat Anak — UI/UX & Platform Edukasi",
       category: "UI/UX",
       catColor: "var(--pink)",
@@ -67,6 +71,25 @@
   let activeFilter = $state("All");
   let modalOpen = $state(false);
   let modalData: (typeof projects)[0] | null = $state(null);
+
+  // 3D Tilt Card state
+  let cardRotations = $state<Record<string, { rx: number; ry: number }>>({});
+
+  function handleCardMouseMove(e: MouseEvent, id: string) {
+    const card = e.currentTarget as HTMLElement;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const rx = ((y - rect.height / 2) / (rect.height / 2)) * -8; // Max 8 deg
+    const ry = ((x - rect.width / 2) / (rect.width / 2)) * 8;
+
+    cardRotations = { ...cardRotations, [id]: { rx, ry } };
+  }
+
+  function handleCardMouseLeave(id: string) {
+    cardRotations = { ...cardRotations, [id]: { rx: 0, ry: 0 } };
+  }
 
   function filtered() {
     return activeFilter === "All"
@@ -103,9 +126,9 @@
     >
       <div>
         <div class="section-label">
-          Featured Work <Flame size={12} />
+          Featured Showcase <Flame size={12} />
         </div>
-        <h2 class="section-title">My Projects</h2>
+        <h2 class="section-title">Karya & Portfolio Project</h2>
       </div>
       <a
         href="https://github.com/dwiwahyufauzan"
@@ -114,10 +137,7 @@
         class="btn-secondary"
         style="padding: 8px 18px; font-size: 0.75rem; text-transform: uppercase; font-family: var(--font-head); letter-spacing: 0.05em;"
       >
-        All GitHub <FolderOpen
-          size={14}
-          style="margin-left: 6px; display: inline-block; vertical-align: middle;"
-        />
+        All GitHub Projects <FolderOpen size={14} style="margin-left: 6px; display: inline-block; vertical-align: middle;" />
       </a>
     </div>
 
@@ -128,15 +148,19 @@
           class="filter-btn"
           class:active={activeFilter === f}
           onclick={() => (activeFilter = f)}
+          type="button"
         >
           {f}
         </button>
       {/each}
     </div>
 
-    <!-- Grid -->
+    <!-- Project Grid with 3D Tilt -->
     <div class="proj-grid">
       {#each filtered() as p, i (p.title)}
+        {@const rot = cardRotations[p.id] || { rx: 0, ry: 0 }}
+        <!-- svelte-ignore a11y_click_events_have_key_events -->
+        <!-- svelte-ignore a11y_no_static_element_interactions -->
         <div
           animate:flip={{ duration: 400 }}
           transition:scale={{ duration: 300, start: 0.95 }}
@@ -145,17 +169,20 @@
           role="button"
           tabindex="0"
           onclick={() => openModal(p)}
-          onkeydown={(e) => e.key === "Enter" && openModal(p)}
+          onmousemove={(e) => handleCardMouseMove(e, p.id)}
+          onmouseleave={() => handleCardMouseLeave(p.id)}
+          style="transform: perspective(1000px) rotateX({rot.rx}deg) rotateY({rot.ry}deg);"
         >
           <div class="proj-img-wrap">
+            <div class="light-beam-sweep"></div>
             <img src={p.image} alt={p.title} loading="lazy" />
-            <span class="proj-cat-badge">{p.category}</span>
+            <span class="proj-cat-badge" style="--cat-color: {p.catColor};">
+              <Sparkles size={12} style="display:inline-block; vertical-align:middle; margin-right:4px;" />
+              {p.category}
+            </span>
             <div class="proj-overlay">
-              <button class="proj-view-btn">
-                View Project <Eye
-                  size={14}
-                  style="margin-left: 6px; display: inline-block; vertical-align: middle;"
-                />
+              <button class="proj-view-btn" type="button">
+                Lihat Detail <Eye size={14} style="margin-left: 6px; display: inline-block; vertical-align: middle;" />
               </button>
               <div class="proj-info">
                 <div class="proj-info-title">{p.title.split(" — ")[0]}</div>
@@ -163,6 +190,7 @@
               </div>
             </div>
           </div>
+
           <div class="proj-body">
             <h3 class="proj-title">{p.title}</h3>
             <p class="proj-desc">{p.description}</p>
@@ -178,7 +206,7 @@
   </div>
 </section>
 
-<!-- ═══ MODAL ═══ -->
+<!-- ═══ LIGHTBOX MODAL ═══ -->
 {#if modalOpen && modalData}
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -190,20 +218,15 @@
     tabindex="-1"
   >
     <div class="modal-box">
-      <button class="modal-close" onclick={closeModal} aria-label="Close"
-        >✕</button
-      >
+      <button class="modal-close" onclick={closeModal} aria-label="Close" type="button">✕</button>
       <img class="modal-img" src={modalData.image} alt={modalData.title} />
       <div class="modal-body">
         <span class="modal-cat">{modalData.category}</span>
         <h2 class="modal-title">{modalData.title}</h2>
         <p class="modal-desc">{modalData.description}</p>
         <div class="modal-challenge">
-          <div
-            class="challenge-label"
-            style="display: flex; align-items: center; gap: 6px;"
-          >
-            <Wrench size={14} /> Challenge Solved
+          <div class="challenge-label" style="display: flex; align-items: center; gap: 6px;">
+            <Wrench size={14} /> Tantangan & Solusi Teknikal
           </div>
           <p>{modalData.challenge}</p>
         </div>
@@ -220,10 +243,7 @@
               rel="noopener noreferrer"
               class="btn-primary"
             >
-              Live Demo <ExternalLink
-                size={16}
-                style="margin-left: 6px; display: inline-block; vertical-align: middle;"
-              />
+              Live Demo <ExternalLink size={16} style="margin-left: 6px; display: inline-block; vertical-align: middle;" />
             </a>
           {/if}
           <a
@@ -232,18 +252,7 @@
             rel="noopener noreferrer"
             class="btn-secondary"
           >
-            Source Code <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-              style="margin-left: 6px; display: inline-block; vertical-align: middle;"
-              ><path
-                d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"
-              /></svg
-            >
+            Source Code <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left: 6px; display: inline-block; vertical-align: middle;"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
           </a>
         </div>
       </div>
@@ -252,413 +261,356 @@
 {/if}
 
 <style>
-  /* Filter bar */
+  /* ── FILTER BAR ── */
   .filter-bar {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-bottom: 32px;
+    margin-bottom: 36px;
   }
+
   .filter-btn {
-    border: 1px solid rgba(var(--ink-rgb), 0.15);
-    border-radius: 99px;
+    border: 1.5px solid var(--ink);
+    border-radius: 10px;
     padding: 8px 20px;
     font-family: var(--font-head);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--ink);
     background: transparent;
     cursor: pointer;
-    box-shadow: none;
-    transition:
-      background 0.3s var(--ease),
-      color 0.3s var(--ease),
-      border-color 0.3s;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
   }
   .filter-btn:hover {
-    border-color: var(--ink);
-    background: rgba(var(--ink-rgb), 0.05);
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--ink);
   }
   .filter-btn.active {
     background: var(--ink);
     color: var(--white);
-    border-color: var(--ink);
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 rgba(var(--ink-rgb), 0.35);
   }
 
-  /* Grid */
+  /* ── PROJECT GRID ── */
   .proj-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    gap: 20px;
   }
 
-  /* Card */
   .proj-card {
     background: var(--white);
-    border: 1px solid rgba(var(--ink-rgb), 0.15);
-    border-radius: 0;
+    border: 1.5px solid var(--ink);
+    border-radius: 24px;
     overflow: hidden;
-    box-shadow: none;
     cursor: pointer;
-    transition:
-      transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-      border-color 0.4s,
-      box-shadow 0.4s;
+    transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
+    box-shadow: 4px 4px 0 var(--ink);
     display: flex;
     flex-direction: column;
   }
+
   .proj-card:hover {
-    transform: scale(1.02) translateY(-4px);
-    border-color: var(--ink);
-    box-shadow: 0 12px 24px rgba(var(--ink-rgb), 0.08);
-  }
-  .proj-card.featured {
-    grid-column: span 2;
+    transform: translate(-3px, -3px);
+    box-shadow: 7px 7px 0 var(--ink);
   }
 
-  /* Image */
+
+
+  /* Image Wrap & Light Beam */
   .proj-img-wrap {
     position: relative;
-    aspect-ratio: 16/9;
+    aspect-ratio: 16/10;
     overflow: hidden;
-    background: var(--bg-alt);
+    background: var(--bg);
   }
+
   .proj-img-wrap img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.6s var(--ease);
+    transition: transform 0.6s var(--ease-out);
   }
   .proj-card:hover .proj-img-wrap img {
-    transform: scale(1.05);
+    transform: scale(1.06);
+  }
+
+  /* Light-Beam Sweep Overlay */
+  .light-beam-sweep {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      transparent 100%
+    );
+    transform: skewX(-25deg);
+    transition: left 0.8s var(--ease-out);
+    z-index: 3;
+    pointer-events: none;
+  }
+  .proj-card:hover .light-beam-sweep {
+    left: 140%;
   }
 
   .proj-cat-badge {
     position: absolute;
-    top: 12px;
-    left: 12px;
-    background: var(--ink) !important;
-    color: var(--white);
-    font-family: var(--font-head);
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
+    top: 14px;
+    left: 14px;
+    background: rgba(var(--white-rgb, 255, 255, 255), 0.9);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border: 1px solid var(--ink);
-    border-radius: 99px;
     padding: 4px 12px;
-    box-shadow: none;
-    z-index: 2;
+    border-radius: 99px;
+    font-family: var(--font-head);
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink);
+    z-index: 4;
   }
 
   .proj-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0);
+    background: rgba(var(--ink-rgb), 0.75);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    transition: background 0.35s var(--ease);
-    z-index: 1;
+    gap: 16px;
+    transition: opacity 0.3s var(--ease-out);
+    z-index: 5;
   }
   .proj-card:hover .proj-overlay {
-    background: rgba(22, 21, 19, 0.85); /* Premium dark mask in both modes */
+    opacity: 1;
   }
 
   .proj-view-btn {
-    background: #ffffff; /* White background */
-    border: 1px solid #ffffff;
+    background: var(--white);
+    color: var(--ink);
+    border: 1px solid var(--ink);
     border-radius: 99px;
-    padding: 10px 24px;
+    padding: 10px 22px;
     font-family: var(--font-head);
-    font-size: 0.75rem;
-    font-weight: 700;
+    font-size: 0.8rem;
+    font-weight: 800;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: #000000; /* Black text */
-    box-shadow: none;
     cursor: pointer;
-    opacity: 0;
-    transform: translateY(16px) scale(0.95);
-    transition:
-      opacity 0.3s var(--ease),
-      transform 0.3s var(--ease),
-      background-color 0.3s var(--ease),
-      color 0.3s var(--ease);
+    transition: transform 0.2s var(--ease-out);
   }
   .proj-view-btn:hover {
-    background: transparent;
-    color: #ffffff;
-  }
-  .proj-card:hover .proj-view-btn {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: scale(1.05);
   }
 
   .proj-info {
     text-align: center;
-    opacity: 0;
-    transform: translateY(8px);
-    transition:
-      opacity 0.3s 0.05s var(--ease),
-      transform 0.3s 0.05s var(--ease);
-  }
-  .proj-card:hover .proj-info {
-    opacity: 1;
-    transform: translateY(0);
+    color: var(--white);
+    padding: 0 16px;
   }
   .proj-info-title {
     font-family: var(--font-head);
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #ffffff; /* Keep white text in both modes */
-    letter-spacing: -0.01em;
-    text-transform: uppercase;
+    font-size: 1rem;
+    font-weight: 800;
+    margin-bottom: 2px;
   }
   .proj-info-cat {
     font-size: 0.75rem;
-    color: rgba(
-      255,
-      255,
-      255,
-      0.7
-    ); /* Keep white translucent text in both modes */
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
+    opacity: 0.75;
   }
 
   /* Body */
   .proj-body {
     padding: 24px;
-    flex: 1;
     display: flex;
     flex-direction: column;
+    flex: 1;
   }
   .proj-title {
     font-family: var(--font-head);
-    font-size: 1.2rem;
-    font-weight: 700;
+    font-size: 1.15rem;
+    font-weight: 800;
     color: var(--ink);
     margin-bottom: 8px;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    text-transform: uppercase;
-    position: relative;
-    width: fit-content;
-  }
-  .proj-title::after {
-    content: "";
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: var(--accent);
-    transform: scaleX(0);
-    transform-origin: right;
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .proj-card:hover .proj-title::after {
-    transform: scaleX(1);
-    transform-origin: left;
+    line-height: 1.35;
   }
   .proj-desc {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
+    line-height: 1.55;
     color: var(--ink);
-    line-height: 1.6;
-    font-weight: 500;
+    opacity: 0.75;
     margin-bottom: 20px;
     flex: 1;
   }
+
   .proj-chips {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    margin-top: auto;
   }
   .proj-chip {
-    background: transparent;
-    border: 1px solid rgba(var(--ink-rgb), 0.15);
+    background: rgba(var(--ink-rgb), 0.04);
+    border: 1px solid rgba(var(--ink-rgb), 0.1);
+    padding: 4px 10px;
     border-radius: 99px;
-    padding: 4px 12px;
     font-family: var(--font-head);
     font-size: 0.7rem;
     font-weight: 700;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
     color: var(--ink);
-    box-shadow: none;
   }
 
-  /* Modal */
+  /* ── MODAL LIGHTBOX ── */
   .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(22, 21, 19, 0.6);
+    background: rgba(var(--ink-rgb), 0.6);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    z-index: 200;
+    z-index: 9999;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 24px;
-    animation: fade-in 0.25s ease;
   }
+
   .modal-box {
     background: var(--white);
-    border: 1px solid var(--ink);
-    border-radius: 0;
-    box-shadow: none;
-    max-width: 820px;
+    border: 1.5px solid var(--ink);
+    border-radius: 28px;
+    max-width: 680px;
     width: 100%;
     max-height: 90vh;
     overflow-y: auto;
     position: relative;
-    animation: modal-spring 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    box-shadow: 8px 8px 0 var(--ink);
+    animation: modal-pop 0.3s var(--ease-drawer);
   }
-  @keyframes modal-spring {
-    0% {
-      opacity: 0;
-      transform: scale(0.9) translateY(20px);
-    }
-    65% {
-      transform: scale(1.02) translateY(-4px);
-    }
-    100% {
-      opacity: 1;
-      transform: scale(1) translateY(0);
-    }
+  @keyframes modal-pop {
+    from { opacity: 0; transform: scale(0.94); }
+    to { opacity: 1; transform: scale(1); }
   }
+
   .modal-close {
     position: absolute;
     top: 16px;
     right: 16px;
-    width: 32px;
-    height: 32px;
-    border: 1px solid var(--ink);
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     background: var(--white);
-    color: var(--ink);
-    font-size: 0.8rem;
+    border: 1.5px solid var(--ink);
+    font-size: 1rem;
     font-weight: 700;
+    color: var(--ink);
+    cursor: pointer;
+    z-index: 10;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    box-shadow: none;
-    transition: transform 0.3s var(--ease);
-    z-index: 10;
+    transition: transform 0.2s var(--ease-out);
   }
   .modal-close:hover {
-    transform: rotate(90deg) scale(1.05);
+    transform: scale(1.1);
   }
+
   .modal-img {
     width: 100%;
-    aspect-ratio: 16/9;
+    height: 280px;
     object-fit: cover;
-    border-bottom: 1px solid var(--ink);
-    border-radius: 0;
+    border-bottom: 1.5px solid var(--ink);
   }
+
   .modal-body {
-    padding: 32px;
+    padding: 28px;
   }
   .modal-cat {
-    display: inline-block;
-    background: var(--ink) !important;
-    color: var(--white);
     font-family: var(--font-head);
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
+    font-size: 0.72rem;
+    font-weight: 800;
     text-transform: uppercase;
-    border: 1px solid var(--ink);
-    border-radius: 99px;
-    padding: 4px 12px;
-    box-shadow: none;
-    margin-bottom: 16px;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    opacity: 0.5;
+    margin-bottom: 6px;
+    display: block;
   }
   .modal-title {
     font-family: var(--font-head);
-    font-size: 2rem;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 1;
-    text-transform: uppercase;
+    font-size: 1.5rem;
+    font-weight: 900;
     color: var(--ink);
-    margin-bottom: 16px;
+    margin-bottom: 12px;
+    line-height: 1.3;
   }
   .modal-desc {
     font-size: 0.95rem;
-    color: var(--ink);
     line-height: 1.6;
-    margin-bottom: 24px;
-    font-weight: 500;
+    color: var(--ink);
+    opacity: 0.85;
+    margin-bottom: 20px;
   }
+
   .modal-challenge {
     background: rgba(var(--ink-rgb), 0.03);
-    border: 1px solid rgba(var(--ink-rgb), 0.1);
-    border-left: 4px solid var(--ink);
-    border-radius: 0;
-    padding: 16px 20px;
+    border: 1px solid rgba(var(--ink-rgb), 0.12);
+    border-radius: 16px;
+    padding: 16px;
     margin-bottom: 24px;
   }
   .challenge-label {
     font-family: var(--font-head);
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--ink);
+    font-size: 0.78rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
+    color: var(--ink);
     margin-bottom: 6px;
   }
-  .modal-challenge p {
-    font-size: 0.875rem;
-    color: var(--ink);
-    line-height: 1.6;
-    font-weight: 500;
-  }
+
   .modal-chips {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-bottom: 32px;
-  }
-  .modal-actions {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .modal-actions :global(.btn-primary),
-  .modal-actions :global(.btn-secondary) {
-    font-family: var(--font-head);
-    font-size: 0.75rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
+    margin-bottom: 28px;
   }
 
+  .modal-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  /* Responsive Media Queries */
   @media (max-width: 1024px) {
     .proj-grid {
       grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-    }
-    .proj-card.featured {
-      grid-column: span 2;
     }
   }
   @media (max-width: 640px) {
     .proj-grid {
       grid-template-columns: 1fr;
     }
-    .proj-card.featured {
-      grid-column: span 1;
+    .modal-actions {
+      flex-direction: column;
+      width: 100%;
     }
-    .modal-body {
-      padding: 24px;
+    .modal-actions a {
+      width: 100%;
+      justify-content: center;
     }
   }
 </style>

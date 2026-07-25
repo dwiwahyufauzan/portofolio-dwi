@@ -1,83 +1,97 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { countUp } from "$lib/actions/countUp";
-  import {
-    Check,
-    Laptop,
-    Palette,
-    Cog,
-    Target,
-    Hand,
-    Star,
-    Lightbulb,
-    Rocket,
-    Sparkles,
-  } from "@lucide/svelte";
+  import { Check, Target, Hand, Code2, Zap, Star, Eye, X } from "@lucide/svelte";
 
+  // ── State ─────────────────────────────────────────────────
   let visible = $state(false);
+  let mouseX = $state(0);
+  let mouseY = $state(0);
+  let heroEl: HTMLElement | null = $state(null);
+  let activeCardIndex = $state<number | null>(null);
+  let isCardLocked = $state(false);
+  let modalOpen = $state(false);
+  let modalImage = $state<(typeof heroImages)[0] | null>(null);
 
+  // ── Data ──────────────────────────────────────────────────
   const stats = [
-    { num: "1+", label: "Tahun Exp" },
-    { num: "10+", label: "Project" },
-    { num: "15+", label: "Tech Stack" },
+    { num: "1+",  label: "Tahun\nExperience" },
+    { num: "10+", label: "Project\nCompleted" },
+    { num: "15+", label: "Tech Stack\nMastered" },
   ];
 
   const heroImages = [
     {
       src: "https://i.pinimg.com/1200x/44/d4/04/44d4049bb0cea0723e61dce8403ef1ff.jpg",
-      alt: "Code editor",
-      tag: "Full-stack",
+      alt: "Fullstack System Architecture",
+      tag: "Fullstack",
+      index: "01",
+      desc: "Sistem arsitektur web modern terintegrasi dengan performa tinggi dan respon kilat.",
     },
     {
       src: "https://i.pinimg.com/1200x/8c/b9/f4/8cb9f40b7e0ff3008e2e9143a81b2d96.jpg",
-      alt: "UI/UX Design",
+      alt: "UI/UX Interactive Design",
       tag: "UI/UX",
+      index: "02",
+      desc: "Perancangan antarmuka responsif dengan animasi mikro & user experience intuitif.",
     },
     {
       src: "https://i.pinimg.com/736x/a4/7b/3a/a47b3a9486c7626ce527a130fbe1a874.jpg",
-      alt: "Database",
+      alt: "Scalable API Architecture",
       tag: "Backend",
+      index: "03",
+      desc: "Struktur backend scalable, ORM tercepat, dan integrasi REST/GraphQL aman.",
     },
   ];
 
-  const floatingStickers = [
-    {
-      icon: Star,
-      style: "top:18%;left:6%;animation-delay:0s;color:var(--yellow);",
-    },
-    {
-      icon: Lightbulb,
-      style: "top:30%;right:7%;animation-delay:1s;color:var(--orange);",
-    },
-    {
-      icon: Rocket,
-      style: "bottom:30%;left:5%;animation-delay:2s;color:var(--pink);",
-    },
-    {
-      icon: Sparkles,
-      style: "bottom:22%;right:5%;animation-delay:0.5s;color:var(--teal);",
-    },
-  ];
-
-  let mouseX = $state(0);
-  let mouseY = $state(0);
-  let heroEl: HTMLElement | null = $state(null);
-
-  function handleMouseMove(e: MouseEvent) {
-    if (!heroEl) return;
-    const { left, top, width, height } = heroEl.getBoundingClientRect();
-    const x = (e.clientX - left) / width - 0.5;
-    const y = (e.clientY - top) / height - 0.5;
-    mouseX = x;
-    mouseY = y;
+  // ── Modal Handlers ────────────────────────────────────────
+  function openModal(img: (typeof heroImages)[0]) {
+    modalImage = img;
+    modalOpen = true;
+    document.body.style.overflow = "hidden";
   }
 
-  function handleMouseLeave() {
+  function closeModal() {
+    modalOpen = false;
+    modalImage = null;
+    document.body.style.overflow = "";
+  }
+
+  // ── Card Interaction ──────────────────────────────────────
+  function onCardEnter(index: number) {
+    activeCardIndex = index;
+    isCardLocked = true;
     mouseX = 0;
     mouseY = 0;
   }
 
+  function onCardLeave() {
+    activeCardIndex = null;
+    isCardLocked = false;
+  }
+
+  // ── Mouse 3D Parallax ────────────────────────────────────
+  function onMouseMove(e: MouseEvent) {
+    if (!heroEl || isCardLocked) return;
+    const { left, top, width, height } = heroEl.getBoundingClientRect();
+    mouseX = (e.clientX - left) / width - 0.5;
+    mouseY = (e.clientY - top) / height - 0.5;
+  }
+
+  function onMouseLeave() {
+    isCardLocked = false;
+    activeCardIndex = null;
+    mouseX = 0;
+    mouseY = 0;
+  }
+
+  // ── Mount ─────────────────────────────────────────────────
   onMount(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeModal();
+    };
+    window.addEventListener("keydown", onKey);
+
     if (document.body.classList.contains("loading")) {
       const observer = new MutationObserver(() => {
         if (!document.body.classList.contains("loading")) {
@@ -85,662 +99,758 @@
           observer.disconnect();
         }
       });
-      observer.observe(document.body, {
-        attributes: true,
-        attributeFilter: ["class"],
-      });
-
-      const t = setTimeout(() => {
-        visible = true;
-        observer.disconnect();
-      }, 4000);
-
-      return () => {
-        clearTimeout(t);
-        observer.disconnect();
-      };
+      observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+      const t = setTimeout(() => { visible = true; observer.disconnect(); }, 4000);
+      return () => { clearTimeout(t); observer.disconnect(); window.removeEventListener("keydown", onKey); };
     } else {
       visible = true;
     }
+    return () => window.removeEventListener("keydown", onKey);
   });
 </script>
 
+<!-- ══ HERO SECTION ══════════════════════════════════════════ -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<section id="hero" bind:this={heroEl} onmousemove={handleMouseMove} onmouseleave={handleMouseLeave} class="hero" style="--mx: {mouseX}; --my: {mouseY};">
-  <div class="cinematic-glow" aria-hidden="true"></div>
-
-  <div class="blob-yellow" aria-hidden="true"></div>
-  <div class="blob-teal" aria-hidden="true"></div>
-
-  {#each floatingStickers as s}
-    {@const Icon = s.icon}
-    <span class="float-star" style={s.style} aria-hidden="true">
-      <Icon size={28} strokeWidth={2.5} />
-    </span>
-  {/each}
+<section
+  id="hero"
+  bind:this={heroEl}
+  onmousemove={onMouseMove}
+  onmouseleave={onMouseLeave}
+  class="hero"
+>
+  <!-- Background grid accent -->
+  <div class="hero-bg-accent" aria-hidden="true"></div>
 
   <div class="hero-inner">
-    <div class="hero-text">
-      <div class="hero-badge" class:visible>
-        <span class="pulse-dot"></span>
-        <Check size={14} strokeWidth={3} />
-        Siap untuk Peluang Baru!
+    <!-- ─── LEFT: TEXT ──────────────────────────────────── -->
+    <div class="hero-text" class:visible>
+      <!-- Available badge -->
+      <div class="hero-badge">
+        <span class="live-dot"></span>
+        <Check size={11} strokeWidth={3} />
+        Available for Work
       </div>
 
-      <h1
-        class="hero-headline"
-        class:visible
-        aria-label="Dwi Wahyu Fauzan — Fullstack Developer"
-      >
-        <span class="word">
-          <span class="word-inner" style="transition-delay:0.3s">Dwi</span>
+      <!-- Headline -->
+      <h1 class="hero-headline" aria-label="Dwi Wahyu Fauzan — Fullstack Developer">
+        <span class="hl-line">
+          <span class="hl-word" style="--d:0.1s">Dwi</span>
+          <span class="hl-word" style="--d:0.2s">Wahyu</span>
         </span>
-        <span class="word">
-          <span class="word-inner" style="transition-delay:0.45s">Wahyu</span>
-        </span>
-        <br />
-        <span class="word accent-word">
-          <span class="word-inner" style="transition-delay:0.6s">Fauzan</span>
+        <span class="hl-line">
+          <span class="hl-word" style="--d:0.32s">Fauzan</span>
         </span>
       </h1>
 
-      <div class="role-badge" class:visible>
+      <!-- Role tag -->
+      <div class="hero-role">
         <span class="role-pill">
-          Fullstack Developer
-          <Laptop size={16} class="role-icon" />
+          <Code2 size={13} />
+          Fullstack Software Engineer
+          <Star size={11} style="opacity:0.45" />
         </span>
       </div>
 
-      <p class="hero-desc" class:visible>
-        Membangun digital produk yang <strong>bermakna dan menyenangkan</strong>
-        <Palette
-          size={16}
-          style="display:inline-block; vertical-align:middle; margin-left: 4px; color: var(--pink);"
-        />
-        dari <strong>frontend elegan</strong> hingga
-        <strong>backend yang solid</strong>.
+      <!-- Description -->
+      <p class="hero-desc">
+        Membangun sistem web & aplikasi modern yang <strong>presisi, elegan, dan siap scale</strong>
+        — dari <strong>UI/UX responsif</strong> hingga <strong>arsitektur backend solid</strong>.
       </p>
 
-      <div class="hero-btns" class:visible>
-        <a href="#projects" class="btn-primary hover-lift">
-          Lihat Project <Target size={16} style="margin-left: 6px;" />
+      <!-- CTA Buttons -->
+      <div class="hero-btns">
+        <a href="#projects" class="btn-primary">
+          <Target size={14} />
+          Lihat Project
         </a>
-        <a href="#contact" class="btn-secondary hover-lift">
-          Hubungi Saya <Hand size={16} style="margin-left: 6px;" />
+        <a href="#contact" class="btn-outline">
+          <Hand size={14} />
+          Hubungi Saya
         </a>
       </div>
 
-      <div class="hero-stats" class:visible>
+      <!-- Stats Card -->
+      <div class="hero-stats-card">
         {#each stats as s, i}
-          <div class="stat-box" style="animation-delay: {1.5 + i * 0.1}s">
-            <div class="stat-num" use:countUp={s.num}>{s.num}</div>
-            <div class="stat-lbl">{s.label}</div>
+          <div class="stat-item">
+            <span class="stat-num" use:countUp={s.num}>{s.num}</span>
+            <span class="stat-lbl">{s.label}</span>
           </div>
+          {#if i < stats.length - 1}
+            <div class="stat-sep" aria-hidden="true"></div>
+          {/if}
         {/each}
       </div>
     </div>
 
-    <div class="hero-visual" class:visible>
-      <svg class="mood-string" viewBox="0 0 400 400" preserveAspectRatio="none">
-        <path d="M 120,80 C 250,100 350,200 280,320" />
-      </svg>
+    <!-- ─── RIGHT: IMAGE DECK ───────────────────────────── -->
+    <div class="hero-visual" class:visible aria-label="Portfolio preview cards">
+      <!-- 3D tilt wrapper — only tilts when not locked -->
+      <div
+        class="deck"
+        class:locked={isCardLocked}
+        style="--rx:{isCardLocked ? 0 : mouseY}; --ry:{isCardLocked ? 0 : mouseX};"
+      >
+        {#each heroImages as img, i}
+          <!-- svelte-ignore a11y_click_events_have_key_events -->
+          <div
+            class="deck-card deck-card-{i}"
+            class:active={activeCardIndex === i}
+            role="button"
+            tabindex="0"
+            onclick={() => openModal(img)}
+            onmouseenter={() => onCardEnter(i)}
+            onmouseleave={onCardLeave}
+            ontouchstart={() => onCardEnter(i)}
+            ontouchend={() => onCardLeave()}
+          >
+            <figure class="deck-img-wrap">
+              <img src={img.src} alt={img.alt} loading="lazy" />
+              <div class="deck-overlay" aria-hidden="true">
+                <span class="deck-overlay-chip">
+                  <Eye size={12} />
+                  Preview
+                </span>
+              </div>
+            </figure>
 
-      {#each heroImages as img, i}
-        <div class="hero-card scatter-{i}">
-          <img src={img.src} alt={img.alt} loading="lazy" />
-          <span class="hero-card-tag glass-tag">
-            {#if i === 0}
-              <Laptop size={14} strokeWidth={2.5} style="margin-right: 6px;" />
-            {:else if i === 1}
-              <Palette size={14} strokeWidth={2.5} style="margin-right: 6px;" />
-            {:else}
-              <Cog size={14} strokeWidth={2.5} style="margin-right: 6px;" />
-            {/if}
-            {img.tag}
-          </span>
-        </div>
-      {/each}
+            <div class="deck-footer">
+              <span class="deck-idx">{img.index}</span>
+              <span class="deck-tag">{img.tag}</span>
+              <Zap size={11} style="opacity:0.35; color:var(--ink);" />
+            </div>
+          </div>
+        {/each}
+      </div>
+
+      <!-- Floating tag -->
+      <div class="hero-float-tag" aria-hidden="true">
+        <span class="float-dot"></span>
+        Fullstack Dev
+      </div>
     </div>
   </div>
 </section>
 
+<!-- ══ LIGHTBOX MODAL ════════════════════════════════════════ -->
+{#if modalOpen && modalImage}
+  <!-- svelte-ignore a11y_click_events_have_key_events -->
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
+  <div
+    class="modal-overlay"
+    onclick={(e) => { if (e.target === e.currentTarget) closeModal(); }}
+    role="dialog"
+    aria-modal="true"
+    aria-label="Image preview"
+  >
+    <div class="modal-box">
+      <button class="modal-close" onclick={closeModal} aria-label="Close modal" type="button">
+        <X size={16} strokeWidth={2.5} />
+      </button>
+      <div class="modal-img-wrap">
+        <img class="modal-img" src={modalImage.src} alt={modalImage.alt} />
+      </div>
+      <div class="modal-body">
+        <span class="modal-index">SHOWCASE #{modalImage.index}</span>
+        <h3 class="modal-title">{modalImage.alt}</h3>
+        <p class="modal-desc">{modalImage.desc}</p>
+      </div>
+    </div>
+  </div>
+{/if}
+
 <style>
-  /* ── 1. BASE LAYOUT & LIGHTING ── */
+  /* ═══ HERO ════════════════════════════════════════════════ */
   .hero {
     min-height: 100svh;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 140px 0 80px;
+    padding: 120px 0 72px;
     position: relative;
     overflow: hidden;
   }
 
-  .cinematic-glow {
+  /* Subtle top-right corner accent blob */
+  .hero-bg-accent {
     position: absolute;
-    top: 10%;
-    right: 5%;
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(
-      circle,
-      rgba(var(--ink-rgb), 0.03) 0%,
-      transparent 70%
-    );
+    top: -160px;
+    right: -160px;
+    width: 520px;
+    height: 520px;
     border-radius: 50%;
+    background: radial-gradient(circle, rgba(var(--ink-rgb), 0.04) 0%, transparent 70%);
     pointer-events: none;
     z-index: 0;
   }
 
-  :global([data-theme="dark"]) .cinematic-glow {
-    display: none;
-  }
-
-  /* Hide cartoon blobs and stickers */
-  .blob-yellow,
-  .blob-teal,
-  :global(.float-star) {
-    display: none !important;
-  }
-
   .hero-inner {
-    max-width: 1200px;
+    max-width: 1240px;
     margin: 0 auto;
-    padding: 0 40px;
+    padding: 0 48px;
     width: 100%;
     display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
-    gap: 60px;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
     align-items: center;
     position: relative;
     z-index: 1;
   }
 
-  /* ── 2. TYPOGRAPHY & REVEALS ── */
+  /* ══ LEFT: TEXT ══════════════════════════════════════════ */
+  .hero-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* Available badge */
   .hero-badge {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    background: transparent;
-    color: var(--ink);
-    font-family: var(--font-head);
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    padding: 8px 20px;
-    border: 1px solid rgba(var(--ink-rgb), 0.2);
+    gap: 7px;
+    padding: 5px 14px;
+    background: var(--white);
+    border: 1.5px solid var(--ink);
     border-radius: 99px;
-    margin-bottom: 32px;
+    box-shadow: 3px 3px 0 var(--ink);
+    font-family: var(--font-head);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
     width: fit-content;
+    margin-bottom: 30px;
     opacity: 0;
-    transform: translateY(10px);
-  }
-  
-  @keyframes spring-in {
-    0% { opacity: 0; transform: scale(0.8) translateY(20px); }
-    65% { transform: scale(1.05) translateY(-4px); }
-    100% { opacity: 1; transform: scale(1) translateY(0); }
+    transform: translateY(14px);
+    transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
   }
 
-  .hero-badge.visible {
-    animation: spring-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s forwards;
-  }
+  .hero-text.visible .hero-badge { opacity: 1; transform: translateY(0); }
 
-  .pulse-dot {
+  .live-dot {
     width: 6px;
     height: 6px;
-    background-color: #10b981;
     border-radius: 50%;
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
-    animation: pulse-ring 1.5s infinite cubic-bezier(0.66, 0, 0, 1);
+    background: var(--ink);
+    animation: live-pulse 2s ease-in-out infinite;
   }
 
-  @keyframes pulse-ring {
-    to {
-      box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
-    }
+  @keyframes live-pulse {
+    0%, 100% { opacity: 0.35; transform: scale(0.8); }
+    50%       { opacity: 1;    transform: scale(1.2); }
   }
 
+  /* Headline */
   .hero-headline {
     font-family: var(--font-head);
-    font-size: clamp(3rem, 7vw, 6rem);
-    font-weight: 800;
-    line-height: 0.95;
+    font-size: clamp(3rem, 5.5vw, 5.8rem);
+    font-weight: 900;
+    line-height: 1.08;
     letter-spacing: -0.04em;
     color: var(--ink);
-    text-transform: uppercase;
-    overflow: hidden;
+    margin-bottom: 24px;
   }
 
-  .word {
-    display: inline-block;
-    overflow: hidden;
-    margin-right: 0.15em;
-  }
-  .word-inner {
-    display: inline-block;
-    transform: translateY(100%) skewY(6deg);
-    opacity: 0;
-    transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .hero-headline.visible .word-inner {
-    transform: translateY(0) skewY(0);
-    opacity: 1;
-  }
-
-  /* Cinematic Spotlight Effect on Accent Word */
-  .spotlight-text {
-    background: linear-gradient(
-      120deg,
-      var(--ink) 0%,
-      rgba(var(--ink-rgb), 0.4) 40%,
-      var(--ink) 80%
-    );
-    background-size: 200% auto;
-    color: transparent;
-    -webkit-background-clip: text;
-    background-clip: text;
-    animation: spotlight-sweep 4s linear infinite;
-  }
-
-  @keyframes spotlight-sweep {
-    to {
-      background-position: 200% center;
-    }
-  }
-
-  .accent-word::before {
-    display: none !important;
-  }
-
-  /* ── 3. BADGES & DESCRIPTIONS ── */
-  .role-badge {
+  .hl-line {
     display: flex;
-    margin-top: 24px;
+    flex-wrap: wrap;
+    gap: 0.28em;
+    overflow: hidden;
+    padding-bottom: 0.1em;
+  }
+
+  .hl-word {
+    display: inline-block;
+    transform: translateY(110%);
+    transition: transform 0.72s cubic-bezier(0.32, 0.72, 0, 1) var(--d, 0s);
+  }
+
+  .hero-text.visible .hl-word { transform: translateY(0); }
+
+  /* Role pill */
+  .hero-role {
+    margin-bottom: 22px;
     opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.5s var(--ease-out) 0.42s, transform 0.5s var(--ease-out) 0.42s;
   }
-  .role-badge.visible {
-    animation: spring-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.65s forwards;
-  }
+
+  .hero-text.visible .hero-role { opacity: 1; transform: translateY(0); }
+
   .role-pill {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(var(--ink-rgb), 0.03);
-    color: var(--ink);
+    padding: 8px 18px;
+    background: var(--white);
+    border: 1.5px solid var(--ink);
+    border-radius: 99px;
+    box-shadow: 3px 3px 0 var(--ink);
     font-family: var(--font-head);
     font-size: 0.8rem;
     font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    padding: 8px 18px;
-    border: 1px solid rgba(var(--ink-rgb), 0.15);
-    border-radius: 99px;
+    color: var(--ink);
+    transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
   }
 
+  .role-pill:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--ink); }
+
+  /* Description */
   .hero-desc {
-    font-size: 1.05rem;
-    color: rgba(var(--ink-rgb), 0.85);
-    line-height: 1.7;
-    max-width: 500px;
-    margin: 28px 0 40px;
-    font-weight: 500;
+    font-size: 0.96rem;
+    line-height: 1.72;
+    color: var(--ink);
+    max-width: 490px;
+    margin-bottom: 32px;
     opacity: 0;
     transform: translateY(10px);
-  }
-  .hero-desc.visible {
-    animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) 1s forwards;
-  }
-  .hero-desc strong {
-    color: var(--ink);
-    font-weight: 700;
+    transition: opacity 0.5s var(--ease-out) 0.52s, transform 0.5s var(--ease-out) 0.52s;
   }
 
-  /* ── 4. BUTTONS & STATS ── */
+  .hero-text.visible .hero-desc { opacity: 0.8; transform: translateY(0); }
+
+  /* Buttons */
   .hero-btns {
     display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 36px;
     flex-wrap: wrap;
-    gap: 16px;
     opacity: 0;
     transform: translateY(10px);
-  }
-  .hero-btns.visible {
-    animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) 1.1s forwards;
+    transition: opacity 0.5s var(--ease-out) 0.62s, transform 0.5s var(--ease-out) 0.62s;
   }
 
-  .hover-lift {
-    transition:
-      transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-      box-shadow 0.3s ease;
-  }
-  .hover-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 20px -10px rgba(var(--ink-rgb), 0.3);
+  .hero-text.visible .hero-btns { opacity: 1; transform: translateY(0); }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--ink);
+    color: var(--white);
+    font-family: var(--font-head);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    border: 1.5px solid var(--ink);
+    box-shadow: 4px 4px 0 rgba(var(--ink-rgb), 0.22);
+    transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
   }
 
-  .hero-stats {
+  .btn-primary:hover { transform: translate(-3px,-3px); box-shadow: 7px 7px 0 rgba(var(--ink-rgb), 0.22); }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--white);
+    color: var(--ink);
+    font-family: var(--font-head);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    border: 1.5px solid var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
+    transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+  }
+
+  .btn-outline:hover { transform: translate(-3px,-3px); box-shadow: 7px 7px 0 var(--ink); }
+
+  /* Stats Card */
+  .hero-stats-card {
     display: flex;
-    gap: 20px;
-    margin-top: 56px;
-    flex-wrap: wrap;
-    opacity: 1; /* Handled by child animations */
-  }
-
-  .stat-box {
-    position: relative;
-    padding: 20px 28px;
-    text-align: left;
-    min-width: 130px;
-    border-left: 2px solid rgba(var(--ink-rgb), 0.1);
-    background: transparent;
+    align-items: center;
+    gap: 0;
+    padding: 16px 22px;
+    background: var(--white);
+    border: 1.5px solid var(--ink);
+    border-radius: 18px;
+    box-shadow: 4px 4px 0 var(--ink);
+    width: fit-content;
     opacity: 0;
-    transform: translateY(15px);
-    transition: all 0.4s ease;
-  }
-  .hero-stats.visible .stat-box {
-    animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transform: translateY(10px);
+    transition:
+      opacity 0.5s var(--ease-out) 0.72s,
+      transform 0.5s var(--ease-out) 0.72s,
+      box-shadow 0.22s var(--ease-out);
   }
 
-  .stat-box:hover {
-    border-left-color: var(--ink);
-    background: rgba(var(--ink-rgb), 0.02);
-    padding-left: 36px; /* Smooth indent effect */
+  .hero-stats-card:hover { box-shadow: 6px 6px 0 var(--ink); transform: translateY(-2px); }
+
+  .hero-text.visible .hero-stats-card { opacity: 1; transform: translateY(0); }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 18px;
   }
+
+  .stat-item:first-child { padding-left: 0; }
 
   .stat-num {
     font-family: var(--font-head);
-    font-size: 2.2rem;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 1;
-    margin-bottom: 6px;
+    font-size: 1.9rem;
+    font-weight: 900;
     color: var(--ink);
-  }
-  .stat-lbl {
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: rgba(var(--ink-rgb), 0.6);
+    line-height: 1;
+    letter-spacing: -0.03em;
   }
 
-  /* ── 5. CINEMATIC MOODBOARD VISUAL ── */
+  .stat-lbl {
+    font-family: var(--font-head);
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+    opacity: 0.45;
+    margin-top: 4px;
+    white-space: pre-line;
+    line-height: 1.35;
+  }
+
+  .stat-sep {
+    width: 1px;
+    height: 34px;
+    background: rgba(var(--ink-rgb), 0.15);
+    flex-shrink: 0;
+  }
+
+  /* ══ RIGHT: IMAGE DECK ═══════════════════════════════════ */
   .hero-visual {
     position: relative;
-    width: 100%;
-    height: 550px;
+    height: 580px;
     opacity: 0;
+    transform: scale(0.95) translateY(16px);
+    transition: opacity 0.8s var(--ease-out) 0.25s, transform 0.8s var(--ease-out) 0.25s;
+  }
+
+  .hero-visual.visible { opacity: 1; transform: scale(1) translateY(0); }
+
+  /* 3D tilt deck container */
+  .deck {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform:
+      perspective(1100px)
+      rotateX(calc(var(--rx, 0) * -7deg))
+      rotateY(calc(var(--ry, 0) * 7deg));
+    transition: transform 0.38s var(--ease-out);
+    transform-style: preserve-3d;
+  }
+
+  .deck.locked {
+    transform: perspective(1100px) rotateX(0deg) rotateY(0deg);
+  }
+
+  /* ── Card Base ── */
+  .deck-card {
+    position: absolute;
+    background: var(--white);
+    border: 1.5px solid var(--ink);
+    border-radius: 22px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: transform 0.38s var(--ease-out), box-shadow 0.38s var(--ease-out), z-index 0s;
+  }
+
+  /* Card positions & sizes */
+  .deck-card-0 {
+    width: 370px;
+    height: 265px;
+    top: 1%;
+    left: 3%;
+    z-index: 3;
+    box-shadow: 5px 5px 0 var(--ink);
+    transform: rotate(-4.5deg);
+  }
+  .deck-card-1 {
+    width: 325px;
+    height: 235px;
+    top: 44%;
+    right: 1%;
+    z-index: 2;
+    box-shadow: 5px 5px 0 var(--ink);
+    transform: rotate(3.5deg);
+  }
+  .deck-card-2 {
+    width: 295px;
+    height: 210px;
+    bottom: 2%;
+    left: 3%;
+    z-index: 1;
+    box-shadow: 5px 5px 0 var(--ink);
+    transform: rotate(-2deg);
+  }
+
+  /* Hover / active: lift & straighten */
+  .deck-card.active,
+  .deck-card:focus-visible {
+    z-index: 10 !important;
+    transform: rotate(0deg) translateY(-8px) scale(1.04) !important;
+    box-shadow: 10px 10px 0 var(--ink) !important;
+  }
+
+  /* Image wrapper */
+  .deck-img-wrap {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+  }
+
+  .deck-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.45s var(--ease-out);
+  }
+
+  .deck-card.active .deck-img-wrap img { transform: scale(1.07); }
+
+  /* Hover overlay */
+  .deck-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(var(--ink-rgb), 0.4);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-  .hero-visual.visible {
-    animation: blur-reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
-  }
-
-  @keyframes blur-reveal {
-    0% {
-      opacity: 0;
-      filter: blur(10px);
-      transform: scale(0.95);
-    }
-    100% {
-      opacity: 1;
-      filter: blur(0);
-      transform: scale(1);
-    }
-  }
-
-  .mood-string {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 1;
-  }
-  .mood-string path {
-    fill: none;
-    stroke: rgba(var(--ink-rgb), 0.2);
-    stroke-width: 2;
-    stroke-dasharray: 6 6;
-    animation: dash-flow 20s linear infinite;
-  }
-
-  @keyframes dash-flow {
-    to {
-      stroke-dashoffset: -100;
-    }
-  }
-
-  .hero-card {
-    position: absolute;
-    background: #fff;
-    padding: 10px;
-    padding-bottom: 35px; /* Polaroid bottom lip */
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 4px 10px 25px rgba(0, 0, 0, 0.08);
-    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    z-index: 2;
-  }
-
-  /* Specific Positioning for the Moodboard Grid with drift animations */
-  @keyframes float-0 {
-    0%, 100% {
-      transform: translate(calc(var(--mx) * -30px), calc(var(--my) * -30px + 0px)) rotate(-6deg);
-    }
-    50% {
-      transform: translate(calc(var(--mx) * -30px + 3px), calc(var(--my) * -30px - 10px)) rotate(-5deg);
-    }
-  }
-  @keyframes float-1 {
-    0%, 100% {
-      transform: translate(calc(var(--mx) * 20px), calc(var(--my) * 20px + 0px)) rotate(4deg);
-    }
-    50% {
-      transform: translate(calc(var(--mx) * 20px - 4px), calc(var(--my) * 20px + 8px)) rotate(6deg);
-    }
-  }
-  @keyframes float-2 {
-    0%, 100% {
-      transform: translate(calc(var(--mx) * -15px), calc(var(--my) * 15px + 0px)) rotate(-2deg);
-    }
-    50% {
-      transform: translate(calc(var(--mx) * -15px + 2px), calc(var(--my) * 15px - 6px)) rotate(-1deg);
-    }
-  }
-
-  .scatter-0 {
-    /* Top Left - Code */
-    width: 260px;
-    top: 10%;
-    left: 5%;
-    z-index: 3;
-    animation: float-0 6s ease-in-out infinite;
-  }
-  .scatter-1 {
-    /* Center Right - UI/UX (Focus Image) */
-    width: 300px;
-    top: 25%;
-    right: 0%;
-    z-index: 4;
-    box-shadow: 8px 15px 30px rgba(0, 0, 0, 0.12);
-    animation: float-1 7s ease-in-out infinite;
-  }
-  .scatter-1 img {
-    background-color: #dc2626 !important;
-    mix-blend-mode: multiply;
-  }
-  .scatter-2 {
-    /* Bottom Left - DB */
-    width: 240px;
-    bottom: 5%;
-    left: 20%;
-    z-index: 2;
-    animation: float-2 5s ease-in-out infinite;
-  }
-
-  .hero-card img {
-    width: 100%;
-    height: 100%;
-    aspect-ratio: 4/3;
-    object-fit: cover;
-    filter: grayscale(100%) contrast(1.1);
-    transition: filter 0.6s ease;
-  }
-
-  /* Glassmorphism Tape */
-  .polaroid-tape {
-    position: absolute;
-    top: -12px;
-    left: 50%;
-    transform: translateX(-50%) rotate(-3deg);
-    width: 70px;
-    height: 25px;
-    background: rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    z-index: 10;
-    transition: all 0.4s ease;
-  }
-
-  /* Hover Effects */
-  .hero-card {
-    position: absolute;
-    background: #fff;
-    padding: 10px;
-    padding-bottom: 35px; /* Polaroid bottom lip */
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 4px 10px 25px rgba(0, 0, 0, 0.08);
-    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
-    z-index: 2;
-  }
-  .hero-card:hover {
-    transform: scale(1.06) rotate(0deg) !important;
-    animation: none !important;
-    z-index: 10;
-    box-shadow: 15px 25px 40px rgba(0, 0, 0, 0.15);
-  }
-  .hero-card:hover img {
-    filter: grayscale(0%) contrast(1);
-  }
-  .hero-card:hover .polaroid-tape {
     opacity: 0;
-    transform: translateX(-50%) translateY(-15px);
+    transition: opacity 0.28s var(--ease-out);
   }
 
-  .glass-tag {
-    position: absolute;
-    bottom: -15px; /* Hang slightly off the polaroid */
-    right: 10px;
-    background: rgba(var(--ink-rgb), 0.85);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(var(--white-rgb), 0.2);
-    border-radius: 6px;
-    padding: 6px 14px;
-    display: flex;
+  .deck-card.active .deck-overlay,
+  .deck-card:hover .deck-overlay { opacity: 1; }
+
+  .deck-overlay-chip {
+    display: inline-flex;
     align-items: center;
+    gap: 6px;
+    background: var(--white);
+    color: var(--ink);
+    border: 1.5px solid var(--ink);
+    border-radius: 99px;
+    padding: 6px 14px;
     font-family: var(--font-head);
     font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
+    font-weight: 800;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--bg);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  }
-  .hero-card:hover .glass-tag {
-    transform: translateY(-4px) scale(1.05);
+    box-shadow: 3px 3px 0 var(--ink);
   }
 
-  @keyframes fade-up {
-    from {
-      opacity: 0;
-      transform: translateY(15px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  /* Card footer */
+  .deck-footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border-top: 1.5px solid var(--ink);
+    background: var(--white);
+    flex-shrink: 0;
   }
 
-  /* ── 6. RESPONSIVE ── */
+  .deck-idx {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: var(--ink);
+    opacity: 0.3;
+    letter-spacing: 0.06em;
+  }
+
+  .deck-tag {
+    font-family: var(--font-head);
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--ink);
+    flex: 1;
+  }
+
+  /* Floating label */
+  .hero-float-tag {
+    position: absolute;
+    top: 10px;
+    right: 0;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--white);
+    border: 1.5px solid var(--ink);
+    border-radius: 99px;
+    box-shadow: 3px 3px 0 var(--ink);
+    padding: 5px 14px;
+    font-family: var(--font-head);
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink);
+    z-index: 4;
+    animation: float 4s ease-in-out infinite;
+  }
+
+  .float-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ink);
+    opacity: 0.5;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-7px); }
+  }
+
+  /* ══ LIGHTBOX MODAL ══════════════════════════════════════ */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(var(--ink-rgb), 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 9000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    animation: overlay-in 0.25s var(--ease-out);
+  }
+
+  @keyframes overlay-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .modal-box {
+    background: var(--white);
+    border: 1.5px solid var(--ink);
+    border-radius: 28px;
+    max-width: 620px;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 8px 8px 0 var(--ink);
+    animation: modal-pop 0.3s var(--ease-drawer);
+  }
+
+  @keyframes modal-pop {
+    from { opacity: 0; transform: scale(0.9) translateY(16px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 1.5px solid var(--ink);
+    color: var(--ink);
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 2px 2px 0 var(--ink);
+    transition: transform 0.18s var(--ease-out), box-shadow 0.18s var(--ease-out);
+  }
+
+  .modal-close:hover { transform: scale(1.12); box-shadow: 4px 4px 0 var(--ink); }
+
+  .modal-img-wrap { position: relative; }
+
+  .modal-img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    display: block;
+    border-bottom: 1.5px solid var(--ink);
+  }
+
+  .modal-body { padding: 24px 28px; }
+
+  .modal-index {
+    font-family: var(--font-head);
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.4;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .modal-title {
+    font-family: var(--font-head);
+    font-size: 1.35rem;
+    font-weight: 900;
+    color: var(--ink);
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+
+  .modal-desc {
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--ink);
+    opacity: 0.75;
+  }
+
+  /* ══ RESPONSIVE ══════════════════════════════════════════ */
   @media (max-width: 1024px) {
     .hero-inner {
       grid-template-columns: 1fr;
-      gap: 60px;
-      padding: 0 24px;
+      gap: 48px;
     }
-
-    .hero-visual {
-      height: auto;
-      min-height: 400px;
-    }
-
-    .mood-string {
-      display: none;
-    } /* Hide string on tablet/mobile */
-
-    /* Adjust grid for smaller screens */
-    .scatter-0 {
-      top: 0;
-      left: 0;
-      width: 45%;
-    }
-    .scatter-1 {
-      top: 10%;
-      right: 0;
-      width: 50%;
-      z-index: 5;
-    }
-    .scatter-2 {
-      bottom: 0;
-      left: 15%;
-      width: 45%;
-    }
+    .hero-visual { height: 420px; }
+    .deck-card-0 { width: 310px; height: 220px; }
+    .deck-card-1 { width: 270px; height: 192px; }
+    .deck-card-2 { width: 245px; height: 172px; }
   }
 
-  @media (max-width: 768px) {
-    .hero-visual {
-      display: none; /* Keep hidden on very small screens as per original code */
-    }
-    .hero {
-      padding: 120px 0 60px;
-    }
-    .hero-stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
-    .stat-box {
-      border-left: 2px solid rgba(var(--ink-rgb), 0.1);
-      border-bottom: none;
-      padding: 12px 16px;
-      min-width: 0;
-    }
-    .stat-box:hover {
-      padding-left: 20px;
-      border-left-color: var(--ink);
-    }
-  }
+  @media (max-width: 640px) {
+    .hero { padding: 96px 0 60px; }
+    .hero-inner { padding: 0 20px; gap: 32px; }
 
-  @media (max-width: 480px) {
-    .hero-stats {
-      gap: 8px;
-    }
-    .stat-num {
-      font-size: 1.6rem;
-    }
-    .stat-lbl {
-      font-size: 0.6rem;
-      letter-spacing: 0.04em;
-    }
-    .stat-box {
-      padding: 8px 10px;
-    }
+    .hero-headline { font-size: clamp(2.5rem, 10vw, 4rem); }
+
+    .hero-btns { flex-direction: column; width: 100%; }
+    .btn-primary, .btn-outline { width: 100%; justify-content: center; }
+
+    .hero-visual { height: 340px; }
+
+    .deck-card-0 { width: 240px; height: 172px; top: 0;    left: 2%; }
+    .deck-card-1 { width: 220px; height: 156px; top: 50px; right: 2%; }
+    .deck-card-2 { width: 200px; height: 142px; top: 126px; left: 12%; }
+
+    .stat-item { padding: 0 12px; }
+    .stat-num  { font-size: 1.55rem; }
+
+    .hero-float-tag { display: none; }
   }
 </style>

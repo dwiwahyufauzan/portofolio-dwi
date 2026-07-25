@@ -135,14 +135,7 @@
   }
 
   .footer-line {
-    position: absolute;
-    top: 0;
-    left: 10%;
-    width: 80%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
-    transform: scaleX(0);
-    animation: expand-line 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+    display: none;
   }
 
   @keyframes expand-line {

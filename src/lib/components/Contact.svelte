@@ -426,10 +426,15 @@
     position: relative;
     min-height: 400px;
     background: var(--white);
-    border: 1px solid rgba(var(--ink-rgb), 0.15);
-    border-radius: 0;
-    box-shadow: none;
-    padding: 40px;
+    border: 1.5px solid var(--ink);
+    border-radius: 24px;
+    box-shadow: 4px 4px 0 var(--ink);
+    padding: 36px;
+    transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
+  }
+  .form-wrap:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 7px 7px 0 var(--ink);
   }
   .form-group {
     position: relative;
@@ -487,7 +492,7 @@
   .form-input:not(:placeholder-shown) ~ .form-label {
     top: 4px;
     font-size: 0.68rem;
-    color: var(--accent);
+    color: var(--ink);
   }
   .form-input {
     width: 100%;
@@ -517,7 +522,7 @@
     justify-content: center;
     gap: 10px;
     width: 100%;
-    padding: 16px 28px;
+    padding: 14px 28px;
     background: var(--ink);
     color: var(--white);
     font-family: var(--font-head);
@@ -525,19 +530,19 @@
     font-weight: 700;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    border: 1px solid var(--ink);
-    border-radius: 99px;
+    border: 1.5px solid var(--ink);
+    border-radius: 12px;
     cursor: pointer;
-    box-shadow: none;
-    transition: background 0.3s var(--ease), color 0.3s var(--ease), opacity 0.2s;
+    box-shadow: 4px 4px 0 rgba(var(--ink-rgb), 0.3);
+    transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out), opacity 0.2s;
     margin-top: 12px;
   }
   .btn-send:hover:not(:disabled) {
-    background: transparent;
-    color: var(--ink);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 rgba(var(--ink-rgb), 0.3);
   }
   .btn-send:disabled {
-    opacity: 0.65;
+    opacity: 0.5;
   }
 
   :global(.spinner) {
@@ -621,35 +626,41 @@
   .info-col {
     display: flex;
     flex-direction: column;
-    gap: 0;
+    gap: 12px;
   }
   .info-card {
     display: flex;
     align-items: center;
     gap: 16px;
-    padding: 24px 0;
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid rgba(var(--ink-rgb), 0.15);
-    border-radius: 0;
-    box-shadow: none;
-    transition: border-color 0.3s;
+    padding: 18px 20px;
+    background: var(--white);
+    border: 1.5px solid var(--ink);
+    border-radius: 16px;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
     color: var(--ink);
+    text-decoration: none;
   }
   .info-card:hover {
-    border-color: var(--ink);
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--ink);
   }
   .info-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 0;
-    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: rgba(var(--ink-rgb), 0.06);
+    border: 1px solid rgba(var(--ink-rgb), 0.12);
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--ink);
     flex-shrink: 0;
-    box-shadow: none;
+    transition: background 0.2s, color 0.2s;
+  }
+  .info-card:hover .info-icon {
+    background: var(--ink);
+    color: var(--white);
   }
   .info-label {
     font-size: 0.75rem;
@@ -666,13 +677,18 @@
   }
 
   .coffee-card {
-    background: transparent;
-    border: 1px solid rgba(var(--ink-rgb), 0.15);
-    border-radius: 0;
-    padding: 24px;
-    box-shadow: none;
+    background: var(--white);
+    border: 1.5px solid var(--ink);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 3px 3px 0 var(--ink);
     text-align: center;
-    margin-top: 24px;
+    margin-top: 4px;
+    transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+  }
+  .coffee-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--ink);
   }
   .coffee-emoji {
     margin-bottom: 8px;
@@ -695,7 +711,19 @@
   @media (max-width: 900px) {
     .contact-grid {
       grid-template-columns: 1fr;
-      gap: 40px;
+      gap: 32px;
+    }
+    .form-wrap {
+      padding: 24px 18px;
+    }
+  }
+  @media (max-width: 480px) {
+    .info-item {
+      padding: 12px;
+    }
+    .info-val {
+      font-size: 0.82rem;
+      word-break: break-all;
     }
   }
 </style>

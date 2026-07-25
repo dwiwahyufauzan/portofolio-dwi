@@ -9,6 +9,10 @@
         ChevronDown,
         ChevronLeft,
         ChevronRight,
+        Volume2,
+        VolumeX,
+        Sparkles,
+        Zap
     } from "@lucide/svelte";
 
     // ─── GAME SNAKE LOGIC & STATE ───
@@ -35,6 +39,10 @@
     const initialSpeed = 160; // Kecepatan awal
     let currentSpeed = $state(initialSpeed);
     let changingDirection = false;
+
+    // Touch Swipe State
+    let touchStartX = 0;
+    let touchStartY = 0;
 
     // Derived speed percentage
     let speedPercent = $derived(
@@ -114,10 +122,10 @@
                 return;
             }
             const note = melody[musicStep % melody.length];
-            playNote(note / 2, "triangle", 0.35, 0.03); // Triangle bass notes
+            playNote(note / 2, "triangle", 0.35, 0.03);
             
             if (musicStep % 2 === 0) {
-                playNote(melody[(musicStep + 2) % melody.length], "square", 0.15, 0.012); // Square treble
+                playNote(melody[(musicStep + 2) % melody.length], "square", 0.15, 0.012);
             }
             
             musicStep++;
@@ -139,10 +147,10 @@
             const gainNode = audioCtx.createGain();
             
             osc.type = "sine";
-            osc.frequency.setValueAtTime(300, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(900, audioCtx.currentTime + 0.12);
+            osc.frequency.setValueAtTime(320, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(960, audioCtx.currentTime + 0.12);
             
-            gainNode.gain.setValueAtTime(0.07, audioCtx.currentTime);
+            gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
             gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.12);
             
             osc.connect(gainNode);
@@ -159,7 +167,6 @@
         initAudio();
         if (!audioCtx || isMuted) return;
         try {
-            // retro arpeggio fanfare
             playNote(523.25, "square", 0.15, 0.05); // C5
             setTimeout(() => playNote(659.25, "square", 0.15, 0.05), 100); // E5
             setTimeout(() => playNote(783.99, "square", 0.3, 0.05), 200); // G5
@@ -176,10 +183,10 @@
             const gainNode = audioCtx.createGain();
             
             osc.type = "sawtooth";
-            osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(320, audioCtx.currentTime);
             osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.35);
             
-            gainNode.gain.setValueAtTime(0.07, audioCtx.currentTime);
+            gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
             gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.35);
             
             osc.connect(gainNode);
@@ -201,6 +208,14 @@
         }
     }
 
+    function triggerHapticFeedback() {
+        if (typeof window !== "undefined" && "vibrate" in navigator) {
+            try {
+                navigator.vibrate(12);
+            } catch (e) {}
+        }
+    }
+
     function startGame() {
         if (isPlaying) return;
         cancelAnimationFrame(animationFrameId);
@@ -219,21 +234,11 @@
 
         placeFood();
         startMusic();
+        triggerHapticFeedback();
 
         // Mulai Game Engine
         lastLogicTime = performance.now();
         animationFrameId = requestAnimationFrame(gameLoop);
-
-        // Auto scroll ke game / remote pada mobile
-        if (window.innerWidth <= 1024) {
-            document
-                .querySelector(".mobile-dpad-grid")
-                ?.scrollIntoView({ behavior: "smooth", block: "center" });
-        } else {
-            document
-                .getElementById("game-section")
-                ?.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
     }
 
     function stopGame() {
@@ -241,7 +246,7 @@
         isGameOver = true;
         cancelAnimationFrame(animationFrameId);
 
-        // Huge screen shake on death
+        // Screen shake on death
         lastEatTime = performance.now() + 150;
         stopMusic();
         playDeathSound();
@@ -250,25 +255,21 @@
             highScore = score;
             localStorage.setItem("snakeHighScore", highScore.toString());
         }
-        draw(1); // Paksa render di posisi akhir
     }
 
-    // Engine loop 60fps+ untuk animasi mulus
     function gameLoop(time: number) {
-        if (!isPlaying) return;
-
+        if (!lastLogicTime) lastLogicTime = time;
         let delta = time - lastLogicTime;
 
-        // Logic Tick (Pergerakan Grid)
-        if (delta >= currentSpeed) {
+        while (delta >= currentSpeed) {
             gameStep();
-            lastLogicTime = time;
-            delta = 0;
+            lastLogicTime += currentSpeed;
+            delta = time - lastLogicTime;
+            if (!isPlaying) return;
         }
 
-        // Render Frame
         if (isPlaying) {
-            const progress = Math.min(1, delta / currentSpeed);
+            const progress = Math.min(1, Math.max(0, delta / currentSpeed));
             draw(progress);
             animationFrameId = requestAnimationFrame(gameLoop);
         }
@@ -301,25 +302,25 @@
         if (head.x === food.x && head.y === food.y) {
             score += 10;
             
-            // Trigger Camera Shake & Particles & Floating Text
             lastEatTime = performance.now();
             playEatSound();
+            triggerHapticFeedback();
             
             const colors = ["#2563eb", "#ffd200", "#dc2626"];
             const burstX = food.x * gridSize + gridSize / 2;
             const burstY = food.y * gridSize + gridSize / 2;
             
-            // Spawn 12 particles
-            for (let k = 0; k < 12; k++) {
+            // Spawn 14 particle burst
+            for (let k = 0; k < 14; k++) {
                 const angle = Math.random() * Math.PI * 2;
-                const speed = 1.5 + Math.random() * 2.5;
+                const speed = 1.5 + Math.random() * 3.0;
                 particles.push({
                     x: burstX,
                     y: burstY,
                     vx: Math.cos(angle) * speed,
                     vy: Math.sin(angle) * speed,
                     color: colors[Math.floor(Math.random() * colors.length)],
-                    size: 2 + Math.random() * 3,
+                    size: 2.5 + Math.random() * 3,
                     birthTime: performance.now(),
                     lifeTime: 400 + Math.random() * 300
                 });
@@ -353,7 +354,7 @@
 
             placeFood();
 
-            // ⚡ Percepatan Dinamis
+            // Percepatan Dinamis
             currentSpeed = Math.max(50, initialSpeed - (score / 10) * 3);
             prevSnake.push({ ...prevSnake[prevSnake.length - 1] });
         } else {
@@ -376,135 +377,144 @@
 
         ctx.save();
 
-        // ── Camera Shake Translation ──
         const timeNow = performance.now();
-        if (timeNow - lastEatTime < 180) {
-            const dxShake = (Math.random() - 0.5) * 8;
-            const dyShake = (Math.random() - 0.5) * 8;
-            ctx.translate(dxShake, dyShake);
+        if (timeNow - lastEatTime < 120) {
+            const shake = (120 - (timeNow - lastEatTime)) / 25;
+            ctx.translate(
+                (Math.random() - 0.5) * shake,
+                (Math.random() - 0.5) * shake
+            );
         }
 
-        // Bersihkan canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Animasi Denyut Makanan
-        const foodPulse = 1 + Math.sin(timeNow / 150) * 0.15;
+        // ── Smooth Step Interpolation (0.5 - Cosine curve for silky flow) ──
+        const clampedProgress = Math.min(1, Math.max(0, progress));
+        const smoothProgress = 0.5 - Math.cos(clampedProgress * Math.PI) / 2;
+
+        // Calculate sub-pixel lerp positions for all segments
+        const lerpPoints: { x: number; y: number }[] = [];
+        for (let i = 0; i < snake.length; i++) {
+            const curr = snake[i];
+            const prev = prevSnake[i] || curr;
+
+            const lx = prev.x + (curr.x - prev.x) * smoothProgress;
+            const ly = prev.y + (curr.y - prev.y) * smoothProgress;
+
+            lerpPoints.push({
+                x: lx * gridSize + gridSize / 2,
+                y: ly * gridSize + gridSize / 2
+            });
+        }
+
+        // ── Render Glowing Target (Apple / Star) ──
         const fx = food.x * gridSize + gridSize / 2;
         const fy = food.y * gridSize + gridSize / 2;
+        const pulse = 1 + Math.sin(timeNow / 120) * 0.12;
 
-        // Food core
-        ctx.shadowBlur = 16;
+        // Outer Glow Ring
+        ctx.shadowBlur = 18;
         ctx.shadowColor = "#dc2626";
-        ctx.fillStyle = "#dc2626";
+        ctx.fillStyle = "rgba(220, 38, 38, 0.2)";
         ctx.beginPath();
-        ctx.arc(
-            fx,
-            fy,
-            (gridSize / 2 - 4) * foodPulse,
-            0,
-            Math.PI * 2,
-        );
+        ctx.arc(fx, fy, (gridSize / 2 + 4) * pulse, 0, Math.PI * 2);
         ctx.fill();
 
-        // Outer orbital ring
-        ctx.shadowBlur = 0;
-        ctx.strokeStyle = "rgba(220, 38, 38, 0.4)";
-        ctx.lineWidth = 1.5;
+        // Shiny Target Core
+        ctx.shadowBlur = 14;
+        ctx.shadowColor = "#ffd200";
+        const foodGradient = ctx.createRadialGradient(fx - 2, fy - 2, 1, fx, fy, gridSize / 2);
+        foodGradient.addColorStop(0, "#ffd200");
+        foodGradient.addColorStop(0.7, "#dc2626");
+        foodGradient.addColorStop(1, "#991b1b");
+
+        ctx.fillStyle = foodGradient;
         ctx.beginPath();
-        ctx.arc(
-            fx,
-            fy,
-            (gridSize / 2 + 1) * foodPulse,
-            0,
-            Math.PI * 2,
-        );
-        ctx.stroke();
+        ctx.arc(fx, fy, (gridSize / 2 - 2) * pulse, 0, Math.PI * 2);
+        ctx.fill();
 
-        // Menggambar Ular Mulus
-        for (let i = snake.length - 1; i >= 0; i--) {
-            const part = snake[i];
-            const prev = prevSnake[i] || part;
+        // Target Leaf/Crown
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = "#2563eb";
+        ctx.beginPath();
+        ctx.ellipse(fx, fy - gridSize / 2 + 1, 3, 2, Math.PI / 4, 0, Math.PI * 2);
+        ctx.fill();
 
-            // Interpolasi Linear (Lerp)
-            const vx = prev.x + (part.x - prev.x) * progress;
-            const vy = prev.y + (part.y - prev.y) * progress;
+        // ── Render Organic Glowing Ribbon Body ──
+        if (lerpPoints.length > 1) {
+            ctx.shadowBlur = 12;
+            ctx.shadowColor = "rgba(37, 99, 235, 0.6)";
+            ctx.lineWidth = gridSize - 4;
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
 
-            const cx = vx * gridSize + gridSize / 2;
-            const cy = vy * gridSize + gridSize / 2;
+            const bodyGradient = ctx.createLinearGradient(
+                lerpPoints[0].x, lerpPoints[0].y,
+                lerpPoints[lerpPoints.length - 1].x, lerpPoints[lerpPoints.length - 1].y
+            );
+            bodyGradient.addColorStop(0, "#2563eb");
+            bodyGradient.addColorStop(0.5, "#3b82f6");
+            bodyGradient.addColorStop(1, "#60a5fa");
 
-            if (i === 0) {
-                // Kepala Ular - Glowing Cyber Gradient
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = "rgba(37, 99, 235, 0.6)";
-
-                let headGrad = ctx.createRadialGradient(cx, cy, 2, cx, cy, gridSize / 2);
-                headGrad.addColorStop(0, "#3b82f6");
-                headGrad.addColorStop(1, "#1d4ed8");
-                ctx.fillStyle = headGrad;
-
-                ctx.beginPath();
-                ctx.roundRect(
-                    vx * gridSize,
-                    vy * gridSize,
-                    gridSize,
-                    gridSize,
-                    6,
-                );
-                ctx.fill();
-
-                // Mata Ular Dinamis dengan Pupil
-                ctx.shadowBlur = 0;
-                ctx.fillStyle = "#ffffff";
-                const eyeGap = 4;
-
-                let eye1 = { x: cx, y: cy };
-                let eye2 = { x: cx, y: cy };
-
-                if (dy === -1) {
-                    eye1 = { x: cx - eyeGap, y: cy - eyeGap };
-                    eye2 = { x: cx + eyeGap, y: cy - eyeGap };
-                } else if (dy === 1) {
-                    eye1 = { x: cx - eyeGap, y: cy + eyeGap };
-                    eye2 = { x: cx + eyeGap, y: cy + eyeGap };
-                } else if (dx === -1) {
-                    eye1 = { x: cx - eyeGap, y: cy - eyeGap };
-                    eye2 = { x: cx - eyeGap, y: cy + eyeGap };
-                } else if (dx === 1) {
-                    eye1 = { x: cx + eyeGap, y: cy - eyeGap };
-                    eye2 = { x: cx + eyeGap, y: cy + eyeGap };
-                } else {
-                    eye1 = { x: cx + eyeGap, y: cy - eyeGap };
-                    eye2 = { x: cx + eyeGap, y: cy + eyeGap };
-                }
-
-                ctx.beginPath();
-                ctx.arc(eye1.x, eye1.y, 3, 0, Math.PI * 2);
-                ctx.arc(eye2.x, eye2.y, 3, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Pupil Hitam
-                ctx.fillStyle = "#000000";
-                ctx.beginPath();
-                ctx.arc(eye1.x + dx * 0.8, eye1.y + dy * 0.8, 1.2, 0, Math.PI * 2);
-                ctx.arc(eye2.x + dx * 0.8, eye2.y + dy * 0.8, 1.2, 0, Math.PI * 2);
-                ctx.fill();
-            } else {
-                // Badan Ular Memudar & Berpola Cyber
-                let alpha = Math.max(0.2, 1 - (i / snake.length) * 0.75);
-                ctx.fillStyle = i % 2 === 0 ? `rgba(37, 99, 235, ${alpha})` : `rgba(59, 130, 246, ${alpha})`;
-                ctx.shadowBlur = 6;
-                ctx.shadowColor = "rgba(37, 99, 235, 0.3)";
-                
-                ctx.beginPath();
-                ctx.roundRect(
-                    vx * gridSize + 2,
-                    vy * gridSize + 2,
-                    gridSize - 4,
-                    gridSize - 4,
-                    5,
-                );
-                ctx.fill();
+            ctx.strokeStyle = bodyGradient;
+            ctx.beginPath();
+            ctx.moveTo(lerpPoints[0].x, lerpPoints[0].y);
+            for (let i = 1; i < lerpPoints.length; i++) {
+                ctx.lineTo(lerpPoints[i].x, lerpPoints[i].y);
             }
+            ctx.stroke();
+        }
+
+        // ── Render Head & Dynamic Eyes ──
+        if (lerpPoints.length > 0) {
+            const hx = lerpPoints[0].x;
+            const hy = lerpPoints[0].y;
+
+            // Head Glow Circle
+            ctx.shadowBlur = 14;
+            ctx.shadowColor = "#2563eb";
+            ctx.fillStyle = "#2563eb";
+            ctx.beginPath();
+            ctx.arc(hx, hy, gridSize / 2 - 1, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Calculate Dynamic Eye Positions based on direction
+            ctx.shadowBlur = 0;
+            let eye1X = hx - 4, eye1Y = hy - 4;
+            let eye2X = hx + 4, eye2Y = hy - 4;
+            let pupilDx = 0, pupilDy = 0;
+
+            if (dx === 1) {
+                eye1X = hx + 3; eye1Y = hy - 4;
+                eye2X = hx + 3; eye2Y = hy + 4;
+                pupilDx = 1.2;
+            } else if (dx === -1) {
+                eye1X = hx - 3; eye1Y = hy - 4;
+                eye2X = hx - 3; eye2Y = hy + 4;
+                pupilDx = -1.2;
+            } else if (dy === 1) {
+                eye1X = hx - 4; eye1Y = hy + 3;
+                eye2X = hx + 4; eye2Y = hy + 3;
+                pupilDy = 1.2;
+            } else if (dy === -1) {
+                eye1X = hx - 4; eye1Y = hy - 3;
+                eye2X = hx + 4; eye2Y = hy - 3;
+                pupilDy = -1.2;
+            }
+
+            // White Sclera
+            ctx.fillStyle = "#ffffff";
+            ctx.beginPath();
+            ctx.arc(eye1X, eye1Y, 3, 0, Math.PI * 2);
+            ctx.arc(eye2X, eye2Y, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Pupil
+            ctx.fillStyle = "#000000";
+            ctx.beginPath();
+            ctx.arc(eye1X + pupilDx, eye1Y + pupilDy, 1.4, 0, Math.PI * 2);
+            ctx.arc(eye2X + pupilDx, eye2Y + pupilDy, 1.4, 0, Math.PI * 2);
+            ctx.fill();
         }
 
         // ── Render Particles ──
@@ -518,7 +528,7 @@
             const progressRatio = age / p.lifeTime;
             p.x += p.vx;
             p.y += p.vy;
-            p.vx *= 0.95; // Drag
+            p.vx *= 0.95;
             p.vy *= 0.95;
 
             ctx.shadowBlur = 6;
@@ -541,7 +551,7 @@
             const yOffset = progressRatio * -25;
             ctx.shadowBlur = 0;
             ctx.fillStyle = `rgba(255, 210, 0, ${1 - progressRatio})`;
-            ctx.font = "bold 13px 'Plus Jakarta Sans'";
+            ctx.font = "bold 13px 'Plus Jakarta Sans', sans-serif";
             ctx.textAlign = "center";
             ctx.fillText(ft.text, ft.x, ft.y + yOffset);
         }
@@ -559,21 +569,25 @@
             dx = 0;
             dy = -1;
             changingDirection = true;
+            triggerHapticFeedback();
         }
         if (key === "ArrowDown" && dy === 0) {
             dx = 0;
             dy = 1;
             changingDirection = true;
+            triggerHapticFeedback();
         }
         if (key === "ArrowLeft" && dx === 0) {
             dx = -1;
             dy = 0;
             changingDirection = true;
+            triggerHapticFeedback();
         }
         if (key === "ArrowRight" && dx === 0) {
             dx = 1;
             dy = 0;
             changingDirection = true;
+            triggerHapticFeedback();
         }
     }
 
@@ -583,11 +597,42 @@
             dx = newDx;
             dy = 0;
             changingDirection = true;
+            triggerHapticFeedback();
         }
         if (newDy !== 0 && dy === 0) {
             dx = 0;
             dy = newDy;
             changingDirection = true;
+            triggerHapticFeedback();
+        }
+    }
+
+    function handleTouchStart(e: TouchEvent) {
+        if (e.touches.length > 0) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        }
+    }
+
+    function handleTouchEnd(e: TouchEvent) {
+        if (e.changedTouches.length > 0) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+            const diffX = touchEndX - touchStartX;
+            const diffY = touchEndY - touchStartY;
+            const minSwipeDistance = 20;
+
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                if (Math.abs(diffX) > minSwipeDistance) {
+                    if (diffX > 0) setDirection(1, 0);
+                    else setDirection(-1, 0);
+                }
+            } else {
+                if (Math.abs(diffY) > minSwipeDistance) {
+                    if (diffY > 0) setDirection(0, 1);
+                    else setDirection(0, -1);
+                }
+            }
         }
     }
 
@@ -614,47 +659,45 @@
 
 <section id="game-section" class="section">
     <div class="container">
-        <!-- Header -->
-        <div class="reveal reveal-zoom-out" style="margin-bottom:48px;">
+        <!-- Section Header -->
+        <div class="reveal reveal-zoom-out" style="margin-bottom:36px;">
             <div class="section-label">
-                <Gamepad2 size={12} /> Coffee Break
+                <Gamepad2 size={12} /> Coffee Break Mini Game
             </div>
             <h2 class="section-title">Istirahat Sebentar.</h2>
         </div>
 
         <div class="game-wrapper reveal reveal-slide-up">
+            <!-- Left Info Column -->
             <div class="game-info">
                 <p class="game-desc">
-                    Mata lelah melihat barisan kode? Pecahkan rekor <strong
-                        >High Score</strong
-                    >
-                    di simulator smooth ini.
-                    <strong class="text-red"
-                        >Hati-hati, ular akan melaju semakin cepat!</strong
-                    >
+                    Mata lelah melihat barisan kode? Uji refleks & pecahkan rekor <strong>High Score</strong> di arcade simulator ini.
+                    <strong class="text-red">Hati-hati, ular akan melaju semakin cepat!</strong>
                 </p>
 
+                <!-- Dashboard Stats -->
                 <div class="stats-board">
                     <div class="score-card">
-                        <span class="score-lbl">Score Anda</span>
+                        <span class="score-lbl">Skor Anda</span>
                         <span class="score-num text-blue">{score}</span>
                     </div>
                     <div class="score-divider"></div>
                     <div class="score-card best-score">
-                        <span class="score-lbl">High Score</span>
+                        <span class="score-lbl">Rekor Terbaik</span>
                         <span class="score-num text-yellow">
-                            <Trophy
-                                size={18}
-                                strokeWidth={2.5}
-                                class="trophy-icon"
-                            />{highScore}
+                            <Trophy size={18} strokeWidth={2.5} class="trophy-icon" />
+                            {highScore}
                         </span>
                     </div>
                 </div>
 
+                <!-- Speedometer Engine Boost -->
                 <div class="speedometer-wrap">
                     <div class="speedometer-header">
-                        <span class="speedometer-lbl">Snake Engine Boost</span>
+                        <span class="speedometer-lbl">
+                            <Zap size={12} style="display:inline-block; vertical-align:middle; margin-right:4px;" />
+                            Snake Engine Boost
+                        </span>
                         <span class="speedometer-val">{speedPercent}%</span>
                     </div>
                     <div class="speedometer-track">
@@ -662,12 +705,10 @@
                     </div>
                 </div>
 
+                <!-- Start Action Button -->
                 <div class="game-actions">
                     {#if !isPlaying}
-                        <button
-                            class="btn-primary start-btn"
-                            onclick={startGame}
-                        >
+                        <button class="btn-primary start-btn" onclick={startGame} type="button">
                             {#if isGameOver}
                                 <RotateCcw size={18} /> Main Lagi
                             {:else}
@@ -678,22 +719,22 @@
                 </div>
 
                 <p class="game-hint">
-                    <strong style="color: var(--ink);">KONTROL:</strong> Gunakan
-                    tombol panah di keyboard Anda atau D-pad pada layar smartphone.
+                    <strong style="color: var(--ink);">KONTROL:</strong> Pakai tombol panah di keyboard, swipe di layar canvas, atau D-pad di bawah monitor.
                 </p>
             </div>
 
+            <!-- Right Cabinet Arcade Screen Column -->
             <div class="arcade-cabinet">
                 <div class="arcade-header">
                     <div class="arcade-title-pills">
                         <span></span><span></span><span></span>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="arcade-header-actions">
                         <button class="mute-btn" onclick={toggleMute} aria-label="Toggle mute" type="button">
                             {#if isMuted}
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6"/></svg>
+                                <VolumeX size={16} />
                             {:else}
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                                <Volume2 size={16} />
                             {/if}
                         </button>
                         {#if isPlaying}
@@ -704,6 +745,7 @@
                     </div>
                 </div>
 
+                <!-- Arcade Monitor Display -->
                 <div class="arcade-screen-container">
                     <div class="arcade-screen">
                         <canvas
@@ -711,27 +753,21 @@
                             width="400"
                             height="400"
                             class="snake-canvas"
+                            ontouchstart={handleTouchStart}
+                            ontouchend={handleTouchEnd}
                         ></canvas>
 
                         {#if !isPlaying}
-                            <div
-                                class="game-overlay"
-                                class:is-gameover={isGameOver}
-                            >
+                            <div class="game-overlay" class:is-gameover={isGameOver}>
                                 <div class="overlay-content">
                                     {#if isGameOver}
-                                        <h3 class="gameover-title">
-                                            GAME OVER
-                                        </h3>
+                                        <h3 class="gameover-title">GAME OVER</h3>
                                         <p class="gameover-score">
                                             SKOR AKHIR: <strong>{score}</strong>
                                         </p>
                                     {:else}
                                         <div class="icon-pulse">
-                                            <Gamepad2
-                                                size={48}
-                                                strokeWidth={1.5}
-                                            />
+                                            <Gamepad2 size={48} strokeWidth={1.5} />
                                         </div>
                                         <p class="overlay-text">SISTEM SIAP</p>
                                     {/if}
@@ -741,36 +777,26 @@
                     </div>
                 </div>
 
-                <div class="mobile-dpad-grid">
-                    <button
-                        class="dpad-key dpad-up"
-                        aria-label="Up"
-                        onclick={() => setDirection(0, -1)}
-                    >
-                        <ChevronUp size={24} />
-                    </button>
-                    <button
-                        class="dpad-key dpad-left"
-                        aria-label="Left"
-                        onclick={() => setDirection(-1, 0)}
-                    >
-                        <ChevronLeft size={24} />
-                    </button>
-                    <div class="dpad-core"></div>
-                    <button
-                        class="dpad-key dpad-right"
-                        aria-label="Right"
-                        onclick={() => setDirection(1, 0)}
-                    >
-                        <ChevronRight size={24} />
-                    </button>
-                    <button
-                        class="dpad-key dpad-down"
-                        aria-label="Down"
-                        onclick={() => setDirection(0, 1)}
-                    >
-                        <ChevronDown size={24} />
-                    </button>
+                <!-- Tactile Mobile D-Pad Control -->
+                <div class="mobile-dpad-wrapper">
+                    <span class="dpad-hint-label">D-PAD TOUCH CONTROL</span>
+                    <div class="mobile-dpad-grid">
+                        <button class="dpad-key dpad-up" aria-label="Up" onclick={() => setDirection(0, -1)} type="button">
+                            <ChevronUp size={22} />
+                        </button>
+                        <button class="dpad-key dpad-left" aria-label="Left" onclick={() => setDirection(-1, 0)} type="button">
+                            <ChevronLeft size={22} />
+                        </button>
+                        <div class="dpad-core">
+                            <Sparkles size={14} class="dpad-core-icon" />
+                        </div>
+                        <button class="dpad-key dpad-right" aria-label="Right" onclick={() => setDirection(1, 0)} type="button">
+                            <ChevronRight size={22} />
+                        </button>
+                        <button class="dpad-key dpad-down" aria-label="Down" onclick={() => setDirection(0, 1)} type="button">
+                            <ChevronDown size={22} />
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -778,16 +804,12 @@
 </section>
 
 <style>
-    /* ── LAYOUT UTAMA MODERN ── */
-    /* Hapus .compact-section agar jarak antar section kembali normal / konsisten */
-
+    /* ── LAYOUT UTAMA GAME ── */
     .game-wrapper {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 60px;
+        gap: 50px;
         align-items: center;
-        background: transparent;
-        border-radius: 32px;
     }
 
     .game-info {
@@ -799,44 +821,44 @@
         font-size: 1rem;
         color: var(--ink);
         line-height: 1.6;
-        margin-bottom: 32px;
+        margin-bottom: 24px;
+        font-weight: 500;
         opacity: 0.85;
     }
 
-    /* ── MODERN DASHBOARD STATS ── */
+    /* ── DASHBOARD STATS ── */
     .stats-board {
         display: flex;
         align-items: center;
         background: rgba(var(--ink-rgb), 0.03);
-        border: 1px solid rgba(var(--ink-rgb), 0.1);
-        border-radius: 20px;
-        padding: 8px;
-        margin-bottom: 36px;
+        border: 1px solid rgba(var(--ink-rgb), 0.12);
+        border-radius: 16px;
+        padding: 6px;
+        margin-bottom: 24px;
         width: fit-content;
-        backdrop-filter: blur(8px);
     }
 
     .score-card {
         display: flex;
         flex-direction: column;
-        padding: 12px 24px;
-        min-width: 140px;
+        padding: 10px 20px;
+        min-width: 120px;
     }
 
     .score-divider {
         width: 1px;
-        height: 40px;
-        background: rgba(var(--ink-rgb), 0.1);
+        height: 36px;
+        background: rgba(var(--ink-rgb), 0.12);
     }
 
     .score-card.best-score {
-        background: rgba(var(--ink-rgb), 0.02);
+        background: rgba(var(--ink-rgb), 0.03);
         border-radius: 12px;
     }
 
     .score-lbl {
         font-family: var(--font-head);
-        font-size: 0.7rem;
+        font-size: 0.68rem;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.06em;
@@ -847,26 +869,66 @@
 
     .score-num {
         font-family: var(--font-head);
-        font-size: 2rem;
+        font-size: 1.8rem;
         font-weight: 800;
         line-height: 1;
         display: flex;
-        align-items: baseline;
+        align-items: center;
+        gap: 4px;
     }
 
-    .text-blue {
+    .text-blue { color: var(--blue); }
+    .text-yellow { color: var(--yellow); }
+    .text-red { color: var(--pink); }
+
+    /* Speedometer Boost Bar */
+    .speedometer-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 28px;
+        max-width: 320px;
+        background: rgba(var(--ink-rgb), 0.02);
+        border: 1px solid rgba(var(--ink-rgb), 0.12);
+        border-radius: 12px;
+        padding: 10px 14px;
+    }
+    .speedometer-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .speedometer-lbl {
+        font-family: var(--font-head);
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--ink);
+        opacity: 0.6;
+    }
+    .speedometer-val {
+        font-family: var(--font-head);
+        font-size: 0.8rem;
+        font-weight: 800;
         color: var(--blue);
     }
-    .text-yellow {
-        color: var(--yellow);
+    .speedometer-track {
+        height: 6px;
+        background: rgba(var(--ink-rgb), 0.08);
+        border-radius: 99px;
+        overflow: hidden;
     }
-    .text-red {
-        color: var(--red);
+    .speedometer-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--blue), var(--yellow));
+        border-radius: 99px;
+        transition: width 0.3s var(--ease-out);
     }
 
-    /* ── BUTTONS & ACTIONS ── */
+    /* Actions */
     .game-actions {
-        min-height: 56px;
+        min-height: 52px;
     }
 
     .start-btn {
@@ -875,51 +937,47 @@
         gap: 10px;
         background: var(--ink);
         color: var(--white);
-        padding: 16px 36px;
+        padding: 14px 32px;
         border-radius: 99px;
         font-family: var(--font-head);
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.05em;
         border: 1px solid var(--ink);
         cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: transform 0.2s var(--ease-out), background-color 0.2s var(--ease-out);
     }
 
     .start-btn:hover {
-        transform: translateY(-3px);
-    }
-
-    .start-btn:active {
-        transform: translateY(2px);
+        transform: translateY(-2px);
     }
 
     .game-hint {
-        margin-top: 24px;
-        font-size: 0.8rem;
+        margin-top: 20px;
+        font-size: 0.78rem;
         line-height: 1.5;
         color: var(--ink);
         opacity: 0.6;
         font-weight: 500;
     }
 
-    /* ── ARCADE MONITOR (Sleek Glassmorphism) ── */
+    /* ── ARCADE MONITOR CABINET ── */
     .arcade-cabinet {
-        background: rgba(var(--ink-rgb), 0.02);
+        background: var(--white);
         border: 1.5px solid var(--ink);
-        border-radius: 28px;
-        padding: 24px;
+        border-radius: 24px;
+        padding: 20px;
         position: relative;
-        box-shadow: 6px 6px 0px rgba(var(--ink-rgb), 0.05);
+        box-shadow: 0 10px 30px rgba(var(--ink-rgb), 0.05);
     }
 
     .arcade-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 16px;
-        padding: 0 8px;
+        margin-bottom: 14px;
+        padding: 0 4px;
     }
 
     .arcade-title-pills {
@@ -931,103 +989,79 @@
         height: 10px;
         border-radius: 50%;
     }
-    .arcade-title-pills span:nth-child(1) {
-        background: var(--blue);
-        box-shadow: 0 0 8px var(--blue);
+    .arcade-title-pills span:nth-child(1) { background: var(--blue); }
+    .arcade-title-pills span:nth-child(2) { background: var(--yellow); }
+    .arcade-title-pills span:nth-child(3) { background: var(--pink); }
+
+    .arcade-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
     }
-    .arcade-title-pills span:nth-child(2) {
-        background: var(--yellow);
-        box-shadow: 0 0 8px var(--yellow);
+
+    .mute-btn {
+        background: transparent;
+        border: none;
+        color: var(--ink);
+        opacity: 0.7;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px;
+        border-radius: 50%;
+        transition: transform 0.2s, background-color 0.2s;
     }
-    .arcade-title-pills span:nth-child(3) {
-        background: var(--pink);
-        box-shadow: 0 0 8px var(--pink);
+    .mute-btn:hover {
+        opacity: 1;
+        background: rgba(var(--ink-rgb), 0.05);
+        transform: scale(1.1);
     }
 
     .live-indicator {
         font-family: var(--font-head);
         font-size: 0.65rem;
         font-weight: 800;
-        color: #ef4444;
+        letter-spacing: 0.1em;
+        color: var(--blue);
         display: flex;
         align-items: center;
-        gap: 6px;
-        letter-spacing: 0.1em;
+        gap: 4px;
     }
-
     .live-dot {
-        width: 8px;
-        height: 8px;
-        background: #ef4444;
+        width: 6px;
+        height: 6px;
         border-radius: 50%;
-        animation: pulse-dot 1.2s infinite;
-        box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+        background: var(--blue);
+        box-shadow: 0 0 8px var(--blue);
+        animation: live-pulse 1.5s infinite ease-in-out;
+    }
+    @keyframes live-pulse {
+        0%, 100% { opacity: 0.4; }
+        50% { opacity: 1; }
     }
 
-    @keyframes pulse-dot {
-        0%,
-        100% {
-            opacity: 0.4;
-        }
-        50% {
-            opacity: 1;
-        }
-    }
-
-    /* LAYAR CANVAS MENDUKUNG DARK MODE */
+    /* Screen Frame */
     .arcade-screen-container {
         position: relative;
+        width: 100%;
         border-radius: 16px;
         overflow: hidden;
         border: 1.5px solid var(--ink);
-        background: var(--bg); /* Otomatis berubah di Dark Mode */
-        box-shadow: inset 0 4px 20px rgba(0, 0, 0, 0.02);
-    }
-    .arcade-screen-container::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-                rgba(18, 16, 16, 0) 50%,
-                rgba(0, 0, 0, 0.04) 50%
-            ),
-            linear-gradient(
-                90deg,
-                rgba(255, 0, 0, 0.008),
-                rgba(0, 255, 0, 0.004),
-                rgba(0, 0, 255, 0.008)
-            );
-        background-size:
-            100% 4px,
-            6px 100%;
-        z-index: 5;
-        pointer-events: none;
-        opacity: 0.85;
+        background: var(--bg);
     }
 
     .arcade-screen {
         position: relative;
         width: 100%;
         aspect-ratio: 1/1;
-        /* GRID CSS agar otomatis adaptif warna terang/gelap */
         background-image: radial-gradient(
             circle at 10px 10px,
-            rgba(var(--ink-rgb), 0.08) 1.5px,
+            rgba(var(--ink-rgb), 0.06) 1.5px,
             transparent 1.5px
         );
         background-size: 20px 20px;
-        animation: crt-flicker 0.15s infinite;
-    }
-    @keyframes crt-flicker {
-        0% {
-            opacity: 0.99;
-        }
-        50% {
-            opacity: 1;
-        }
-        100% {
-            opacity: 0.98;
-        }
+        touch-action: none;
     }
 
     .snake-canvas {
@@ -1038,89 +1072,98 @@
         z-index: 2;
     }
 
-    /* OVERLAY HTML (Sempurna untuk Dark Mode) */
+    /* Overlay Screen */
     .game-overlay {
         position: absolute;
         inset: 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba(var(--bg-rgb), 0.75); /* Tembus pandang keren */
+        background: rgba(var(--bg-rgb), 0.85);
         backdrop-filter: blur(6px);
         -webkit-backdrop-filter: blur(6px);
         z-index: 10;
-        transition: opacity 0.3s ease;
+        transition: opacity 0.3s var(--ease-out);
     }
-
     .game-overlay.is-gameover {
-        background: rgba(var(--ink-rgb), 0.85); /* Gelap saat kalah */
+        background: rgba(var(--ink-rgb), 0.88);
     }
 
     .overlay-content {
         text-align: center;
         color: var(--ink);
+        padding: 20px;
     }
     .is-gameover .overlay-content {
-        color: var(--bg);
-    } /* Balik warna font saat kalah */
+        color: var(--white);
+    }
 
     .icon-pulse {
         display: inline-flex;
-        margin-bottom: 16px;
-        opacity: 0.8;
+        margin-bottom: 12px;
+        opacity: 0.85;
         animation: float-icon 3s ease-in-out infinite;
     }
-
     @keyframes float-icon {
-        0%,
-        100% {
-            transform: translateY(0);
-        }
-        50% {
-            transform: translateY(-8px);
-        }
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-6px); }
     }
 
     .overlay-text {
         font-family: var(--font-head);
         font-weight: 800;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         letter-spacing: 0.15em;
         opacity: 0.7;
     }
 
     .gameover-title {
         font-family: var(--font-head);
-        font-size: 2.2rem;
+        font-size: 2rem;
         font-weight: 900;
         letter-spacing: 0.05em;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
     }
-
     .gameover-score {
-        font-size: 0.9rem;
+        font-size: 0.88rem;
         font-weight: 500;
         opacity: 0.9;
         letter-spacing: 0.05em;
     }
     .gameover-score strong {
-        font-size: 1.2rem;
+        font-size: 1.15rem;
     }
 
-    /* ── KONTROL D-PAD MOBILE (Tactile Console Design) ── */
+    /* ── TACTILE MOBILE D-PAD CONTROL ── */
+    .mobile-dpad-wrapper {
+        margin-top: 16px;
+        padding-top: 14px;
+        border-top: 1px dashed rgba(var(--ink-rgb), 0.12);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .dpad-hint-label {
+        font-family: var(--font-head);
+        font-size: 0.6rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(var(--ink-rgb), 0.4);
+    }
+
     .mobile-dpad-grid {
-        display: none;
-        grid-template-columns: repeat(3, 52px);
-        grid-template-rows: repeat(3, 52px);
+        display: grid;
+        grid-template-columns: repeat(3, 56px);
+        grid-template-rows: repeat(3, 56px);
         grid-template-areas:
             ". up ."
             "left core right"
             ". down .";
-        gap: 8px;
+        gap: 6px;
         justify-content: center;
-        margin-top: 24px;
-        padding-top: 20px;
-        border-top: 1px solid rgba(var(--ink-rgb), 0.08);
     }
 
     .dpad-key {
@@ -1132,140 +1175,80 @@
         justify-content: center;
         cursor: pointer;
         border-radius: 14px;
-        box-shadow: 0 5px 0 var(--ink);
-        transition:
-            transform 0.1s,
-            box-shadow 0.1s,
-            background-color 0.2s;
+        box-shadow: 0 4px 0 var(--ink);
+        transition: transform 0.1s var(--ease-out), box-shadow 0.1s var(--ease-out), background-color 0.15s;
     }
-
     .dpad-key:hover {
-        background: rgba(var(--ink-rgb), 0.03);
+        background: rgba(var(--ink-rgb), 0.04);
     }
-
     .dpad-key:active {
-        transform: translateY(4px);
-        box-shadow: 0 1px 0 var(--ink);
+        transform: translateY(3px) !important;
+        box-shadow: 0 1px 0 var(--ink) !important;
         background: var(--ink);
-        color: var(--bg);
+        color: var(--white);
     }
 
-    .dpad-up {
-        grid-area: up;
-    }
-    .dpad-left {
-        grid-area: left;
-    }
-    .dpad-right {
-        grid-area: right;
-    }
-    .dpad-down {
-        grid-area: down;
-    }
+    .dpad-up { grid-area: up; }
+    .dpad-left { grid-area: left; }
+    .dpad-right { grid-area: right; }
+    .dpad-down { grid-area: down; }
+    
     .dpad-core {
         grid-area: core;
         background: rgba(var(--ink-rgb), 0.03);
         border-radius: 12px;
         border: 1.5px dashed rgba(var(--ink-rgb), 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(var(--ink-rgb), 0.4);
     }
 
-    /* ── RESPONSIVE TWEAKS ── */
+    /* ── RESPONSIVE MEDIA QUERIES ── */
     @media (max-width: 1024px) {
         .game-wrapper {
             grid-template-columns: 1fr;
-            gap: 48px;
+            gap: 36px;
         }
-        .stats-board {
+        .arcade-cabinet {
+            max-width: 460px;
+            margin: 0 auto;
             width: 100%;
-            justify-content: space-around;
-        }
-        .score-card {
-            align-items: center;
-        }
-        .mobile-dpad-grid {
-            display: grid;
         }
     }
 
     @media (max-width: 640px) {
-        .stats-board {
-            flex-direction: column;
-            width: 100%;
-            padding: 16px;
+        .arcade-cabinet {
+            padding: 14px;
+            border-radius: 20px;
         }
-        .score-divider {
+        .stats-board {
             width: 100%;
-            height: 1px;
-            margin: 8px 0;
+            justify-content: space-between;
         }
         .score-card {
-            padding: 8px;
-            align-items: center;
+            padding: 8px 12px;
+            min-width: 0;
+            flex: 1;
+        }
+        .score-num {
+            font-size: 1.5rem;
+        }
+        .speedometer-wrap {
+            max-width: 100%;
+        }
+        .mobile-dpad-grid {
+            grid-template-columns: repeat(3, 50px);
+            grid-template-rows: repeat(3, 50px);
+            gap: 6px;
         }
     }
 
-    /* Speedometer Boost Bar styling */
-    .speedometer-wrap {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        margin-bottom: 36px;
-        max-width: 320px;
-        background: rgba(var(--ink-rgb), 0.02);
-        border: 1.5px solid var(--ink);
-        border-radius: 12px;
-        padding: 12px 16px;
-    }
-    .speedometer-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .speedometer-lbl {
-        font-family: var(--font-head);
-        font-size: 0.7rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        color: var(--ink);
-        opacity: 0.6;
-    }
-    .speedometer-val {
-        font-family: var(--font-head);
-        font-size: 0.8rem;
-        font-weight: 800;
-        color: var(--accent);
-    }
-    .speedometer-track {
-        height: 8px;
-        background: rgba(var(--ink-rgb), 0.08);
-        border-radius: 99px;
-        overflow: hidden;
-        position: relative;
-    }
-    /* Speedometer fill */
-    .speedometer-fill {
-        height: 100%;
-        background: linear-gradient(90deg, var(--blue), var(--yellow));
-        border-radius: 99px;
-        transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    /* Mute button styling */
-    .mute-btn {
-        background: transparent;
-        border: none;
-        color: var(--ink);
-        opacity: 0.6;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 4px;
-        transition: opacity 0.2s, transform 0.2s;
-    }
-    .mute-btn:hover {
-        opacity: 1;
-        transform: scale(1.1);
+    @media (max-width: 420px) {
+        .mobile-dpad-grid {
+            grid-template-columns: repeat(3, 46px);
+            grid-template-rows: repeat(3, 46px);
+            gap: 4px;
+        }
     }
 </style>

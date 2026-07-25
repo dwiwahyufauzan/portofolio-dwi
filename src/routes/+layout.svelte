@@ -35,7 +35,7 @@
 						});
 				el.addEventListener('mouseleave', () => {
 					(el as HTMLElement).style.transform = `translate(0px, 0px)`;
-					(el as HTMLElement).style.transition = 'transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)';
+					(el as HTMLElement).style.transition = 'transform 0.3s cubic-bezier(0.23, 1, 0.32, 1)';
 				});
 				el.addEventListener('mouseenter', () => {
 					(el as HTMLElement).style.transition = 'none';

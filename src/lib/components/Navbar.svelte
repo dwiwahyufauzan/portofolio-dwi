@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { fade, fly } from "svelte/transition";
   import { PartyPopper, Sun, Moon } from "@lucide/svelte";
 
   let scrolled = $state(false);
@@ -105,14 +106,26 @@
 </nav>
 
 {#if menuOpen}
-  <div class="mobile-menu" role="dialog" aria-modal="true">
-    {#each links as l}
-      <a href={l.href} class="mob-link" onclick={closeMenu}>{l.label}</a>
+  <div
+    class="mobile-menu"
+    role="dialog"
+    aria-modal="true"
+    transition:fade={{ duration: 200 }}
+  >
+    {#each links as l, i}
+      <div in:fly={{ y: 20, duration: 300, delay: 50 * i }}>
+        <a href={l.href} class="mob-link" onclick={closeMenu}>{l.label}</a>
+      </div>
     {/each}
-    <a href="#contact" class="mob-cta" onclick={closeMenu}>
-      Let's Talk!
-      <PartyPopper size={20} style="margin-left: 8px; display: inline-block;" />
-    </a>
+    <div in:fly={{ y: 20, duration: 300, delay: 200 }}>
+      <a href="#contact" class="mob-cta" onclick={closeMenu}>
+        Let's Talk!
+        <PartyPopper
+          size={20}
+          style="margin-left: 8px; display: inline-block;"
+        />
+      </a>
+    </div>
   </div>
 {/if}
 
@@ -250,11 +263,15 @@
   }
 
   .theme-toggle:hover {
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.15), 0 0 12px rgba(255, 210, 0, 0.3);
+    box-shadow:
+      inset 0 2px 5px rgba(0, 0, 0, 0.15),
+      0 0 12px rgba(255, 210, 0, 0.3);
   }
 
   .theme-toggle.is-dark:hover {
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3), 0 0 14px rgba(59, 130, 246, 0.4);
+    box-shadow:
+      inset 0 2px 5px rgba(0, 0, 0, 0.3),
+      0 0 14px rgba(59, 130, 246, 0.4);
   }
 
   /* The Moving Thumb */
@@ -291,7 +308,9 @@
     transform: translateX(26px);
     background: #ffffff;
     color: #1e3a8a; /* Moon icon color in dark mode */
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4), 0 0 6px rgba(255, 255, 255, 0.2);
+    box-shadow:
+      0 2px 6px rgba(0, 0, 0, 0.4),
+      0 0 6px rgba(255, 255, 255, 0.2);
   }
 
   /* Menggeser lebih sedikit saat Dark Mode ditekan, karena thumb memanjang */

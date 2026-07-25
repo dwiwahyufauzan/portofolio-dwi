@@ -1,194 +1,135 @@
 <script lang="ts">
-  import { Wrench } from "@lucide/svelte";
+  import { Wrench, Code2, Server, Database, Settings2, Zap } from "@lucide/svelte";
   import { countUp } from "$lib/actions/countUp";
 
   const techGroups = [
     {
+      id: "frontend",
       label: "Frontend",
-      color: "var(--blue)",
+      subtitle: "UI & Client-Side Systems",
+      Icon: Code2,
+      accent: "#2563eb",
+      span: "wide", // 2 cols on desktop
       chips: [
-        {
-          name: "SvelteKit",
-          bg: "#EFF6FF",
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/svelte/svelte-original.svg",
-        },
-        {
-          name: "React.js",
-          bg: "#EFF6FF",
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg",
-        },
-        {
-          name: "TypeScript",
-          bg: "#EFF6FF",
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg",
-        },
-        {
-          name: "Tailwind CSS",
-          bg: "#F0FDFA",
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg",
-        },
-        {
-          name: "HTML",
-          bg: "#EFF6FF",
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg",
-        },
-        {
-          name: "CSS",
-          bg: "#EFF6FF",
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg",
-        },
-        {
-          name: "JavaScript",
-          bg: "#EFF6FF",
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg",
-        },
+        { name: "SvelteKit", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/svelte/svelte-original.svg" },
+        { name: "React.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" },
+        { name: "TypeScript", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg" },
+        { name: "Tailwind CSS", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" },
+        { name: "HTML5", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg" },
+        { name: "CSS3", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg" },
+        { name: "JavaScript", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" },
       ],
     },
     {
+      id: "backend",
       label: "Backend",
-      color: "var(--green)",
+      subtitle: "API & Server Runtime",
+      Icon: Server,
+      accent: "#10b981",
+      span: "normal",
       chips: [
-        {
-          name: "Node.js",
-          bg: "#F0FDF4",
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg",
-        },
-        {
-          name: "Express.js",
-          bg: "#FFFDE0",
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/express/express-original.svg",
-        },
-        {
-          name: "NestJS",
-          bg: "#FFF0F6",
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nestjs/nestjs-original.svg",
-        },
-        {
-          name: "Laravel",
-          bg: "#EFF6FF",
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg",
-        },
-        {
-          name: "Bun",
-          bg: "#FFF0F6",
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bun/bun-original.svg",
-        },
+        { name: "Node.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg" },
+        { name: "Express.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/express/express-original.svg" },
+        { name: "NestJS", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nestjs/nestjs-original.svg" },
+        { name: "Laravel", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg" },
+        { name: "Bun", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bun/bun-original.svg" },
       ],
     },
     {
+      id: "database",
       label: "Database",
-      color: "var(--orange)",
+      subtitle: "Data & Persistence",
+      Icon: Database,
+      accent: "#f59e0b",
+      span: "normal",
       chips: [
-        {
-          name: "MySQL",
-          bg: "#FFF0F6",
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg",
-        },
-        {
-          name: "PostgreSQL",
-          bg: "#EFF6FF",
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg",
-        },
-        {
-          name: "MongoDB",
-          bg: "#F0FDF4",
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongodb/mongodb-original.svg",
-        },
-        {
-          name: "Redis",
-          bg: "#FFF0F6",
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/redis/redis-original.svg",
-        },
-        {
-          name: "Prisma ORM",
-          bg: "#FAF5FF",
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/prisma/prisma-original.svg",
-        },
+        { name: "MySQL", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg" },
+        { name: "PostgreSQL", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg" },
+        { name: "MongoDB", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongodb/mongodb-original.svg" },
+        { name: "Redis", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/redis/redis-original.svg" },
+        { name: "Prisma", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/prisma/prisma-original.svg" },
       ],
     },
     {
+      id: "devops",
       label: "DevOps & Tools",
-      color: "var(--purple)",
+      subtitle: "Deploy & Workflow",
+      Icon: Settings2,
+      accent: "#8b5cf6",
+      span: "wide", // 2 cols on desktop
       chips: [
-        {
-          name: "Docker",
-          bg: "#F0FDFA",
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg",
-        },
-        {
-          name: "Git / GitHub",
-          bg: "#FFF7ED",
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg",
-        },
-        {
-          name: "Linux / VPS",
-          bg: "#FFFDE0",
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linux/linux-original.svg",
-        },
-        {
-          name: "Figma",
-          bg: "#FFF0F6",
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg",
-        },
+        { name: "Docker", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg" },
+        { name: "Git / GitHub", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg" },
+        { name: "Linux VPS", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linux/linux-original.svg" },
+        { name: "Figma", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg" },
       ],
     },
   ];
 
   const stats = [
-    { num: "1+", label: "Tahun Exp", bg: "var(--yellow)", color: "var(--ink)" },
-    { num: "10+", label: "Projects", bg: "var(--pink)", color: "#fff" },
-    { num: "15+", label: "Tech Stack", bg: "var(--teal)", color: "#fff" },
-    { num: "100%", label: "Remote Ready", bg: "var(--green)", color: "#fff" },
+    { num: "1+", label: "Tahun Exp" },
+    { num: "10+", label: "Projects" },
+    { num: "15+", label: "Tech" },
+    { num: "100%", label: "Remote" },
   ];
 </script>
 
-<!-- ═══ SKILLS SECTION ═══ -->
 <section id="skills" class="section section-alt">
   <div class="container">
-    <!-- Header -->
-    <div
-      class="reveal reveal-zoom-out"
-      style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:48px;"
-    >
+    <!-- Section Header -->
+    <div class="skills-header reveal reveal-zoom-out">
       <div>
-        <div class="section-label">
-          <Wrench size={12} /> Tech Stack
-        </div>
-        <h2 class="section-title">Tools & Technologies</h2>
+        <div class="section-label"><Wrench size={12} /> Stack & Ekosistem</div>
+        <h2 class="section-title">Tools & Teknologi</h2>
+        <p class="section-desc">Teknologi yang saya kuasai untuk membangun produk digital dari ujung ke ujung.</p>
       </div>
-      <!-- mini stat pills -->
-      <div class="stats-row">
+      <div class="stats-pill-row">
         {#each stats as s}
-          <div class="mini-stat">
-            <span class="mini-num" use:countUp={s.num}>{s.num}</span>
-            <span class="mini-lbl">{s.label}</span>
+          <div class="stat-pill">
+            <span class="stat-pill-num" use:countUp={s.num}>{s.num}</span>
+            <span class="stat-pill-lbl">{s.label}</span>
           </div>
         {/each}
       </div>
     </div>
 
-    <!-- Tech groups grid -->
-    <div class="tech-groups">
-      {#each techGroups as group, i}
-        <div
-          class="cartoon-card group-card reveal reveal-slide-up reveal-d{i + 1}"
-        >
-          <div class="group-header">
-            <div class="group-dot"></div>
-            <h3 class="group-label">{group.label}</h3>
+    <!-- Asymmetric Bento Grid -->
+    <div class="bento-grid reveal reveal-slide-up">
+      {#each techGroups as group}
+        <div class="bento-card bento-{group.span}">
+
+          <!-- Header -->
+          <div class="bento-card-header">
+            <div class="bento-icon-wrap">
+              <svelte:component this={group.Icon} size={20} />
+            </div>
+            <div class="bento-header-text">
+              <h3 class="bento-title">{group.label}</h3>
+              <span class="bento-subtitle">{group.subtitle}</span>
+            </div>
           </div>
-          <div class="chips">
+
+          <!-- Tech Icon Grid -->
+          <div class="bento-icons-row">
             {#each group.chips as chip}
-              <div class="tech-chip">
-                <img
-                  src={chip.icon}
-                  alt={chip.name}
-                  class="chip-icon"
-                  loading="lazy"
-                />
-                {chip.name}
+              <div class="bento-tech-item" title={chip.name}>
+                <div class="bento-tech-icon-wrap">
+                  <img
+                    src={chip.icon}
+                    alt={chip.name}
+                    class="bento-tech-icon"
+                    loading="lazy"
+                  />
+                </div>
+                <span class="bento-tech-name">{chip.name}</span>
               </div>
             {/each}
+          </div>
+
+          <!-- Bottom count badge -->
+          <div class="bento-footer">
+            <Zap size={11} />
+            <span>{group.chips.length} technologies</span>
           </div>
         </div>
       {/each}
@@ -197,148 +138,241 @@
 </section>
 
 <style>
-  /* Tambahkan ini di bagian bawah <style> Anda */
-
-  .chip-icon {
-    width: 25px; /* Ubah angka ini sesuai selera, misalnya 18px, 20px, atau 24px */
-    height: 25px; /* Pastikan nilainya sama dengan width agar ikon tidak gepeng */
-    object-fit: contain;
-    display: inline-block;
-  }
-  .stats-row {
+  /* ─── HEADER ─────────────────────────────────────────────────── */
+  .skills-header {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 48px;
   }
-  .mini-stat {
+
+  .section-desc {
+    font-size: 0.95rem;
+    color: var(--ink);
+    opacity: 0.6;
+    margin-top: 6px;
+    max-width: 460px;
+    line-height: 1.6;
+  }
+
+  .stats-pill-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .stat-pill {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    padding: 16px 24px;
-    border: 1px solid rgba(var(--ink-rgb), 0.15);
-    border-radius: 0;
-    text-align: left;
-    background: transparent;
+    align-items: center;
+    background: var(--white);
+    border: 1.5px solid var(--ink);
+    padding: 10px 18px;
+    border-radius: 14px;
+    min-width: 64px;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+  }
+
+  .stat-pill:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--ink);
+  }
+
+  .stat-pill-num {
+    font-family: var(--font-head);
+    font-size: 1.25rem;
+    font-weight: 900;
     color: var(--ink);
-    min-width: 120px;
-    transition:
-      transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-      border-color 0.4s,
-      color 0.4s;
+    line-height: 1;
+  }
+
+  .stat-pill-lbl {
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: var(--ink);
+    opacity: 0.55;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+  }
+
+  /* ─── BENTO GRID ─────────────────────────────────────────────── */
+  .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: auto;
+    gap: 20px;
+  }
+
+  /* Wide cards span 2 columns */
+  .bento-wide {
+    grid-column: span 2;
+  }
+
+  /* ─── BENTO CARD ─────────────────────────────────────────────── */
+  .bento-card {
     position: relative;
+    background: var(--white);
+    border: 1.5px solid var(--ink);
+    border-radius: 24px;
+    padding: 28px;
     overflow: hidden;
+    box-shadow: 4px 4px 0 var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
+  }
+
+  .bento-card:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 7px 7px 0 var(--ink);
+  }
+
+
+  /* ─── CARD HEADER ────────────────────────────────────────────── */
+  .bento-card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: relative;
     z-index: 1;
   }
-  .mini-stat::before {
-    content: "";
-    position: absolute;
-    inset: 0;
+
+  .bento-icon-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
     background: var(--ink);
-    transform: scaleY(0);
-    transform-origin: bottom;
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    z-index: -1;
-  }
-  .mini-stat:hover::before {
-    transform: scaleY(1);
-  }
-  .mini-stat:hover {
-    border-color: var(--ink);
     color: var(--white);
-    transform: translateY(-4px);
-  }
-  .mini-num {
-    font-family: var(--font-head);
-    font-size: 1.75rem;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-  .mini-lbl {
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    opacity: 0.7;
-  }
-
-  .tech-groups {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-  }
-
-  .group-card {
-    padding: 32px;
-    background: var(--white);
-    border: 1px solid rgba(var(--ink-rgb), 0.15);
-    border-radius: 0;
-    box-shadow: none;
-    transition: border-color 0.3s;
-  }
-  .group-card:hover {
-    border-color: var(--ink);
-  }
-
-  .group-header {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 24px;
-  }
-  .group-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--ink);
+    justify-content: center;
     flex-shrink: 0;
   }
-  .group-label {
+
+  .bento-header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .bento-title {
     font-family: var(--font-head);
     font-size: 1.1rem;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    text-transform: uppercase;
+    font-weight: 800;
     color: var(--ink);
+    line-height: 1.2;
   }
 
-  .chips {
+  .bento-subtitle {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--ink);
+    opacity: 0.55;
+  }
+
+  /* ─── TECH ICON GRID ─────────────────────────────────────────── */
+  .bento-icons-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-  }
-  .tech-chip {
-    display: inline-flex;
-    align-items: center;
     gap: 10px;
-    border: 1px solid rgba(var(--ink-rgb), 0.15);
-    border-radius: var(--radius);
-    padding: 8px 16px;
-    font-family: var(--font-head);
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-    color: var(--ink);
-    background: transparent;
-    transition:
-      transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-      border-color 0.3s,
-      background-color 0.3s,
-      box-shadow 0.3s;
-    cursor: default;
-  }
-  .tech-chip:hover {
-    transform: translateY(-5px) scale(1.04) rotate(1deg);
-    border-color: var(--ink);
-    background-color: rgba(var(--ink-rgb), 0.03);
-    box-shadow: 0 6px 12px rgba(var(--ink-rgb), 0.06);
+    position: relative;
+    z-index: 1;
+    flex: 1;
   }
 
-  @media (max-width: 768px) {
-    .tech-groups {
+  .bento-tech-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    cursor: default;
+  }
+
+  .bento-tech-icon-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(var(--ink-rgb), 0.04);
+    border: 1px solid rgba(var(--ink-rgb), 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s var(--ease-out), border-color 0.2s, background 0.2s;
+  }
+
+  .bento-tech-item:hover .bento-tech-icon-wrap {
+    transform: translateY(-4px) scale(1.05);
+    border-color: var(--ink);
+    background: rgba(var(--ink-rgb), 0.08);
+    box-shadow: 0 4px 10px rgba(var(--ink-rgb), 0.12);
+  }
+
+  .bento-tech-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+  }
+
+  .bento-tech-name {
+    font-family: var(--font-head);
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--ink);
+    opacity: 0.7;
+    text-align: center;
+    white-space: nowrap;
+    max-width: 54px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ─── CARD FOOTER ────────────────────────────────────────────── */
+  .bento-footer {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--ink);
+    opacity: 0.35;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    position: relative;
+    z-index: 1;
+    padding-top: 6px;
+    border-top: 1px solid rgba(var(--ink-rgb), 0.08);
+  }
+
+  /* ─── RESPONSIVE ─────────────────────────────────────────────── */
+  @media (max-width: 900px) {
+    .bento-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .bento-wide {
+      grid-column: span 2;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .bento-grid {
       grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .bento-wide {
+      grid-column: span 1;
+    }
+    .bento-card {
+      padding: 22px 20px;
+    }
+    .skills-header {
+      margin-bottom: 32px;
+    }
+    .stat-pill {
+      padding: 8px 14px;
     }
   }
 </style>
