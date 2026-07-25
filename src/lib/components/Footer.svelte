@@ -147,7 +147,7 @@
   .site-footer {
     background: var(--footer-bg);
     color: var(--footer-text);
-    padding: 60px 0 28px 0;
+    padding: 60px 0 0 0;
     position: relative;
     overflow: hidden;
   }
@@ -263,8 +263,9 @@
   /* ── LARAVEL.COM STYLE WORDMARK SVG ── */
   .footer-wordmark-wrap {
     width: 100%;
-    margin-top: 40px;
-    padding-top: 24px;
+    margin-top: 36px;
+    padding-top: 20px;
+    margin-bottom: -16px;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     justify-content: center;
