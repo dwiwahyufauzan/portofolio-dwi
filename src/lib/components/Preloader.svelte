@@ -141,7 +141,7 @@
         </div>
 
         <div class="hud-time">
-          <span class="pulse-green"></span>
+          <span class="pulse-dot"></span>
           <span>JAKARTA, ID (UTC+7)</span>
         </div>
       </div>
@@ -239,31 +239,31 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #000000;
-    color: #ffffff;
+    background: var(--bg);
+    color: var(--ink);
     font-family: var(--font-head);
     overflow: hidden;
   }
 
-  /* ── Aperture Split Curtains ── */
+  /* ── Aperture Split Curtains (Dynamic Dark & Light Theme Adaptive) ── */
   .curtain {
     position: absolute;
     left: 0;
     right: 0;
     height: 50%;
-    background: #000000;
+    background: var(--bg);
     /* High-tech blueprint grid background */
     background-size: 32px 32px;
     background-image:
-      linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      linear-gradient(to right, rgba(var(--ink-rgb), 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(var(--ink-rgb), 0.04) 1px, transparent 1px);
     transition: transform 0.9s cubic-bezier(0.85, 0, 0.15, 1);
     will-change: transform;
     z-index: 1;
   }
 
-  .curtain-top { top: 0; transform-origin: top center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-  .curtain-bottom { bottom: 0; transform-origin: bottom center; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+  .curtain-top { top: 0; transform-origin: top center; border-bottom: 1px solid rgba(var(--ink-rgb), 0.1); }
+  .curtain-bottom { bottom: 0; transform-origin: bottom center; border-top: 1px solid rgba(var(--ink-rgb), 0.1); }
 
   .curtain-line {
     position: absolute;
@@ -271,7 +271,7 @@
     left: 0;
     right: 0;
     height: 1px;
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(var(--ink-rgb), 0.25);
     z-index: 2;
     transform: translateY(-50%) scaleX(1);
     transition: transform 0.5s var(--ease-out);
@@ -309,14 +309,14 @@
     font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 0.15em;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(var(--ink-rgb), 0.6);
   }
 
   .hud-brand {
     display: flex;
     align-items: center;
     gap: 8px;
-    color: #ffffff;
+    color: var(--ink);
   }
 
   .hud-matrix-chip {
@@ -324,12 +324,13 @@
     align-items: center;
     gap: 6px;
     padding: 4px 12px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(var(--ink-rgb), 0.05);
+    border: 1.5px solid var(--ink);
     border-radius: 99px;
     font-family: var(--font-mono);
     font-size: 0.68rem;
-    color: #ffffff;
+    color: var(--ink);
+    box-shadow: 2px 2px 0 var(--ink);
   }
 
   .matrix-code {
@@ -341,14 +342,15 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    color: var(--ink);
   }
 
-  .pulse-green {
+  .pulse-dot {
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: #ffffff;
-    box-shadow: 0 0 10px #ffffff;
+    background: var(--ink);
+    box-shadow: 0 0 10px rgba(var(--ink-rgb), 0.5);
     animation: live-pulse 1.8s infinite ease-in-out;
   }
 
@@ -374,24 +376,26 @@
     align-items: center;
     gap: 12px;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--bg);
+    border: 1.5px solid var(--ink);
     border-radius: 18px;
+    box-shadow: 4px 4px 0 var(--ink);
     width: 130px;
+    color: var(--ink);
   }
 
   .widget-label {
     font-size: 0.6rem;
     font-weight: 800;
     letter-spacing: 0.18em;
-    opacity: 0.4;
+    opacity: 0.5;
   }
 
   .widget-val {
     font-family: var(--font-mono);
     font-size: 0.68rem;
     font-weight: 700;
-    opacity: 0.7;
+    opacity: 0.8;
   }
 
   /* Equalizer Bars */
@@ -405,7 +409,7 @@
   .eq-bar {
     width: 4px;
     height: var(--h);
-    background: #ffffff;
+    background: var(--ink);
     border-radius: 99px;
     animation: eq-bounce 1.2s infinite ease-in-out var(--d);
   }
@@ -433,13 +437,13 @@
 
   .ring-bg {
     fill: none;
-    stroke: rgba(255, 255, 255, 0.1);
+    stroke: rgba(var(--ink-rgb), 0.12);
     stroke-width: 3;
   }
 
   .ring-fill {
     fill: none;
-    stroke: #ffffff;
+    stroke: var(--ink);
     stroke-width: 3;
     stroke-dasharray: 113;
     transition: stroke-dashoffset 0.1s linear;
@@ -448,8 +452,8 @@
 
   :global(.ring-icon) {
     position: absolute;
-    color: #ffffff;
-    opacity: 0.8;
+    color: var(--ink);
+    opacity: 0.85;
   }
 
   /* Main Counter & Step Badge */
@@ -471,14 +475,14 @@
     font-weight: 900;
     letter-spacing: -0.06em;
     font-variant-numeric: tabular-nums;
-    color: #ffffff;
-    text-shadow: 0 0 60px rgba(255, 255, 255, 0.15);
+    color: var(--ink);
   }
 
   .counter-unit {
     font-size: clamp(2rem, 5vw, 4rem);
     font-weight: 800;
     opacity: 0.4;
+    color: var(--ink);
     margin-left: 8px;
     margin-top: 12px;
   }
@@ -488,14 +492,14 @@
     align-items: center;
     gap: 8px;
     padding: 8px 20px;
-    background: rgba(255, 255, 255, 0.07);
-    border: 1.5px solid rgba(255, 255, 255, 0.18);
+    background: var(--bg);
+    border: 1.5px solid var(--ink);
     border-radius: 99px;
     font-size: 0.72rem;
     font-weight: 800;
     letter-spacing: 0.15em;
-    color: #ffffff;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    color: var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
   }
 
   :global(.spin-icon) {
@@ -517,7 +521,7 @@
   .hud-progress-bar {
     width: 100%;
     height: 3px;
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(var(--ink-rgb), 0.1);
     border-radius: 99px;
     overflow: hidden;
     position: relative;
@@ -525,8 +529,8 @@
 
   .progress-fill-glow {
     height: 100%;
-    background: #ffffff;
-    box-shadow: 0 0 16px #ffffff;
+    background: var(--ink);
+    box-shadow: 0 0 12px var(--ink);
     transition: width 0.05s linear;
   }
 
@@ -562,7 +566,8 @@
     font-family: var(--font-mono);
     font-size: 0.65rem;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--ink);
+    opacity: 0.6;
     letter-spacing: 0.1em;
   }
 
@@ -573,7 +578,8 @@
     font-size: 0.65rem;
     font-weight: 800;
     letter-spacing: 0.15em;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--ink);
+    opacity: 0.5;
   }
 
   /* ══ RESPONSIVE ══════════════════════════════════════════ */
