@@ -120,11 +120,12 @@
           </svg>
         </a>
       </div>
-      <!-- Giant Editorial Text at Footer Bottom -->
-      <div class="footer-big-text" aria-hidden="true">
-        <span>PORTFOLIO</span>
-      </div>
     </div>
+  </div>
+
+  <!-- Giant Full-Bleed Editorial Footer Text (Stretches edge-to-edge) -->
+  <div class="footer-big-text" aria-hidden="true">
+    <span>PORTFOLIO</span>
   </div>
 </footer>
 
@@ -132,7 +133,7 @@
   .site-footer {
     background: var(--footer-bg);
     color: var(--footer-text);
-    padding: 60px 0 36px 0;
+    padding: 60px 0 20px 0;
     position: relative;
     overflow: hidden;
   }
@@ -245,12 +246,12 @@
     background-color: var(--white);
   }
 
-  /* ── GIANT EDITORIAL FOOTER TEXT ── */
+  /* ── FULL-BLEED GIANT EDITORIAL FOOTER TEXT ── */
   .footer-big-text {
     width: 100%;
     overflow: hidden;
-    margin-top: 32px;
-    padding-top: 0;
+    margin-top: 40px;
+    padding: 0;
     border-top: none;
     text-align: center;
     pointer-events: none;
@@ -260,16 +261,19 @@
 
   .footer-big-text span {
     font-family: var(--font-head);
-    font-size: clamp(2.8rem, 13.5vw, 11.2rem);
+    font-size: clamp(3.6rem, 18.2vw, 22rem);
     font-weight: 900;
-    letter-spacing: -0.04em;
+    letter-spacing: 0.02em;
     text-transform: uppercase;
     color: transparent;
     -webkit-text-stroke: 2px rgba(255, 255, 255, 0.18);
     display: block;
     white-space: nowrap;
-    margin-bottom: 0.05em;
-    transition: -webkit-text-stroke 0.4s ease, opacity 0.4s ease;
+    width: 100%;
+    margin-bottom: 0.02em;
+    transition:
+      -webkit-text-stroke 0.4s ease,
+      opacity 0.4s ease;
   }
 
   .site-footer:hover .footer-big-text span {
