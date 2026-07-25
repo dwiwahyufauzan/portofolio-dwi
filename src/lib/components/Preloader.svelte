@@ -1,13 +1,21 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { fade, fly } from "svelte/transition";
   import { sound } from "$lib/utils/audio";
-  import { Cpu, Terminal, ShieldCheck, Zap, Activity, Code2, Globe } from "@lucide/svelte";
+  import {
+    Cpu,
+    Terminal,
+    ShieldCheck,
+    Zap,
+    Activity,
+    Code2,
+    Globe,
+  } from "@lucide/svelte";
 
   // ── State ──────────────────────────────────────────────────
   let pct = $state(0);
   let hidden = $state(false);
   let loaded = $state(false);
-  let matrixText = $state("SYS_INIT");
 
   const techStack = [
     "SVELTEKIT 5",
@@ -17,42 +25,22 @@
     "BUN RUNTIME",
     "TAILWIND CSS",
     "DOCKER",
-    "REST & GRAPHQL"
+    "REST & GRAPHQL",
   ];
 
   const steps = [
-    { code: "01/05", label: "INITIALIZING KERNEL & MEMORY" },
-    { code: "02/05", label: "LOADING SVELTE 5 RUNES ENGINE" },
-    { code: "03/05", label: "COMPOSING BENTO GRID LAYOUT" },
-    { code: "04/05", label: "OPTIMIZING ASSET PIPELINE" },
-    { code: "05/05", label: "DWI WAHYU FAUZAN — READY" }
+    { code: "01", label: "INITIALIZING KERNEL & MEMORY" },
+    { code: "02", label: "LOADING SVELTE 5 RUNES ENGINE" },
+    { code: "03", label: "COMPOSING BENTO GRID LAYOUT" },
+    { code: "04", label: "OPTIMIZING ASSET PIPELINE" },
+    { code: "05", label: "DWI WAHYU FAUZAN — READY" },
   ];
 
   let currentStepIndex = $derived(
-    pct < 25 ? 0 :
-    pct < 50 ? 1 :
-    pct < 75 ? 2 :
-    pct < 98 ? 3 : 4
+    pct < 25 ? 0 : pct < 50 ? 1 : pct < 75 ? 2 : pct < 98 ? 3 : 4,
   );
 
   let lastQuarter = 0;
-
-  // Matrix Scramble effect for high-tech feel
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$&%";
-  function scrambleText(target: string) {
-    let iteration = 0;
-    const interval = setInterval(() => {
-      matrixText = target
-        .split("")
-        .map((char, index) => {
-          if (index < iteration) return target[index];
-          return chars[Math.floor(Math.random() * chars.length)];
-        })
-        .join("");
-      if (iteration >= target.length) clearInterval(interval);
-      iteration += 1 / 2;
-    }, 30);
-  }
 
   onMount(() => {
     const hasLoaded = sessionStorage.getItem("hasLoaded");
@@ -68,7 +56,7 @@
     document.body.classList.add("loading");
     sessionStorage.setItem("hasLoaded", "true");
 
-    const duration = 2000; // 2 seconds high-end loading sequence
+    const duration = 2400; // Sedikit dipanjangkan agar animasinya terasa lebih premium
     const start = performance.now();
     let animationFrameId: number;
 
@@ -76,10 +64,11 @@
       const elapsed = time - start;
       const progress = Math.min(elapsed / duration, 1);
 
-      // Smooth custom ease-in-out curve
-      const easeProgress = progress < 0.5
-        ? 4 * progress * progress * progress
-        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+      // Smooth custom ease-in-out curve (Cubic Bezier style)
+      const easeProgress =
+        progress < 0.5
+          ? 4 * progress * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
 
       pct = easeProgress * 100;
 
@@ -88,9 +77,6 @@
       if (q > lastQuarter && q <= 5) {
         lastQuarter = q;
         sound.playClick(400 + q * 120, 0.035);
-        if (steps[currentStepIndex]) {
-          scrambleText(steps[currentStepIndex].code);
-        }
       }
 
       if (progress < 1) {
@@ -99,12 +85,12 @@
         pct = 100;
         sound.playPop();
         setTimeout(() => {
-          loaded = true; // Trigger curtain aperture reveal
+          loaded = true; // Memulai animasi transisi keluar (Exit Animation)
           setTimeout(() => {
             hidden = true;
             document.body.classList.remove("loading");
             document.documentElement.classList.remove("preloader-active");
-          }, 1000);
+          }, 800); // Waktu selesainya animasi exit
         }, 400);
       }
     }
@@ -120,127 +106,79 @@
 </script>
 
 {#if !hidden}
-  <div class="preloader-overlay" class:loaded={loaded} aria-hidden="true">
-    <!-- ─── Aperture Split Curtain Panels ────────────────── -->
-    <div class="curtain curtain-top"></div>
-    <div class="curtain curtain-bottom"></div>
-    <div class="curtain-line"></div>
+  <div class="modern-overlay" class:loaded aria-hidden="true">
+    <!-- Bagian Atas: Logo & Status Ringkas -->
+    <div class="top-bar">
+      <div class="brand">
+        <Cpu size={14} />
+        <span>DWISYCOO OS</span>
+      </div>
+      <div class="status-badge">
+        <span class="dot-pulse"></span>
+        <span>SYSTEM BOOT</span>
+      </div>
+    </div>
 
-    <!-- ─── HUD Terminal Grid Content ───────────────────── -->
-    <div class="hud-container" class:fade-out={loaded}>
+    <!-- Bagian Tengah: Fokus Utama (Angka & Progress) -->
+    <div class="center-content">
+      <!-- Transisi halus untuk nomor step menggunakan blok {#key} Svelte -->
+      <div class="step-indicator">
+        {#key currentStepIndex}
+          <div
+            class="step-code"
+            in:fly={{ y: 10, duration: 400, delay: 100 }}
+            out:fade={{ duration: 200 }}
+          >
+            {steps[currentStepIndex].code}
+          </div>
+        {/key}
+        <div class="step-line"></div>
+        <span class="step-total">05</span>
+      </div>
 
-      <!-- Top Bar -->
-      <div class="hud-top">
-        <div class="hud-brand">
-          <Cpu size={13} />
-          <span>DWISYCOO // SYSTEM OS</span>
-        </div>
-        <div class="hud-matrix-chip">
-          <Terminal size={11} />
-          <span class="matrix-code">{matrixText}</span>
-        </div>
-        <div class="hud-time">
-          <span class="pulse-dot"></span>
-          <span class="hud-time-label">JKT UTC+7</span>
+      <!-- Counter Utama -->
+      <div class="counter-wrapper">
+        <h1 class="counter-text">
+          {String(Math.floor(pct)).padStart(3, "0")}
+        </h1>
+        <span class="counter-percent">%</span>
+      </div>
+
+      <!-- Progress Bar Minimalis -->
+      <div class="progress-container">
+        <div class="progress-track">
+          <div class="progress-fill" style="width: {pct}%"></div>
+          <!-- Titik bersinar di ujung progress bar -->
+          <div class="progress-glow" style="left: {pct}%"></div>
         </div>
       </div>
 
-      <!-- Center: Desktop = 3 col, Mobile = stacked counter only -->
-      <div class="hud-center">
-        <!-- Left Visualizer (Desktop only) -->
-        <div class="hud-side-widget desktop-only">
-          <span class="widget-label">SPECTRUM</span>
-          <div class="eq-bars">
-            <div class="eq-bar" style="--h: 60%; --d: 0.1s;"></div>
-            <div class="eq-bar" style="--h: 90%; --d: 0.3s;"></div>
-            <div class="eq-bar" style="--h: 45%; --d: 0.2s;"></div>
-            <div class="eq-bar" style="--h: 100%; --d: 0.4s;"></div>
-            <div class="eq-bar" style="--h: 75%; --d: 0.15s;"></div>
+      <!-- Label Step yang berganti dengan animasi Fly -->
+      <div class="step-label-container">
+        {#key currentStepIndex}
+          <div
+            class="step-label"
+            in:fly={{ y: 10, duration: 400, delay: 150 }}
+            out:fade={{ duration: 200 }}
+          >
+            {steps[currentStepIndex].label}
           </div>
-          <span class="widget-val">48.0 kHz</span>
-        </div>
+        {/key}
+      </div>
+    </div>
 
-        <!-- Main Counter -->
-        <div class="hud-main-counter">
-          <div class="counter-num-wrap">
-            <span class="counter-num">{String(Math.floor(pct)).padStart(3, "0")}</span>
-            <span class="counter-unit">%</span>
-          </div>
-          <div class="step-badge">
-            <Activity size={11} class="spin-icon" />
-            <span class="step-label">{steps[currentStepIndex].label}</span>
-          </div>
-        </div>
-
-        <!-- Right Visualizer (Desktop only) -->
-        <div class="hud-side-widget desktop-only">
-          <span class="widget-label">PROGRESS</span>
-          <div class="ring-wrap">
-            <svg viewBox="0 0 44 44" class="progress-ring">
-              <circle cx="22" cy="22" r="18" class="ring-bg"></circle>
-              <circle
-                cx="22" cy="22" r="18"
-                class="ring-fill"
-                style="stroke-dashoffset: {113 - (113 * pct) / 100}"
-              ></circle>
-            </svg>
-            <Zap size={11} class="ring-icon" />
-          </div>
-          <span class="widget-val">{Math.floor(pct)} / 100</span>
+    <!-- Bagian Bawah: Marquee Minimalis -->
+    <div class="bottom-bar">
+      <div class="stack-marquee">
+        <div class="marquee-track">
+          {#each techStack as tech}
+            <span class="stack-chip"><Code2 size={12} /> {tech}</span>
+          {/each}
+          {#each techStack as tech}
+            <span class="stack-chip"><Code2 size={12} /> {tech}</span>
+          {/each}
         </div>
       </div>
-
-      <!-- Mobile Mini-Widgets Row (hidden on desktop) -->
-      <div class="mobile-widgets">
-        <div class="mini-widget">
-          <span class="widget-label">SPECTRUM</span>
-          <div class="eq-bars">
-            <div class="eq-bar" style="--h: 60%; --d: 0.1s;"></div>
-            <div class="eq-bar" style="--h: 90%; --d: 0.3s;"></div>
-            <div class="eq-bar" style="--h: 45%; --d: 0.2s;"></div>
-            <div class="eq-bar" style="--h: 100%; --d: 0.4s;"></div>
-            <div class="eq-bar" style="--h: 75%; --d: 0.15s;"></div>
-          </div>
-        </div>
-        <div class="mini-widget">
-          <span class="widget-label">PROGRESS</span>
-          <div class="ring-wrap">
-            <svg viewBox="0 0 44 44" class="progress-ring">
-              <circle cx="22" cy="22" r="18" class="ring-bg"></circle>
-              <circle
-                cx="22" cy="22" r="18"
-                class="ring-fill"
-                style="stroke-dashoffset: {113 - (113 * pct) / 100}"
-              ></circle>
-            </svg>
-            <Zap size={10} class="ring-icon" />
-          </div>
-        </div>
-      </div>
-
-      <!-- Bottom Bar -->
-      <div class="hud-bottom">
-        <div class="hud-progress-bar">
-          <div class="progress-fill-glow" style="width: {pct}%;"></div>
-        </div>
-        <div class="hud-footer-row">
-          <div class="stack-marquee">
-            <div class="marquee-track">
-              {#each techStack as tech}
-                <span class="stack-chip"><Code2 size={10} /> {tech}</span>
-              {/each}
-              {#each techStack as tech}
-                <span class="stack-chip"><Code2 size={10} /> {tech}</span>
-              {/each}
-            </div>
-          </div>
-          <div class="hud-copy desktop-only">
-            <ShieldCheck size={12} />
-            <span>FULLSTACK PORTFOLIO 2026</span>
-          </div>
-        </div>
-      </div>
-
     </div>
   </div>
 {/if}
@@ -250,460 +188,295 @@
     overflow: hidden !important;
   }
 
-  /* ══ OVERLAY ═════════════════════════════════════════════ */
-  .preloader-overlay {
+  /* ══ BUNGKUSAN UTAMA (OVERLAY) ════════════════════════════ */
+  .modern-overlay {
     position: fixed;
     inset: 0;
     z-index: 99999;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-between;
     background: var(--bg);
     color: var(--ink);
     font-family: var(--font-head);
+    padding: 32px 40px;
     overflow: hidden;
+
+    /* Animasi Keluar (Cinematic Slide Up) */
+    transition:
+      transform 0.8s cubic-bezier(0.76, 0, 0.24, 1),
+      opacity 0.6s cubic-bezier(0.76, 0, 0.24, 1),
+      border-radius 0.8s ease;
+    transform-origin: top center;
   }
 
-  /* ── Aperture Split Curtains (Dynamic Dark & Light Theme Adaptive) ── */
-  .curtain {
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 50%;
-    background: var(--bg);
-    /* High-tech blueprint grid background */
-    background-size: 32px 32px;
-    background-image:
-      linear-gradient(to right, rgba(var(--ink-rgb), 0.04) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(var(--ink-rgb), 0.04) 1px, transparent 1px);
-    transition: transform 0.9s cubic-bezier(0.85, 0, 0.15, 1);
-    will-change: transform;
-    z-index: 1;
-  }
-
-  .curtain-top { top: 0; transform-origin: top center; border-bottom: 1px solid rgba(var(--ink-rgb), 0.1); }
-  .curtain-bottom { bottom: 0; transform-origin: bottom center; border-top: 1px solid rgba(var(--ink-rgb), 0.1); }
-
-  .curtain-line {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: rgba(var(--ink-rgb), 0.25);
-    z-index: 2;
-    transform: translateY(-50%) scaleX(1);
-    transition: transform 0.5s var(--ease-out);
-  }
-
-  /* Curtain Exit Animation */
-  .preloader-overlay.loaded .curtain-top { transform: translateY(-100%); }
-  .preloader-overlay.loaded .curtain-bottom { transform: translateY(100%); }
-  .preloader-overlay.loaded .curtain-line { transform: translateY(-50%) scaleX(0); }
-
-  /* ══ HUD CONTAINER ══════════════════════════════════════ */
-  .hud-container {
-    position: relative;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 100%;
-    height: 100%;
-    padding: 40px 48px;
-    box-sizing: border-box;
-    transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out);
-  }
-
-  .hud-container.fade-out {
+  .modern-overlay.loaded {
+    transform: translateY(-100%) scale(0.95);
     opacity: 0;
-    transform: scale(0.96);
+    border-radius: 0 0 40px 40px; /* Melengkung saat ditarik ke atas */
   }
 
-  /* ── HUD TOP BAR ── */
-  .hud-top {
+  /* ── TOP BAR (Header Minimalis) ── */
+  .top-bar {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    font-size: 0.72rem;
+    align-items: center;
+    font-size: 0.75rem;
     font-weight: 700;
-    letter-spacing: 0.15em;
-    color: rgba(var(--ink-rgb), 0.6);
-  }
-
-  .hud-brand {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--ink);
-  }
-
-  .hud-matrix-chip {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 12px;
-    background: rgba(var(--ink-rgb), 0.05);
-    border: 1.5px solid var(--ink);
-    border-radius: 99px;
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    color: var(--ink);
-    box-shadow: 2px 2px 0 var(--ink);
-  }
-
-  .matrix-code {
     letter-spacing: 0.1em;
-    min-width: 70px;
+    opacity: 0.6;
+    transition: opacity 0.3s;
   }
 
-  .hud-time {
+  .brand {
     display: flex;
     align-items: center;
     gap: 8px;
-    color: var(--ink);
   }
 
-  .pulse-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--ink);
-    box-shadow: 0 0 10px rgba(var(--ink-rgb), 0.5);
-    animation: live-pulse 1.8s infinite ease-in-out;
-  }
-
-  @keyframes live-pulse {
-    0%, 100% { opacity: 0.3; transform: scale(0.8); }
-    50%       { opacity: 1;   transform: scale(1.2); }
-  }
-
-  /* ── HUD CENTER ── */
-  .hud-center {
+  .status-badge {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 1100px;
-    margin: 0 auto;
+    gap: 8px;
+    padding: 6px 14px;
+    background: rgba(var(--ink-rgb), 0.05);
+    border-radius: 99px;
   }
 
-  /* Side Widgets */
-  .hud-side-widget {
+  .dot-pulse {
+    width: 6px;
+    height: 6px;
+    background-color: var(--ink);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(var(--ink-rgb), 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 6px rgba(var(--ink-rgb), 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(var(--ink-rgb), 0);
+    }
+  }
+
+  /* ── CENTER CONTENT (Fokus Utama) ── */
+  .center-content {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    padding: 20px;
-    background: var(--bg);
-    border: 1.5px solid var(--ink);
-    border-radius: 18px;
-    box-shadow: 4px 4px 0 var(--ink);
-    width: 130px;
-    color: var(--ink);
-  }
-
-  .widget-label {
-    font-size: 0.6rem;
-    font-weight: 800;
-    letter-spacing: 0.18em;
-    opacity: 0.5;
-  }
-
-  .widget-val {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    font-weight: 700;
-    opacity: 0.8;
-  }
-
-  /* Equalizer Bars */
-  .eq-bars {
-    display: flex;
-    align-items: flex-end;
-    gap: 5px;
-    height: 36px;
-  }
-
-  .eq-bar {
-    width: 4px;
-    height: var(--h);
-    background: var(--ink);
-    border-radius: 99px;
-    animation: eq-bounce 1.2s infinite ease-in-out var(--d);
-  }
-
-  @keyframes eq-bounce {
-    0%, 100% { transform: scaleY(0.3); }
-    50%       { transform: scaleY(1); }
-  }
-
-  /* Circular Ring Progress */
-  .ring-wrap {
-    position: relative;
-    width: 44px;
-    height: 44px;
-    display: flex;
     align-items: center;
     justify-content: center;
-  }
-
-  .progress-ring {
+    gap: 24px;
+    margin: auto;
     width: 100%;
-    height: 100%;
-    transform: rotate(-90deg);
+    max-width: 600px;
   }
 
-  .ring-bg {
-    fill: none;
-    stroke: rgba(var(--ink-rgb), 0.12);
-    stroke-width: 3;
-  }
-
-  .ring-fill {
-    fill: none;
-    stroke: var(--ink);
-    stroke-width: 3;
-    stroke-dasharray: 113;
-    transition: stroke-dashoffset 0.1s linear;
-    stroke-linecap: round;
-  }
-
-  :global(.ring-icon) {
-    position: absolute;
-    color: var(--ink);
-    opacity: 0.85;
-  }
-
-  /* Main Counter & Step Badge */
-  .hud-main-counter {
+  /* Indikator Step (01 / 05) */
+  .step-indicator {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 600;
+    opacity: 0.5;
+    position: relative;
+    height: 20px;
   }
 
-  .counter-num-wrap {
+  .step-code {
+    position: absolute;
+    right: 100%;
+    margin-right: 12px;
+  }
+
+  .step-line {
+    width: 40px;
+    height: 1px;
+    background: var(--ink);
+    opacity: 0.3;
+  }
+
+  .step-total {
+    margin-left: 12px;
+  }
+
+  /* Counter Raksasa */
+  .counter-wrapper {
     display: flex;
     align-items: flex-start;
-    line-height: 0.82;
+    justify-content: center;
+    line-height: 0.85;
   }
 
-  .counter-num {
-    font-size: clamp(6rem, 20vw, 15rem);
-    font-weight: 900;
-    letter-spacing: -0.06em;
+  .counter-text {
+    font-size: clamp(6rem, 20vw, 12rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
     font-variant-numeric: tabular-nums;
-    color: var(--ink);
+    margin: 0;
+    background: linear-gradient(
+      135deg,
+      var(--ink) 20%,
+      rgba(var(--ink-rgb), 0.3) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
-  .counter-unit {
+  .counter-percent {
     font-size: clamp(2rem, 5vw, 4rem);
-    font-weight: 800;
-    opacity: 0.4;
-    color: var(--ink);
+    font-weight: 700;
+    opacity: 0.3;
+    margin-top: 10px;
     margin-left: 8px;
-    margin-top: 12px;
   }
 
-  .step-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 20px;
-    background: var(--bg);
-    border: 1.5px solid var(--ink);
-    border-radius: 99px;
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.15em;
-    color: var(--ink);
-    box-shadow: 4px 4px 0 var(--ink);
-  }
-
-  :global(.spin-icon) {
-    animation: spin 3s linear infinite;
-  }
-
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-
-  /* ── HUD BOTTOM ── */
-  .hud-bottom {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  /* Progress Bar Minimalis */
+  .progress-container {
     width: 100%;
+    padding: 0 20px;
   }
 
-  .hud-progress-bar {
+  .progress-track {
+    position: relative;
     width: 100%;
-    height: 3px;
+    height: 2px;
     background: rgba(var(--ink-rgb), 0.1);
     border-radius: 99px;
-    overflow: hidden;
-    position: relative;
   }
 
-  .progress-fill-glow {
+  .progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
     height: 100%;
     background: var(--ink);
-    box-shadow: 0 0 12px var(--ink);
-    transition: width 0.05s linear;
+    border-radius: 99px;
+    transition: width 0.1s linear;
   }
 
-  .hud-footer-row {
+  /* Cahaya kecil di ujung progress */
+  .progress-glow {
+    position: absolute;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    background: var(--ink);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 15px 4px rgba(var(--ink-rgb), 0.4);
+    transition: left 0.1s linear;
+  }
+
+  /* Label Step di Bawah Progress */
+  .step-label-container {
+    position: relative;
+    height: 24px;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .step-label {
+    position: absolute;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--ink);
+    opacity: 0.7;
+    text-align: center;
+  }
+
+  /* ── BOTTOM BAR (Marquee) ── */
+  .bottom-bar {
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
 
   .stack-marquee {
     overflow: hidden;
     white-space: nowrap;
-    max-width: 70%;
-    mask-image: linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);
-    -webkit-mask-image: linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);
+    width: 100%;
+    max-width: 800px;
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 15%,
+      black 85%,
+      transparent
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 15%,
+      black 85%,
+      transparent
+    );
   }
 
   .marquee-track {
     display: inline-flex;
-    gap: 16px;
-    animation: stack-scroll 25s linear infinite;
+    gap: 32px;
+    animation: stack-scroll 30s linear infinite;
   }
 
   @keyframes stack-scroll {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
   }
 
   .stack-chip {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     font-family: var(--font-mono);
-    font-size: 0.65rem;
-    font-weight: 700;
+    font-size: 0.7rem;
+    font-weight: 600;
     color: var(--ink);
-    opacity: 0.6;
-    letter-spacing: 0.1em;
+    opacity: 0.4;
+    letter-spacing: 0.05em;
   }
 
-  .hud-copy {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.65rem;
-    font-weight: 800;
-    letter-spacing: 0.15em;
-    color: var(--ink);
-    opacity: 0.5;
-  }
-
-  /* ══ RESPONSIVE ══════════════════════════════════════════ */
-
-  /* Desktop: hide mobile-widgets row */
-  .mobile-widgets { display: none; }
-
-  /* ─── Tablet (≤ 900px) ─── */
-  @media (max-width: 900px) {
-    .desktop-only { display: none !important; }
-    .hud-container { padding: 32px 20px; gap: 0; }
-    .hud-top { font-size: 0.65rem; letter-spacing: 0.1em; }
-    .hud-matrix-chip { padding: 3px 8px; font-size: 0.6rem; }
-    .matrix-code { min-width: 50px; }
-    .hud-center { justify-content: center; }
-    .stack-marquee { max-width: 100%; }
-    .hud-copy { display: none; }
-  }
-
-  /* ─── Mobile (≤ 600px) ─── */
-  @media (max-width: 600px) {
-    .desktop-only { display: none !important; }
-    .hud-container { padding: 28px 20px 24px; }
-
-    /* Top bar: stack brand alone, hide time on very small screens */
-    .hud-top {
-      flex-wrap: wrap;
-      gap: 8px;
-      font-size: 0.62rem;
-      letter-spacing: 0.08em;
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .modern-overlay {
+      padding: 24px 20px;
     }
-    .hud-time-label { display: none; }
-    .hud-matrix-chip { padding: 3px 8px; font-size: 0.58rem; box-shadow: 1px 1px 0 var(--ink); }
-    .matrix-code { min-width: 44px; }
 
-    /* Center: tighten the counter */
-    .hud-center { justify-content: center; }
-    .counter-num { font-size: clamp(5rem, 25vw, 7rem) !important; }
-    .counter-unit { font-size: clamp(1.5rem, 7vw, 2.5rem) !important; margin-top: 8px; }
-
-    /* Step badge: allow wrap, smaller text */
-    .step-badge {
-      padding: 6px 14px;
-      font-size: 0.6rem;
-      letter-spacing: 0.08em;
-      box-shadow: 2px 2px 0 var(--ink);
-      text-align: center;
+    .top-bar {
+      font-size: 0.65rem;
     }
+
+    .counter-text {
+      font-size: clamp(5rem, 25vw, 8rem);
+    }
+
     .step-label {
-      display: block;
-      max-width: 200px;
-      white-space: normal;
-      text-align: center;
-      line-height: 1.4;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
     }
-
-    /* Show mini-widgets row on mobile */
-    .mobile-widgets {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin-top: 16px;
-    }
-
-    .mini-widget {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      padding: 14px 16px;
-      background: var(--bg);
-      border: 1.5px solid var(--ink);
-      border-radius: 14px;
-      box-shadow: 2px 2px 0 var(--ink);
-      width: 100px;
-    }
-
-    /* Shrink eq bars on mini-widget */
-    .mini-widget .eq-bars { height: 26px; }
-    .mini-widget .eq-bar { width: 3px; }
-    .mini-widget .ring-wrap { width: 36px; height: 36px; }
-
-    /* Bottom bar: marquee full width */
-    .stack-marquee { max-width: 100%; }
-    .hud-footer-row { justify-content: center; }
-    .hud-bottom { gap: 14px; }
-    .hud-progress-bar { height: 2px; }
-  }
-
-  /* ─── Very small screens (≤ 380px) ─── */
-  @media (max-width: 380px) {
-    .hud-container { padding: 24px 16px 20px; }
-    .counter-num { font-size: clamp(4rem, 26vw, 5.5rem) !important; }
-    .step-badge { font-size: 0.55rem; padding: 5px 12px; }
-    .mini-widget { width: 88px; padding: 10px 12px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .curtain { transition: opacity 0.4s ease !important; }
-    .preloader-overlay.loaded .curtain-top,
-    .preloader-overlay.loaded .curtain-bottom {
+    .modern-overlay {
+      transition: opacity 0.5s ease !important;
+    }
+    .modern-overlay.loaded {
       transform: none !important;
       opacity: 0;
     }
-    .eq-bar, :global(.spin-icon), .marquee-track { animation: none !important; }
+    .marquee-track {
+      animation: none !important;
+    }
   }
 </style>
