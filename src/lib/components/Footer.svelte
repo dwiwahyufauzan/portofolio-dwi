@@ -120,12 +120,11 @@
           </svg>
         </a>
       </div>
+      <!-- Giant Editorial Text at Footer Bottom -->
+      <div class="footer-big-text" aria-hidden="true">
+        <span>PORTFOLIO</span>
+      </div>
     </div>
-  </div>
-
-  <!-- Giant Editorial Text at Footer Bottom -->
-  <div class="footer-big-text" aria-hidden="true">
-    <span>PORTFOLIO</span>
   </div>
 </footer>
 
@@ -261,9 +260,9 @@
 
   .footer-big-text span {
     font-family: var(--font-head);
-    font-size: clamp(4.5rem, 21vw, 22rem);
+    font-size: clamp(2.8rem, 13.5vw, 11.2rem);
     font-weight: 900;
-    letter-spacing: -0.05em;
+    letter-spacing: -0.04em;
     text-transform: uppercase;
     color: transparent;
     -webkit-text-stroke: 2px rgba(255, 255, 255, 0.18);
