@@ -15,12 +15,15 @@
     Zap,
   } from "@lucide/svelte";
 
+  import { sound } from "$lib/utils/audio";
+
   let formName = $state("");
   let formEmail = $state("");
   let formSubject = $state("");
   let formMessage = $state("");
   let sending = $state(false);
   let sent = $state(false);
+  let apiErrorMessage = $state("");
 
   let errors = $state({
     name: "",
@@ -33,15 +36,13 @@
     return re.test(email);
   }
 
-  // Dapatkan Web3Forms Access Key gratis di https://web3forms.com/
-  // Anda dapat mengisi key tersebut di sini atau di file .env sebagai VITE_WEB3FORMS_ACCESS_KEY
-  const web3FormsAccessKey = import.meta.env?.VITE_WEB3FORMS_ACCESS_KEY || "c4aac158-0f92-4d1a-bb89-aee70a5375a0";
-
   async function handleSubmit(e: Event) {
     e.preventDefault();
+    sound.playClick();
     errors.name = "";
     errors.email = "";
     errors.message = "";
+    apiErrorMessage = "";
 
     let isValid = true;
 
@@ -59,7 +60,10 @@
     }
 
     if (!formMessage.trim()) {
-      errors.message = "Pesan wajib diisi";
+      errors.message = "Pesan wajib diisi (minimal 10 karakter)";
+      isValid = false;
+    } else if (formMessage.trim().length < 10) {
+      errors.message = "Pesan terlalu singkat (minimal 10 karakter)";
       isValid = false;
     }
 
@@ -68,46 +72,33 @@
     sending = true;
 
     try {
-      if (web3FormsAccessKey && web3FormsAccessKey !== "YOUR_WEB3FORMS_ACCESS_KEY_HERE") {
-        // Kirim via Web3Forms API
-        const response = await fetch("https://api.web3forms.com/submit", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          },
-          body: JSON.stringify({
-            access_key: web3FormsAccessKey,
-            name: formName,
-            email: formEmail,
-            subject: formSubject || "Pesan Baru dari Kontak Portofolio",
-            message: formMessage
-          })
-        });
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formName,
+          email: formEmail,
+          subject: formSubject,
+          message: formMessage,
+        }),
+      });
 
-        const result = await response.json();
-        if (response.ok && result.success) {
-          sent = true;
-          formName = formEmail = formSubject = formMessage = "";
-        } else {
-          throw new Error(result.message || "Gagal mengirim pesan");
-        }
-      } else {
-        // Fallback simulasi jika key belum diset
-        await new Promise((resolve) => setTimeout(resolve, 1800));
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        sound.playPop();
         sent = true;
-        formName = formEmail = formSubject = formMessage = "";
+        formName = "";
+        formEmail = "";
+        formSubject = "";
+        formMessage = "";
+      } else {
+        apiErrorMessage = result.message || "Gagal mengirim pesan. Silakan coba lagi.";
       }
-    } catch (err) {
-      console.error("Error submitting form:", err);
-      alert("Gagal mengirim pesan secara otomatis. Silakan kirim langsung via email ke dwiwhy31@gmail.com");
+    } catch {
+      apiErrorMessage = "Gagal terhubung ke server. Periksa koneksi internet Anda.";
     } finally {
       sending = false;
-      if (sent) {
-        setTimeout(() => {
-          sent = false;
-        }, 4000);
-      }
     }
   }
 

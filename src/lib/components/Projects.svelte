@@ -97,12 +97,21 @@
       : projects.filter((p) => p.category === activeFilter);
   }
 
+  import { sound } from "$lib/utils/audio";
+
+  function setFilter(f: string) {
+    sound.playClick();
+    activeFilter = f;
+  }
+
   function openModal(p: (typeof projects)[0]) {
+    sound.playPop();
     modalData = p;
     modalOpen = true;
     document.body.style.overflow = "hidden";
   }
   function closeModal() {
+    sound.playClick();
     modalOpen = false;
     document.body.style.overflow = "";
   }
@@ -147,7 +156,7 @@
         <button
           class="filter-btn"
           class:active={activeFilter === f}
-          onclick={() => (activeFilter = f)}
+          onclick={() => setFilter(f)}
           type="button"
         >
           {f}

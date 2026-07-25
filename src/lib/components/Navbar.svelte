@@ -3,21 +3,26 @@
   import { fade, fly } from "svelte/transition";
   import { PartyPopper, Sun, Moon } from "@lucide/svelte";
 
+  import { sound } from "$lib/utils/audio";
+
   let scrolled = $state(false);
   let menuOpen = $state(false);
   let activeSection = $state("hero");
   let theme = $state("light");
 
   function toggleMenu() {
+    sound.playClick();
     menuOpen = !menuOpen;
     document.body.style.overflow = menuOpen ? "hidden" : "";
   }
   function closeMenu() {
+    sound.playClick();
     menuOpen = false;
     document.body.style.overflow = "";
   }
 
   function toggleTheme() {
+    sound.playToggle();
     const nextTheme = theme === "light" ? "dark" : "light";
     theme = nextTheme;
     document.documentElement.setAttribute("data-theme", nextTheme);
