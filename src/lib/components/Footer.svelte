@@ -266,7 +266,7 @@
     letter-spacing: -0.06em;
     text-transform: uppercase;
     color: transparent;
-    -webkit-text-stroke: 2px rgba(255, 255, 255, 0.18);
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.18);
     display: block;
     white-space: nowrap;
     width: 100%;
@@ -277,7 +277,7 @@
   }
 
   .site-footer:hover .footer-big-text span {
-    -webkit-text-stroke: 2px rgba(255, 255, 255, 0.4);
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.38);
   }
 
   @media (max-width: 768px) {
