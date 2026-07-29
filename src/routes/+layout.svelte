@@ -2,79 +2,68 @@
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import { onMount } from 'svelte';
-	import { fade } from 'svelte/transition';
-	import { ArrowUp } from '@lucide/svelte';
 	import Preloader from '$lib/components/Preloader.svelte';
 
 	let { children } = $props();
 
-	let showScrollTop = $state(false);
-
-	function scrollToTop() {
-		window.scrollTo({ top: 0, behavior: 'smooth' });
-	}
-
 	onMount(() => {
-		const handleScroll = () => {
-			showScrollTop = window.scrollY > 400;
-		};
+		// Global IntersectionObserver for .reveal elements
+		const io = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((e) => {
+					if (e.isIntersecting) e.target.classList.add('visible');
+				});
+			},
+			{ threshold: 0.1, rootMargin: '0px 0px -8% 0px' }
+		);
+		document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
 
-		window.addEventListener('scroll', handleScroll, { passive: true });
-
-		// Global observer for new magnetic elements (since some might be rendered later or within components)
+		// Magnetic hover (global — for any .magnetic elements)
 		const setupMagnetic = () => {
-			const magneticElements = document.querySelectorAll('.magnetic');
-			magneticElements.forEach((el) => {
-				// avoid attaching multiple times
+			document.querySelectorAll('.magnetic').forEach((el) => {
 				if ((el as any)._magneticAttached) return;
+				(el as any)._magneticAttached = true;
 				(el as HTMLElement).addEventListener('mousemove', (e) => {
-						const rect = el.getBoundingClientRect();
-							const x = (e as MouseEvent).clientX - rect.left - rect.width / 2;
-							const y = (e as MouseEvent).clientY - rect.top - rect.height / 2;
-							(el as HTMLElement).style.transform = `translate(${x * 0.5}px, ${y * 0.5}px)`;
-						});
+					const rect = el.getBoundingClientRect();
+					const x = (e as MouseEvent).clientX - rect.left - rect.width / 2;
+					const y = (e as MouseEvent).clientY - rect.top - rect.height / 2;
+					(el as HTMLElement).style.transform = `translate(${x * 0.35}px, ${y * 0.35}px)`;
+				});
 				el.addEventListener('mouseleave', () => {
-					(el as HTMLElement).style.transform = `translate(0px, 0px)`;
-					(el as HTMLElement).style.transition = 'transform 0.3s cubic-bezier(0.23, 1, 0.32, 1)';
+					(el as HTMLElement).style.transform = 'translate(0,0)';
+					(el as HTMLElement).style.transition = 'transform 0.4s var(--ease)';
 				});
 				el.addEventListener('mouseenter', () => {
 					(el as HTMLElement).style.transition = 'none';
 				});
 			});
 		};
-		
 		setupMagnetic();
-		const observer = new MutationObserver(setupMagnetic);
-		observer.observe(document.body, { childList: true, subtree: true });
+		const mutObs = new MutationObserver(setupMagnetic);
+		mutObs.observe(document.body, { childList: true, subtree: true });
 
 		return () => {
-			window.removeEventListener('scroll', handleScroll);
-			observer.disconnect();
+			io.disconnect();
+			mutObs.disconnect();
 		};
 	});
 </script>
 
 <svelte:head>
-	<title>Dwi Wahyu Fauzan — Fullstack Developer</title>
+	<title>Dwi Wahyu Fauzan — Fullstack Software Engineer</title>
 	<link rel="icon" href={favicon} />
-	<meta name="description" content="Portfolio Dwi Wahyu Fauzan — Fullstack Developer. Membangun produk digital modern dengan SvelteKit, Node.js, dan teknologi web terkini." />
-	<meta name="keywords" content="fullstack developer, web developer, SvelteKit, Node.js, portfolio, Dwi Wahyu Fauzan, Indonesia" />
+	<meta name="description" content="Portfolio Dwi Wahyu Fauzan — Fullstack Software Engineer. Membangun produk digital modern yang presisi, elegan, dan siap scale dengan SvelteKit, Node.js, dan TypeScript." />
+	<meta name="keywords" content="fullstack developer, web developer, SvelteKit, Node.js, TypeScript, portfolio, Dwi Wahyu Fauzan, Indonesia" />
+	<meta property="og:title" content="Dwi Wahyu Fauzan — Fullstack Software Engineer" />
+	<meta property="og:description" content="Portfolio Dwi Wahyu Fauzan — Membangun produk digital modern yang presisi dan elegan." />
+	<meta property="og:type" content="website" />
 </svelte:head>
 
-<div class="scroll-progress"></div>
+<!-- Scroll progress indicator -->
+<div class="scroll-progress" aria-hidden="true"></div>
 
+<!-- Preloader (Demon Eye Awakening) -->
 <Preloader />
 
+<!-- Page content -->
 {@render children()}
-
-{#if showScrollTop}
-	<button
-		class="scroll-top-btn"
-		onclick={scrollToTop}
-		transition:fade={{ duration: 200 }}
-		aria-label="Back to top"
-		type="button"
-	>
-		<ArrowUp size={18} strokeWidth={2.5} />
-	</button>
-{/if}
