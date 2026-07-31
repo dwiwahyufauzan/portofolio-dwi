@@ -162,7 +162,8 @@
   /* ─── Section Base ────────────────────────────────────────── */
   .contact {
     position: relative;
-    background: var(--bg);
+    background: #080808;
+    color: #ffffff;
     overflow: hidden;
   }
 
@@ -179,9 +180,9 @@
     height: 100%;
     object-fit: cover;
     object-position: 70% center;
-    /* Clean, bright monochrome grayscale */
-    filter: grayscale(100%) contrast(1.05) brightness(0.9);
-    opacity: 0.85;
+    /* Inverted white tone for dark section background */
+    filter: grayscale(100%) contrast(0.85) brightness(1.1);
+    opacity: 0.55;
     display: block;
     user-select: none;
   }
@@ -201,18 +202,30 @@
   }
 
   /* ─── Header ──────────────────────────────────────────────── */
+  .contact-container :global(.section-eyebrow) {
+    color: rgba(255, 255, 255, 0.45) !important;
+  }
+  .contact-container :global(.section-eyebrow::after) {
+    background: rgba(255, 255, 255, 0.2) !important;
+  }
+
   .contact-header {
     margin-bottom: 32px;
   }
 
   .contact-headline {
+    color: #ffffff !important;
     margin-bottom: 20px;
+  }
+
+  .contact-headline :global(.hl-italic) {
+    color: rgba(255, 255, 255, 0.55) !important;
   }
 
   .contact-desc {
     font-size: 1rem;
     line-height: 1.75;
-    color: var(--ink-2);
+    color: rgba(255, 255, 255, 0.6);
     max-width: 520px;
   }
 
@@ -233,10 +246,10 @@
     font-family: var(--font-head);
     font-size: 1.1rem;
     font-weight: 600;
-    color: var(--ink);
+    color: #ffffff;
     text-decoration: none;
     letter-spacing: -0.01em;
-    border-bottom: 1px solid var(--ink);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
     padding-bottom: 4px;
     transition:
       gap 0.2s var(--ease),
@@ -259,7 +272,7 @@
     font-weight: 500;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--ink-3);
+    color: rgba(255, 255, 255, 0.5);
     text-decoration: none;
     transition: color 0.2s var(--ease);
     position: relative;
@@ -277,7 +290,7 @@
     transition: transform 0.22s var(--ease);
   }
   .social-link:hover {
-    color: var(--ink);
+    color: #ffffff;
   }
   .social-link:hover::after {
     transform: scaleX(1);
@@ -314,7 +327,7 @@
     font-weight: 500;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--ink-3);
+    color: rgba(255, 255, 255, 0.45);
   }
 
   .form-input,
@@ -322,10 +335,10 @@
     width: 100%;
     padding: 14px 0;
     border: none;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 0;
     background: transparent;
-    color: var(--ink);
+    color: #ffffff;
     font-family: var(--font-body);
     font-size: 0.95rem;
     outline: none;
@@ -335,11 +348,11 @@
 
   .form-input::placeholder,
   .form-textarea::placeholder {
-    color: var(--ink-3);
+    color: rgba(255, 255, 255, 0.3);
   }
   .form-input:focus,
   .form-textarea:focus {
-    border-bottom-color: var(--ink);
+    border-bottom-color: #ffffff;
   }
 
   .form-textarea {
@@ -356,6 +369,13 @@
   .form-submit {
     min-width: 180px;
     justify-content: center;
+    background: #ffffff !important;
+    color: #080808 !important;
+    border-color: #ffffff !important;
+  }
+  .form-submit:hover {
+    background: transparent !important;
+    color: #ffffff !important;
   }
 
   .form-note {
@@ -363,7 +383,7 @@
     font-size: 0.62rem;
     font-weight: 400;
     letter-spacing: 0.1em;
-    color: var(--ink-3);
+    color: rgba(255, 255, 255, 0.4);
   }
 
   /* ─── Responsive ──────────────────────────────────────────── */

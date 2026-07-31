@@ -1,6 +1,6 @@
 <script lang="ts">
 	import './layout.css';
-	import favicon from '$lib/assets/favicon-logo.png';
+	import favicon from '$lib/assets/favicon.svg';
 	import { onMount } from 'svelte';
 	import Preloader from '$lib/components/Preloader.svelte';
 

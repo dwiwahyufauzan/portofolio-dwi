@@ -408,9 +408,6 @@
 {#if !hidden}
 <div class="preloader" class:loaded bind:this={containerEl} aria-hidden="true">
 
-  <!-- Ambient Red Core Glow -->
-  <div class="preloader-ambient-glow"></div>
-
   <!-- Eye rendering canvas -->
   <canvas class="eye-cvs" bind:this={eyeCanvas}></canvas>
 
@@ -458,30 +455,7 @@
   }
   .preloader.loaded { opacity: 0; transform: scale(1.02); pointer-events: none; }
 
-  /* Ambient Crimson Radial Core Glow */
-  .preloader-ambient-glow {
-    position: absolute;
-    top: 44%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 650px;
-    height: 650px;
-    border-radius: 50%;
-    background: radial-gradient(
-      circle,
-      rgba(255, 0, 48, 0.18) 0%,
-      rgba(255, 0, 48, 0.05) 45%,
-      transparent 70%
-    );
-    pointer-events: none;
-    z-index: 1;
-    animation: ambient-pulse 3.5s ease-in-out infinite;
-  }
 
-  @keyframes ambient-pulse {
-    0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(0.92); }
-    50%       { opacity: 1.0; transform: translate(-50%, -50%) scale(1.12); }
-  }
 
   /* Eye canvas */
   .eye-cvs {
