@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import heroBg from "$lib/assets/guts-black-3840x2160-21420.png";
+  import prisonImg from "$lib/assets/prisonofmework.png";
 
   let visible = $state(false);
 
@@ -15,15 +16,23 @@
         obs.disconnect();
       }
     });
-    obs.observe(document.body, { attributes: true, attributeFilter: ["class"] });
-    const t = setTimeout(() => { visible = true; obs.disconnect(); }, 5000);
-    return () => { obs.disconnect(); clearTimeout(t); };
+    obs.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+    const t = setTimeout(() => {
+      visible = true;
+      obs.disconnect();
+    }, 5000);
+    return () => {
+      obs.disconnect();
+      clearTimeout(t);
+    };
   });
 </script>
 
 <!-- ══ HERO — Cinematic Editorial Header ═════════════════════ -->
 <section id="hero" class="hero" aria-label="Hero — Dwi Wahyu Fauzan">
-
   <!-- Background image — Full quality Guts Berserk figure -->
   <div class="hero-bg" aria-hidden="true">
     <img src={heroBg} alt="" class="hero-bg-img" draggable="false" />
@@ -33,7 +42,11 @@
   <div class="hero-overlay" aria-hidden="true"></div>
 
   <!-- Text block — bottom right corner -->
-  <div class="hero-card" class:visible aria-label="Dwi Wahyu Fauzan — Fullstack Software Engineer">
+  <div
+    class="hero-card"
+    class:visible
+    aria-label="Dwi Wahyu Fauzan — Fullstack Software Engineer"
+  >
     <p class="hero-label">Fullstack Software Engineer</p>
     <h1 class="hero-name">Dwi Wahyu<br />Fauzan.</h1>
     <div class="hero-links">
@@ -43,17 +56,19 @@
     </div>
   </div>
 
-  <!-- Bottom-left badge -->
-  <div class="hero-avail" aria-hidden="true">
-    <span class="avail-dot"></span>
-    Available for work
-  </div>
+  <!-- Spinning image — bottom left -->
+  <img
+    src={prisonImg}
+    alt=""
+    class="hero-prison-spin"
+    draggable="false"
+    aria-hidden="true"
+  />
 
   <!-- Scroll indicator — bottom center -->
   <a href="#about" class="hero-scroll" aria-label="Scroll down">
     <span class="scroll-line"></span>
   </a>
-
 </section>
 
 <style>
@@ -105,23 +120,15 @@
         transparent 75%
       ),
       /* Top navbar space tint */
-      linear-gradient(
-        to bottom,
-        rgba(5, 5, 5, 0.4) 0%,
-        transparent 16%
-      ),
+        linear-gradient(to bottom, rgba(5, 5, 5, 0.4) 0%, transparent 16%),
       /* Bottom edge tint */
-      linear-gradient(
-        to top,
-        rgba(5, 5, 5, 0.5) 0%,
-        transparent 20%
-      );
+        linear-gradient(to top, rgba(5, 5, 5, 0.5) 0%, transparent 20%);
   }
 
   /* ─── Text card — bottom right corner ────────────────────── */
   .hero-card {
     position: absolute;
-    bottom: 52px;
+    bottom: 28px;
     right: 60px;
     z-index: 2;
     display: flex;
@@ -184,7 +191,7 @@
   }
 
   .hero-link::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: -2px;
     left: 0;
@@ -210,35 +217,41 @@
     color: rgba(245, 245, 245, 0.25);
   }
 
-  /* ─── Available badge — bottom left ──────────────────────── */
-  .hero-avail {
+  /* ─── Spinning prison image ───────────────────────────────── */
+  .hero-prison-spin {
     position: absolute;
-    bottom: 52px;
+    bottom: 10px;
     left: 60px;
     z-index: 2;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: var(--font-mono);
-    font-size: 0.58rem;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: rgba(245, 245, 245, 0.45);
+    width: 150px;
+    height: auto;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    transform-style: preserve-3d;
+    animation: spin3d 6s linear infinite;
+    transform-origin: center center;
   }
 
-  .avail-dot {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: #4ade80;
-    animation: pulse 2.5s ease-in-out infinite;
-    flex-shrink: 0;
+  @keyframes spin3d {
+    0% {
+      transform: perspective(400px) rotateY(0deg);
+    }
+    100% {
+      transform: perspective(400px) rotateY(360deg);
+    }
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 0.4; transform: scale(0.8); }
-    50%       { opacity: 1;   transform: scale(1.3); }
+    0%,
+    100% {
+      opacity: 0.4;
+      transform: scale(0.8);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.3);
+    }
   }
 
   /* ─── Scroll indicator — bottom center ───────────────────── */
@@ -263,10 +276,26 @@
   }
 
   @keyframes scroll-grow {
-    0%    { transform: scaleY(0); opacity: 0; transform-origin: top; }
-    40%   { transform: scaleY(1); opacity: 1; transform-origin: top; }
-    60%   { transform: scaleY(1); opacity: 1; transform-origin: bottom; }
-    100%  { transform: scaleY(0); opacity: 0; transform-origin: bottom; }
+    0% {
+      transform: scaleY(0);
+      opacity: 0;
+      transform-origin: top;
+    }
+    40% {
+      transform: scaleY(1);
+      opacity: 1;
+      transform-origin: top;
+    }
+    60% {
+      transform: scaleY(1);
+      opacity: 1;
+      transform-origin: bottom;
+    }
+    100% {
+      transform: scaleY(0);
+      opacity: 0;
+      transform-origin: bottom;
+    }
   }
 
   /* ─── Responsive ──────────────────────────────────────────── */
@@ -275,19 +304,46 @@
       object-fit: cover;
       object-position: center 20%;
     }
-    .hero-card  { right: 24px; bottom: 48px; }
-    .hero-avail { left: 24px;  bottom: 48px; }
-    .hero-name  { font-size: clamp(1.3rem, 5vw, 2rem); }
+    .hero-card {
+      right: 24px;
+      bottom: 48px;
+    }
+    .hero-name {
+      font-size: clamp(1.3rem, 5vw, 2rem);
+    }
+    .hero-prison-spin {
+      width: 110px;
+      left: 24px;
+      bottom: 24px;
+    }
   }
 
   @media (max-width: 480px) {
-    .hero-avail { display: none; }
-    .hero-card  { right: 20px; bottom: 40px; }
+    .hero-card {
+      right: 20px;
+      bottom: 40px;
+    }
+    .hero-prison-spin {
+      width: 90px;
+      left: 16px;
+      bottom: 16px;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .scroll-line { animation: none; opacity: 0.3; transform: none; }
-    .avail-dot   { animation: none; }
-    .hero-card   { transition: none; }
+    .scroll-line {
+      animation: none;
+      opacity: 0.3;
+      transform: none;
+    }
+    .avail-dot {
+      animation: none;
+    }
+    .hero-card {
+      transition: none;
+    }
+    .hero-prison-spin {
+      animation: none;
+    }
   }
 </style>

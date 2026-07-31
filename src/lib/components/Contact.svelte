@@ -58,7 +58,10 @@
 
       <!-- Headline -->
       <div class="contact-header reveal">
-        <h2 class="contact-headline">Get In Touch.</h2>
+        <h2 class="section-title contact-headline">
+          <span class="hl-block">Get In</span>
+          <span class="hl-block hl-italic">Touch.</span>
+        </h2>
         <p class="contact-desc">
           Tertarik bekerja sama? Saya selalu terbuka untuk proyek baru,
           kolaborasi, atau sekadar ngobrol soal teknologi.
@@ -203,13 +206,6 @@
   }
 
   .contact-headline {
-    font-family: var(--font-head);
-    font-size: clamp(3.2rem, 6.5vw, 6.5rem);
-    font-weight: 900;
-    letter-spacing: -0.05em;
-    line-height: 0.9;
-    text-transform: uppercase;
-    color: var(--ink);
     margin-bottom: 20px;
   }
 

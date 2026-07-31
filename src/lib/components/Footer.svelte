@@ -19,7 +19,7 @@
     <!-- Left: Brand + Copyright -->
     <div class="footer-left">
       <a href="#hero" class="footer-logo" aria-label="Back to top">
-        Dwisycoo<span class="footer-dot">.</span>
+        <img src="/logo.png" alt="Logo" class="footer-logo-img" />
       </a>
       <p class="footer-copy">
         © {year} Dwi Wahyu Fauzan. All rights reserved.
@@ -27,9 +27,7 @@
     </div>
 
     <!-- Center: Tag line -->
-    <p class="footer-tagline" aria-hidden="true">
-      Built with SvelteKit · Bun · TypeScript
-    </p>
+    <p class="footer-tagline" aria-hidden="true">Built with Love</p>
 
     <!-- Right: Socials + Back to top -->
     <div class="footer-right">
@@ -64,9 +62,9 @@
 
 <style>
   .footer {
-    background: var(--bg-alt, #f5f4f0);
+    background: var(--bg-alt, #F5F4F0);
     color: var(--ink, #111111);
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--border, #E2E2E2);
     padding: 0 60px;
     height: 80px;
     display: flex;
@@ -91,15 +89,27 @@
   }
 
   .footer-logo {
-    font-family: var(--font-head);
-    font-size: 1rem;
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    color: var(--ink, #111111);
+    display: flex;
+    align-items: center;
     text-decoration: none;
   }
 
+  .footer-logo-img {
+    height: 50px;
+    width: auto;
+    object-fit: contain;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    filter: none;
+    transition: transform 0.3s var(--ease);
+  }
+  .footer-logo:hover .footer-logo-img {
+    transform: scale(1.08);
+  }
+
   .footer-dot {
+    color: var(--ink, #111111);
     opacity: 0.35;
   }
 
@@ -151,29 +161,30 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border, #E2E2E2);
     color: var(--ink-2, #444444);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    background: transparent;
     transition:
       border-color 0.2s var(--ease),
       color 0.2s var(--ease),
       background 0.2s var(--ease);
   }
   .footer-top-btn:hover {
-    border-color: var(--ink);
-    color: var(--bg);
-    background: var(--ink);
+    border-color: var(--ink, #111111);
+    color: var(--bg, #ffffff);
+    background: var(--ink, #111111);
   }
 
   /* ─── Giant Editorial PORTFOLIO Banner ───────────────────── */
   .footer-giant-banner {
     width: 100%;
     overflow: hidden;
-    background: var(--bg-alt, #f5f4f0);
-    border-top: 1px solid var(--border);
+    background: var(--bg-alt, #F5F4F0);
+    border-top: 1px solid var(--border, #E2E2E2);
     padding: 16px 0 28px;
     display: flex;
     justify-content: center;
@@ -188,8 +199,10 @@
     line-height: 0.8;
     letter-spacing: -0.04em;
     text-transform: uppercase;
-    color: var(--ink, #111111);
-    opacity: 0.98;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 2px var(--ink, #111111);
+    opacity: 0.12;
     margin: 0;
     text-align: center;
     white-space: nowrap;
@@ -219,4 +232,5 @@
       padding: 16px 0 24px;
     }
   }
+
 </style>

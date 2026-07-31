@@ -79,7 +79,7 @@
 >
   <!-- Logo -->
   <a href="#hero" class="nav-logo" aria-label="Dwi Wahyu Fauzan — Home">
-    <span class="logo-mark">Dwisycoo<span class="logo-dot">.</span></span>
+    <img src="/logo.png" alt="Logo" class="nav-logo-img" />
   </a>
 
   <!-- Desktop Nav Links -->
@@ -133,8 +133,8 @@
   >
     <!-- Overlay Top Bar -->
     <div class="mobile-top-bar">
-      <a href="#hero" class="mobile-logo" onclick={closeMenu}>
-        Dwisycoo<span class="logo-dot">.</span>
+      <a href="#hero" class="mobile-logo" onclick={closeMenu} aria-label="Home">
+        <img src="/logo.png" alt="Logo" class="mobile-logo-img" />
       </a>
       <button
         class="mobile-close-btn"
@@ -226,24 +226,31 @@
   /* ─── Logo ────────────────────────────────────────────────── */
   .nav-logo {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     text-decoration: none;
-    color: inherit;
     z-index: 1;
   }
 
-  .logo-mark {
-    font-family: var(--font-head);
-    font-size: 1.15rem;
-    font-weight: 900;
-    letter-spacing: -0.03em;
-    line-height: 1;
+  .nav-logo-img {
+    height: 48px;
+    width: auto;
+    max-width: 160px;
+    object-fit: contain;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    filter: invert(1);
+    transition:
+      transform 0.3s var(--ease),
+      filter 0.3s var(--ease);
   }
 
-  .logo-dot {
-    color: #ef4444;
-    font-weight: 900;
-    margin-left: 1px;
+  .navbar.scrolled .nav-logo-img {
+    filter: none;
+  }
+
+  .nav-logo:hover .nav-logo-img {
+    transform: scale(1.08);
   }
 
   /* ─── Nav Links (Desktop) ─────────────────────────────────── */
@@ -416,12 +423,21 @@
   }
 
   .mobile-logo {
-    font-family: var(--font-head);
-    font-size: 1.2rem;
-    font-weight: 900;
-    color: #ffffff;
+    display: flex;
+    align-items: center;
     text-decoration: none;
-    letter-spacing: -0.03em;
+  }
+
+  .mobile-logo-img {
+    height: 48px;
+    width: auto;
+    object-fit: contain;
+    filter: invert(1);
+    transition: transform 0.3s var(--ease);
+  }
+
+  .mobile-logo:hover .mobile-logo-img {
+    transform: scale(1.08);
   }
 
   .mobile-close-btn {

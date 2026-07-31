@@ -93,11 +93,14 @@
 <section id="projects" class="projects section section-alt">
   <div class="container">
     <!-- Eyebrow -->
-    <p class="section-eyebrow reveal">03 — Projects</p>
+    <p class="section-eyebrow reveal">06 — Projects</p>
 
     <!-- Header -->
     <div class="projects-header reveal">
-      <h2 class="section-title">Selected<br />Work.</h2>
+      <h2 class="section-title">
+        <span class="hl-block">Selected</span>
+        <span class="hl-block hl-italic">Work.</span>
+      </h2>
       <div class="projects-header-right">
         <p class="section-subtitle">
           Proyek-proyek terpilih yang mencerminkan kemampuan teknis dan

@@ -664,7 +664,10 @@
             <div class="section-label">
                 <Gamepad2 size={12} /> Coffee Break Mini Game
             </div>
-            <h2 class="section-title">Istirahat Sebentar.</h2>
+            <h2 class="section-title">
+                <span class="hl-block">Coffee</span>
+                <span class="hl-block hl-italic">Break.</span>
+            </h2>
         </div>
 
         <div class="game-wrapper reveal reveal-slide-up">

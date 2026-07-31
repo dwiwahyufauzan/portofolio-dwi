@@ -1,59 +1,109 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import profilePhoto from "$lib/assets/d-1.jpg";
-  import { ArrowRight } from "@lucide/svelte";
+  import profilePhoto from "$lib/assets/www.png";
+  import katanaPhoto from "$lib/assets/ppp.png";
+  import { ArrowRight, Download } from "@lucide/svelte";
 
-  const skills = [
-    "SvelteKit",
-    "TypeScript",
-    "Node.js",
-    "Elysia",
-    "Drizzle ORM",
-    "MySQL",
-    "PostgreSQL",
-    "Tailwind CSS",
-    "REST API",
-    "GraphQL",
-    "Git",
-    "Docker",
-  ];
+  let photoWrap: HTMLDivElement;
+  let katanaEl: HTMLImageElement;
+  let cursorRing: HTMLDivElement;
 
-  const values = [
-    {
-      num: "01",
-      label: "Clean Code",
-      desc: "Kode bersih, terbaca, dan maintainable adalah prioritas utama.",
-    },
-    {
-      num: "02",
-      label: "Performance",
-      desc: "Setiap millisecond penting optimasi dari database hingga render.",
-    },
-    {
-      num: "03",
-      label: "User First",
-      desc: "Antarmuka harus intuitif dan memberikan pengalaman yang menyenangkan.",
-    },
-    {
-      num: "04",
-      label: "Always Learning",
-      desc: "Teknologi terus berkembang belajar tanpa henti adalah kunci.",
-    },
-  ];
+  // Target & current values (px, relative to photo)
+  let tx = 0,
+    ty = 0; // target cursor position
+  let cx = 0,
+    cy = 0; // current cursor position (lerped)
+  let targetR = 0; // target radius
+  let currentR = 0; // current radius (lerped)
+  let isInside = false;
+  let raf = 0;
+
+  const RADIUS = 130; // spotlight radius
+  const FEATHER = 40; // soft edge width in px
+  const LERP_POS = 0.14; // position smoothness (lower = more lag)
+  const LERP_R = 0.09; // radius smoothness (slower open/close)
+
+  function lerp(a: number, b: number, t: number) {
+    return a + (b - a) * t;
+  }
+
+  function tick() {
+    // Smooth position
+    cx = lerp(cx, tx, LERP_POS);
+    cy = lerp(cy, ty, LERP_POS);
+    // Smooth radius
+    currentR = lerp(currentR, targetR, LERP_R);
+
+    // Apply soft mask (radial gradient: opaque centre → transparent edge)
+    if (katanaEl) {
+      const inner = Math.max(0, currentR - FEATHER);
+      katanaEl.style.maskImage = `-webkit-radial-gradient(circle ${inner}px at ${cx}px ${cy}px, black 0%, black ${inner}px, transparent ${currentR}px)`;
+      katanaEl.style.webkitMaskImage = `radial-gradient(circle ${inner}px at ${cx}px ${cy}px, black 0%, black ${inner}px, transparent ${currentR}px)`;
+    }
+
+    // Move cursor ring
+    if (cursorRing) {
+      cursorRing.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%) scale(${currentR > 4 ? 1 : 0.1})`;
+      cursorRing.style.width = `${currentR * 2}px`;
+      cursorRing.style.height = `${currentR * 2}px`;
+      cursorRing.style.opacity = currentR > 4 ? "1" : "0";
+    }
+
+    raf = requestAnimationFrame(tick);
+  }
 
   onMount(() => {
+    // Intersection reveal
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add("visible");
-          }
+          if (e.isIntersecting) e.target.classList.add("visible");
         });
       },
       { threshold: 0.12, rootMargin: "0px 0px -8% 0px" },
     );
     document.querySelectorAll("#about .reveal").forEach((el) => io.observe(el));
-    return () => io.disconnect();
+
+    // Init mask (fully hidden)
+    if (katanaEl) {
+      katanaEl.style.maskImage =
+        "radial-gradient(circle 0px at 50% 50%, transparent 100%)";
+      katanaEl.style.webkitMaskImage =
+        "radial-gradient(circle 0px at 50% 50%, transparent 100%)";
+    }
+
+    raf = requestAnimationFrame(tick);
+
+    function onMove(e: MouseEvent) {
+      const rect = photoWrap.getBoundingClientRect();
+      tx = e.clientX - rect.left;
+      ty = e.clientY - rect.top;
+    }
+    function onEnter(e: MouseEvent) {
+      isInside = true;
+      targetR = RADIUS;
+      const rect = photoWrap.getBoundingClientRect();
+      // Snap position instantly on enter (no lag on first appear)
+      tx = cx = e.clientX - rect.left;
+      ty = cy = e.clientY - rect.top;
+      photoWrap.addEventListener("mousemove", onMove);
+    }
+    function onLeave() {
+      isInside = false;
+      targetR = 0;
+      photoWrap.removeEventListener("mousemove", onMove);
+    }
+
+    photoWrap.addEventListener("mouseenter", onEnter);
+    photoWrap.addEventListener("mouseleave", onLeave);
+
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(raf);
+      photoWrap.removeEventListener("mouseenter", onEnter);
+      photoWrap.removeEventListener("mouseleave", onLeave);
+      photoWrap.removeEventListener("mousemove", onMove);
+    };
   });
 </script>
 
@@ -71,7 +121,7 @@
     <div class="about-grid">
       <!-- Left: Headline + Description -->
       <div class="about-left">
-        <h2 class="about-headline reveal">
+        <h2 class="about-headline section-title reveal">
           <span class="hl-block">I Build</span>
           <span class="hl-block hl-italic">Things.</span>
         </h2>
@@ -100,19 +150,50 @@
             >
               GitHub Profile <ArrowRight size={12} />
             </a>
+            <a
+              href="/cv.pdf"
+              download="CV-DwiWahyuFauzan.pdf"
+              class="btn btn-ghost cv-btn"
+              aria-label="Download CV Dwi Wahyu Fauzan"
+            >
+              <Download size={12} /> Download CV
+            </a>
           </div>
         </div>
       </div>
 
-      <!-- Right: Photo -->
+      <!-- Right: Photo (spotlight lens reveal) -->
       <div class="about-right reveal reveal-delay-2">
-        <div class="about-photo-wrap">
+        <div
+          class="about-photo-wrap"
+          bind:this={photoWrap}
+          aria-label="Foto Dwi Wahyu Fauzan — gerakkan kursor untuk reveal katana"
+        >
+          <!-- Layer 1: Profile photo — always visible base -->
           <img
             src={profilePhoto}
             alt="Dwi Wahyu Fauzan"
-            class="about-photo"
+            class="about-photo about-photo-profile"
             loading="lazy"
           />
+
+          <!-- Layer 2: Katana — revealed by soft mask following cursor -->
+          <img
+            src={katanaPhoto}
+            alt="Katana"
+            class="about-photo about-photo-katana"
+            bind:this={katanaEl}
+            loading="lazy"
+            aria-hidden="true"
+          />
+
+          <!-- Cursor ring (invisible — used only by JS for mask tracking) -->
+          <div
+            class="photo-cursor-ring"
+            bind:this={cursorRing}
+            aria-hidden="true"
+          ></div>
+
           <div class="about-photo-label" aria-hidden="true">
             <span>DWI WAHYU FAUZAN</span>
             <span class="dot-sep">·</span>
@@ -120,30 +201,6 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Divider -->
-    <hr class="hr-line reveal" />
-
-    <!-- Skills Row -->
-    <div class="about-skills-section">
-      <p class="about-skills-label reveal">Tech Stack</p>
-      <div class="about-skills-grid reveal reveal-delay-1">
-        {#each skills as skill}
-          <span class="skill-tag">{skill}</span>
-        {/each}
-      </div>
-    </div>
-
-    <!-- Values Grid -->
-    <div class="about-values reveal reveal-delay-2">
-      {#each values as v}
-        <div class="value-item">
-          <span class="value-num">{v.num}</span>
-          <h3 class="value-label">{v.label}</h3>
-          <p class="value-desc">{v.desc}</p>
-        </div>
-      {/each}
     </div>
   </div>
 </section>
@@ -239,28 +296,58 @@
     flex-wrap: wrap;
   }
 
-  /* ─── Photo ───────────────────────────────────────────────── */
+  /* ─── Photo Wrap ─────────────────────────────────────────── */
   .about-photo-wrap {
     position: relative;
     overflow: hidden;
-    border-radius: 0; /* editorial: sharp */
+    border-radius: 0;
+    cursor: none; /* custom cursor ring replaces OS cursor */
   }
 
+  /* Shared sizing for both layers */
   .about-photo {
     width: 100%;
     aspect-ratio: 3/4;
     object-fit: cover;
-    object-position: center top;
     display: block;
-    filter: grayscale(100%);
-    transition:
-      filter 0.4s var(--ease),
-      transform 0.6s var(--ease);
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
   }
 
-  .about-photo-wrap:hover .about-photo {
-    filter: grayscale(0%);
-    transform: scale(1.025);
+  /* ── Layer 1: Profile — base, always visible ──────────────── */
+  .about-photo-profile {
+    object-position: center top;
+    filter: grayscale(100%);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Layer 2: Katana — mask controlled by JS ──────────────── */
+  .about-photo-katana {
+    object-position: center center;
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    z-index: 2;
+    /* Fully hidden by default — JS updates mask-image each frame */
+    mask-image: radial-gradient(circle 0px at 50% 50%, transparent 100%);
+    -webkit-mask-image: radial-gradient(
+      circle 0px at 50% 50%,
+      transparent 100%
+    );
+  }
+
+  /* ── Cursor ring (invisible — only used as JS ref) ──────────── */
+  .photo-cursor-ring {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0; /* always invisible */
+    border-radius: 50%;
+    will-change: transform, width, height;
   }
 
   .about-photo-label {
@@ -280,103 +367,20 @@
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: rgba(245, 245, 245, 0.7);
+    z-index: 4;
   }
 
   .dot-sep {
     opacity: 0.35;
   }
 
-  /* ─── Skills ──────────────────────────────────────────────── */
-  .about-skills-section {
-    padding: 56px 0;
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    align-items: start;
-    gap: 40px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 64px;
-  }
-
-  .about-skills-label {
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--ink-3);
-    padding-top: 6px;
-  }
-
-  .about-skills-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .skill-tag {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    color: var(--ink-2);
-    padding: 6px 14px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-full);
-    background: var(--bg);
-    transition:
-      background 0.2s var(--ease),
-      color 0.2s var(--ease),
-      border-color 0.2s var(--ease);
-  }
-  .skill-tag:hover {
-    background: var(--ink);
-    color: var(--bg);
-    border-color: var(--ink);
-  }
-
-  /* ─── Values ──────────────────────────────────────────────── */
-  .about-values {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
-  }
-
-  .value-item {
-    padding: 32px 32px 32px 0;
-    border-right: 1px solid var(--border);
-    padding-right: 32px;
-    padding-left: 0;
-  }
-  .value-item:last-child {
-    border-right: none;
-  }
-  .value-item + .value-item {
-    padding-left: 32px;
-  }
-
-  .value-num {
-    font-family: var(--font-mono);
-    font-size: 0.58rem;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    color: var(--ink-3);
-    display: block;
-    margin-bottom: 16px;
-  }
-
-  .value-label {
-    font-family: var(--font-head);
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--ink);
-    margin-bottom: 10px;
-    letter-spacing: -0.02em;
-  }
-
-  .value-desc {
-    font-size: 0.85rem;
-    line-height: 1.65;
-    color: var(--ink-2);
+  @media (prefers-reduced-motion: reduce) {
+    .about-photo-katana {
+      transition: none;
+    }
+    .photo-cursor-ring {
+      transition: none;
+    }
   }
 
   /* ─── Responsive ──────────────────────────────────────────── */
@@ -384,20 +388,6 @@
     .about-grid {
       grid-template-columns: 1fr;
       gap: 48px;
-    }
-    .about-values {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    .value-item {
-      border-right: none;
-      border-bottom: 1px solid var(--border);
-      padding: 28px 0;
-    }
-    .value-item:last-child {
-      border-bottom: none;
-    }
-    .value-item + .value-item {
-      padding-left: 0;
     }
     .about-skills-section {
       grid-template-columns: 1fr;
@@ -410,9 +400,6 @@
       flex-direction: column;
       align-items: flex-start;
       gap: 16px;
-    }
-    .about-values {
-      grid-template-columns: 1fr;
     }
     .about-cta-row {
       flex-direction: column;

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import japanBg from "$lib/assets/japan-artistic-3840x2160-25406.jpg";
 
   const categories = [
     {
@@ -85,21 +86,27 @@
   <!-- Background Image Layer -->
   <div class="skills-bg-layer" aria-hidden="true">
     <img
-      src="https://images2.alphacoders.com/977/thumb-1920-977483.jpg"
+      src={japanBg}
       alt=""
       class="skills-bg-img"
       draggable="false"
     />
+    <!-- Multi-layer overlay: dark vignette + red accent wash -->
     <div class="skills-dark-overlay"></div>
+    <div class="skills-red-overlay"></div>
+    <div class="skills-vignette"></div>
   </div>
 
   <div class="container skills-container">
     <!-- Eyebrow -->
-    <p class="section-eyebrow skills-eyebrow reveal">02 — Skills</p>
+    <p class="section-eyebrow skills-eyebrow reveal">03 — Skills</p>
 
     <!-- Header Row -->
     <div class="skills-header reveal">
-      <h2 class="section-title skills-title">Tech Stack.</h2>
+      <h2 class="section-title skills-title">
+        <span class="hl-block">Tech</span>
+        <span class="hl-block hl-italic">Stack.</span>
+      </h2>
       <p class="section-subtitle skills-subtitle">
         Alat dan teknologi yang saya gunakan untuk membangun produk digital
         berkualitas tinggi.
@@ -160,15 +167,44 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center;
+    object-position: center 30%;
     display: block;
     user-select: none;
+    /* Desaturate slightly so red accents from the overlay pop */
+    filter: saturate(0.85) contrast(1.05) brightness(0.95);
+    transform: scale(1.02);
+    transition: transform 8s ease-out;
   }
 
+  .skills:hover .skills-bg-img {
+    transform: scale(1.055);
+  }
+
+  /* Ink-black base darken */
   .skills-dark-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.45);
+    background: rgba(5, 3, 3, 0.52);
+  }
+
+  /* Subtle red ink wash — mirrors the maple red in the image */
+  .skills-red-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse 70% 60% at 15% 40%,
+      rgba(140, 20, 20, 0.22) 0%,
+      transparent 70%
+    );
+  }
+
+  /* Edge vignette for text readability */
+  .skills-vignette {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to bottom, rgba(5,3,3,0.55) 0%, transparent 28%, transparent 65%, rgba(5,3,3,0.7) 100%),
+      linear-gradient(to right, rgba(5,3,3,0.45) 0%, transparent 35%);
   }
 
   .skills-container {
