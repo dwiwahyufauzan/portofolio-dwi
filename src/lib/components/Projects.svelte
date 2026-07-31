@@ -65,6 +65,163 @@
     },
   ];
 
+  const techLogos = [
+    "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg",
+    "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg",
+    "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/svelte/svelte-original.svg",
+    "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg",
+    "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg",
+    "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg",
+    "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg",
+    "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg",
+    "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg",
+    "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg",
+    "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/express/express-original.svg",
+    "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bun/bun-original.svg",
+    "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg",
+    "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg",
+    "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/redis/redis-original.svg",
+    "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg",
+    "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg",
+    "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg",
+    "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linux/linux-original.svg",
+    "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/prisma/prisma-original.svg",
+  ];
+
+  interface FallingLogo {
+    id: number;
+    src: string;
+    x: number;
+    delay: number;
+    duration: number;
+    size: number;
+    opacity: number;
+    variant: number;
+
+    isDragging?: boolean;
+    isThrown?: boolean;
+    posX?: number;
+    posY?: number;
+    vx?: number;
+    vy?: number;
+    rotation?: number;
+  }
+
+  let containerEl = $state<HTMLDivElement | null>(null);
+
+  let fallingLogos = $state<FallingLogo[]>(
+    Array.from({ length: 24 }, (_, i) => ({
+      id: i,
+      src: techLogos[i % techLogos.length],
+      x: Math.floor(((i * 41 + 13) % 88) + 5),
+      delay: i * 1.25,
+      duration: 15 + ((i * 2.3) % 9),
+      size: 48 + ((i * 7) % 24),
+      opacity: 0.92,
+      variant: (i % 3) + 1,
+
+      isDragging: false,
+      isThrown: false,
+      posX: 0,
+      posY: 0,
+      vx: 0,
+      vy: 0,
+      rotation: 0,
+    })),
+  );
+
+  let activeDragId = $state<number | null>(null);
+  let lastPointerX = 0;
+  let lastPointerY = 0;
+  let physicsRaf = 0;
+
+  function handlePointerDown(e: PointerEvent, logo: FallingLogo) {
+    if (e.button !== 0 && e.pointerType === "mouse") return;
+    if (!containerEl) return;
+
+    const rect = containerEl.getBoundingClientRect();
+    const target = e.currentTarget as HTMLElement;
+    const itemRect = target.getBoundingClientRect();
+
+    logo.isDragging = true;
+    logo.isThrown = false;
+    logo.posX = itemRect.left - rect.left;
+    logo.posY = itemRect.top - rect.top;
+    logo.vx = 0;
+    logo.vy = 0;
+
+    lastPointerX = e.clientX;
+    lastPointerY = e.clientY;
+    activeDragId = logo.id;
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointercancel", handlePointerUp);
+  }
+
+  function handlePointerMove(e: PointerEvent) {
+    if (activeDragId === null) return;
+    const logo = fallingLogos.find((l) => l.id === activeDragId);
+    if (!logo) return;
+
+    const dx = e.clientX - lastPointerX;
+    const dy = e.clientY - lastPointerY;
+
+    logo.vx = (logo.vx || 0) * 0.35 + dx * 0.65;
+    logo.vy = (logo.vy || 0) * 0.35 + dy * 0.65;
+
+    logo.posX = (logo.posX || 0) + dx;
+    logo.posY = (logo.posY || 0) + dy;
+    logo.rotation = (logo.rotation || 0) + dx * 0.7;
+
+    lastPointerX = e.clientX;
+    lastPointerY = e.clientY;
+  }
+
+  function handlePointerUp() {
+    if (activeDragId === null) return;
+    const logo = fallingLogos.find((l) => l.id === activeDragId);
+    if (logo) {
+      logo.isDragging = false;
+      const speed = Math.hypot(logo.vx || 0, logo.vy || 0);
+      if (speed > 1.2) {
+        logo.isThrown = true;
+      }
+    }
+    activeDragId = null;
+    window.removeEventListener("pointermove", handlePointerMove);
+    window.removeEventListener("pointerup", handlePointerUp);
+    window.removeEventListener("pointercancel", handlePointerUp);
+  }
+
+  function runPhysicsLoop() {
+    if (containerEl) {
+      const cWidth = containerEl.clientWidth;
+      const cHeight = containerEl.clientHeight;
+
+      for (const logo of fallingLogos) {
+        if (logo.isThrown && !logo.isDragging) {
+          logo.posX = (logo.posX || 0) + (logo.vx || 0);
+          logo.posY = (logo.posY || 0) + (logo.vy || 0);
+
+          logo.vy = (logo.vy || 0) + 0.38; // gravity
+          logo.vx = (logo.vx || 0) * 0.97; // friction
+          logo.rotation = (logo.rotation || 0) + (logo.vx || 0) * 0.6;
+
+          // If thrown outside bounds, reset throw state so it rejoins fall animation
+          if (
+            (logo.posY || 0) > cHeight + 150 ||
+            (logo.posX || 0) < -200 ||
+            (logo.posX || 0) > cWidth + 200
+          ) {
+            logo.isThrown = false;
+          }
+        }
+      }
+    }
+    physicsRaf = requestAnimationFrame(runPhysicsLoop);
+  }
+
   let activeFilter = $state("All");
   const filters = ["All", "Web App", "Mobile", "Backend", "UI/UX"];
 
@@ -75,6 +232,8 @@
   );
 
   onMount(() => {
+    physicsRaf = requestAnimationFrame(runPhysicsLoop);
+
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
@@ -86,11 +245,124 @@
     document
       .querySelectorAll("#projects .reveal")
       .forEach((el) => io.observe(el));
-    return () => io.disconnect();
+
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(physicsRaf);
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("pointercancel", handlePointerUp);
+    };
   });
 </script>
 
 <section id="projects" class="projects section section-alt">
+  <!-- Irregular Lines Background Pattern -->
+  <div class="irregular-lines-bg" aria-hidden="true">
+    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern
+          id="projects-irregular-lines"
+          width="260"
+          height="260"
+          patternUnits="userSpaceOnUse"
+        >
+          <line
+            x1="0"
+            y1="30"
+            x2="260"
+            y2="230"
+            stroke="currentColor"
+            stroke-width="1.1"
+            opacity="0.08"
+          />
+          <line
+            x1="50"
+            y1="0"
+            x2="210"
+            y2="260"
+            stroke="currentColor"
+            stroke-width="0.7"
+            opacity="0.06"
+          />
+          <line
+            x1="0"
+            y1="190"
+            x2="260"
+            y2="60"
+            stroke="currentColor"
+            stroke-width="1.3"
+            opacity="0.07"
+          />
+          <line
+            x1="120"
+            y1="0"
+            x2="20"
+            y2="260"
+            stroke="currentColor"
+            stroke-width="0.8"
+            opacity="0.05"
+          />
+          <line
+            x1="200"
+            y1="0"
+            x2="240"
+            y2="260"
+            stroke="currentColor"
+            stroke-width="0.9"
+            opacity="0.09"
+          />
+          <line
+            x1="0"
+            y1="120"
+            x2="260"
+            y2="140"
+            stroke="currentColor"
+            stroke-width="0.5"
+            opacity="0.05"
+          />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#projects-irregular-lines)" />
+    </svg>
+  </div>
+
+  <!-- Interactive Drag & Throw Falling Tech Logos Background Animation -->
+  <div
+    bind:this={containerEl}
+    class="falling-tech-container"
+    aria-hidden="true"
+  >
+    {#each fallingLogos as logo (logo.id)}
+      <!-- svelte-ignore a11y_no_static_element_interactions -->
+      <div
+        role="button"
+        tabindex="-1"
+        class="falling-logo-item kite-anim-{logo.variant}"
+        class:is-dragging={logo.isDragging}
+        class:is-thrown={logo.isThrown}
+        onpointerdown={(e) => handlePointerDown(e, logo)}
+        style="
+          left: {logo.isDragging || logo.isThrown
+          ? (logo.posX || 0) + 'px'
+          : logo.x + '%'};
+          top: {logo.isDragging || logo.isThrown
+          ? (logo.posY || 0) + 'px'
+          : ''};
+          transform: {logo.isDragging || logo.isThrown
+          ? `rotate(${logo.rotation || 0}deg)`
+          : ''};
+          animation-delay: {logo.delay}s;
+          animation-duration: {logo.duration}s;
+          width: {logo.size}px;
+          height: {logo.size}px;
+          opacity: {logo.opacity};
+        "
+      >
+        <img src={logo.src} alt="" draggable="false" loading="lazy" />
+      </div>
+    {/each}
+  </div>
   <div class="container">
     <!-- Eyebrow -->
     <p class="section-eyebrow reveal">03 — Projects</p>
@@ -193,9 +465,170 @@
 </section>
 
 <style>
-  /* ─── Section ─────────────────────────────────────────────── */
+  /* ─── Section Base ────────────────────────────────────────── */
   .projects {
+    position: relative;
     background: var(--bg-alt);
+    overflow: hidden;
+  }
+
+  .projects :global(.container) {
+    position: relative;
+    z-index: 3;
+  }
+
+  .irregular-lines-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    color: var(--ink);
+    opacity: 0.85;
+    mask-image: radial-gradient(
+      ellipse 90% 90% at 50% 50%,
+      black 40%,
+      transparent 100%
+    );
+    -webkit-mask-image: radial-gradient(
+      ellipse 90% 90% at 50% 50%,
+      black 40%,
+      transparent 100%
+    );
+  }
+
+  /* ─── Falling Tech Logos Background Animation (Interactive Physics) ─── */
+  .falling-tech-container {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+    overflow: hidden;
+  }
+
+  .falling-logo-item {
+    position: absolute;
+    top: -120px;
+    user-select: none;
+    touch-action: none;
+    pointer-events: auto;
+    cursor: grab;
+    will-change: top, left, transform;
+    filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.22));
+    transition:
+      filter 0.2s ease,
+      transform 0.1s ease;
+  }
+
+  .falling-logo-item:hover {
+    filter: drop-shadow(0 10px 24px rgba(255, 255, 255, 0.4)) scale(1.12);
+  }
+
+  .falling-logo-item.is-dragging {
+    animation: none !important;
+    cursor: grabbing !important;
+    z-index: 100 !important;
+    filter: drop-shadow(0 14px 32px rgba(255, 255, 255, 0.6)) scale(1.22) !important;
+  }
+
+  .falling-logo-item.is-thrown {
+    animation: none !important;
+    z-index: 90 !important;
+    transition: none !important;
+  }
+
+  .falling-logo-item.kite-anim-1 {
+    animation: kite-fall-top-1 linear infinite;
+  }
+  .falling-logo-item.kite-anim-2 {
+    animation: kite-fall-top-2 linear infinite;
+  }
+  .falling-logo-item.kite-anim-3 {
+    animation: kite-fall-top-3 linear infinite;
+  }
+
+  .falling-logo-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  /* Variant 1: Animates top from -120px (Skills border) to 100% + 120px (Contact border) */
+  @keyframes kite-fall-top-1 {
+    0% {
+      top: -120px;
+      transform: translateX(0px) rotate(0deg);
+    }
+    25% {
+      top: 25%;
+      transform: translateX(65px) rotate(55deg);
+    }
+    50% {
+      top: 50%;
+      transform: translateX(-50px) rotate(-40deg);
+    }
+    75% {
+      top: 75%;
+      transform: translateX(55px) rotate(80deg);
+    }
+    100% {
+      top: calc(100% + 120px);
+      transform: translateX(-20px) rotate(360deg);
+    }
+  }
+
+  /* Variant 2 */
+  @keyframes kite-fall-top-2 {
+    0% {
+      top: -120px;
+      transform: translateX(0px) rotate(0deg);
+    }
+    25% {
+      top: 25%;
+      transform: translateX(-70px) rotate(-60deg);
+    }
+    50% {
+      top: 50%;
+      transform: translateX(60px) rotate(45deg);
+    }
+    75% {
+      top: 75%;
+      transform: translateX(-45px) rotate(-85deg);
+    }
+    100% {
+      top: calc(100% + 120px);
+      transform: translateX(35px) rotate(-360deg);
+    }
+  }
+
+  /* Variant 3 */
+  @keyframes kite-fall-top-3 {
+    0% {
+      top: -120px;
+      transform: translateX(0px) rotate(0deg);
+    }
+    33% {
+      top: 33%;
+      transform: translateX(85px) rotate(110deg);
+    }
+    66% {
+      top: 66%;
+      transform: translateX(-65px) rotate(220deg);
+    }
+    100% {
+      top: calc(100% + 120px);
+      transform: translateX(45px) rotate(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .falling-tech-container {
+      display: none;
+    }
   }
 
   /* ─── Header ──────────────────────────────────────────────── */

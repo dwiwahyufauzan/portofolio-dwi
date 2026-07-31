@@ -59,12 +59,11 @@
       <!-- Headline -->
       <div class="contact-header reveal">
         <h2 class="section-title contact-headline">
-          <span class="hl-block">Get In</span>
-          <span class="hl-block hl-italic">Touch.</span>
+          <span class="hl-block">Let's Work</span>
+          <span class="hl-block hl-italic">Together.</span>
         </h2>
         <p class="contact-desc">
-          Tertarik bekerja sama? Saya selalu terbuka untuk proyek baru,
-          kolaborasi, atau sekadar ngobrol soal teknologi.
+          Saya saat ini <strong>siap bekerja & melamar posisi baru (Open for Hire)</strong>. Jika perusahaan atau tim engineering Anda sedang mencari Fullstack Software Engineer yang siap berkontribusi, silakan hubungi saya melalui formulir di bawah ini atau email langsung.
         </p>
       </div>
 
@@ -129,7 +128,7 @@
             <textarea
               id="cf-message"
               bind:value={message}
-              placeholder="Tell me about your project..."
+              placeholder="Tuliskan tawaran posisi kerja, detail perusahaan, atau pesan Anda di sini..."
               class="form-textarea"
               rows={4}
               required

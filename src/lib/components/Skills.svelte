@@ -6,41 +6,141 @@
     {
       name: "Frontend",
       items: [
-        { name: "SvelteKit 5", level: 92 },
-        { name: "TypeScript", level: 88 },
-        { name: "Tailwind CSS 4", level: 90 },
-        { name: "HTML5 / CSS3", level: 95 },
-        { name: "React", level: 72 },
+        {
+          name: "JavaScript (ES6+)",
+          level: 92,
+          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg",
+        },
+        {
+          name: "TypeScript",
+          level: 88,
+          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg",
+        },
+        {
+          name: "SvelteKit 5",
+          level: 92,
+          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/svelte/svelte-original.svg",
+        },
+        {
+          name: "React.js",
+          level: 80,
+          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg",
+        },
+        {
+          name: "HTML5 / CSS3",
+          level: 95,
+          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg",
+        },
+        {
+          name: "Tailwind CSS",
+          level: 90,
+          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg",
+        },
+        {
+          name: "Bootstrap",
+          level: 85,
+          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg",
+        },
       ],
     },
     {
       name: "Backend",
       items: [
-        { name: "Node.js", level: 85 },
-        { name: "Elysia (Bun)", level: 88 },
-        { name: "Express.js", level: 80 },
-        { name: "REST API Design", level: 90 },
-        { name: "JWT / Auth", level: 85 },
+        {
+          name: "PHP",
+          level: 86,
+          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg",
+        },
+        {
+          name: "Laravel",
+          level: 88,
+          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg",
+        },
+        {
+          name: "Node.js",
+          level: 90,
+          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg",
+        },
+        {
+          name: "Express.js",
+          level: 82,
+          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/express/express-original.svg",
+        },
+        {
+          name: "Elysia (Bun)",
+          level: 85,
+          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bun/bun-original.svg",
+        },
+        {
+          name: "REST API & GraphQL",
+          level: 90,
+          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/graphql/graphql-plain.svg",
+        },
+        {
+          name: "JWT / Auth",
+          level: 85,
+          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/json/json-original.svg",
+        },
       ],
     },
     {
       name: "Database",
       items: [
-        { name: "MySQL 8+", level: 86 },
-        { name: "PostgreSQL", level: 78 },
-        { name: "Drizzle ORM", level: 88 },
-        { name: "Prisma ORM", level: 75 },
-        { name: "Redis", level: 65 },
+        {
+          name: "MySQL",
+          level: 86,
+          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg",
+        },
+        {
+          name: "PostgreSQL",
+          level: 82,
+          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg",
+        },
+        {
+          name: "Redis",
+          level: 75,
+          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/redis/redis-original.svg",
+        },
+        {
+          name: "Drizzle ORM",
+          level: 88,
+          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sqlite/sqlite-original.svg",
+        },
+        {
+          name: "Prisma ORM",
+          level: 78,
+          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/prisma/prisma-original.svg",
+        },
       ],
     },
     {
       name: "Tools & DevOps",
       items: [
-        { name: "Git & GitHub", level: 92 },
-        { name: "Docker", level: 68 },
-        { name: "Linux / Bash", level: 72 },
-        { name: "Bun Runtime", level: 85 },
-        { name: "Vite / Vitest", level: 80 },
+        {
+          name: "Git & GitHub",
+          level: 92,
+          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg",
+        },
+        {
+          name: "Docker",
+          level: 84,
+          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg",
+        },
+        {
+          name: "Vite.js",
+          level: 88,
+          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg",
+        },
+        {
+          name: "Bun Runtime",
+          level: 85,
+          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bun/bun-original.svg",
+        },
+        {
+          name: "Linux / Bash",
+          level: 75,
+          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linux/linux-original.svg",
+        },
       ],
     },
   ];
@@ -117,7 +217,17 @@
             {#each cat.items as item, ii}
               <div class="skill-row">
                 <div class="skill-info">
-                  <span class="skill-name">{item.name}</span>
+                  <span class="skill-name-wrap">
+                    {#if item.icon}
+                      <img
+                        src={item.icon}
+                        alt=""
+                        class="skill-logo-icon"
+                        loading="lazy"
+                      />
+                    {/if}
+                    <span class="skill-name">{item.name}</span>
+                  </span>
                   <span class="skill-pct">{item.level}%</span>
                 </div>
                 <div class="skill-track">
@@ -287,7 +397,20 @@
   .skill-info {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
+  }
+
+  .skill-name-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .skill-logo-icon {
+    width: 17px;
+    height: 17px;
+    object-fit: contain;
+    flex-shrink: 0;
   }
 
   .skill-name {

@@ -5,6 +5,7 @@
   import Skills from "$lib/components/Skills.svelte";
   import Projects from "$lib/components/Projects.svelte";
   import Contact from "$lib/components/Contact.svelte";
+  import Socials from "$lib/components/Socials.svelte";
   import Footer from "$lib/components/Footer.svelte";
 </script>
 
@@ -16,6 +17,7 @@
   <Skills />
   <Projects />
   <Contact />
+  <Socials />
 </main>
 
 <Footer />

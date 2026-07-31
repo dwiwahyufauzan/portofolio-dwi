@@ -78,7 +78,7 @@
     width: 100vw;
     height: 100svh;
     min-height: 600px;
-    background: #080808;
+    background: #000000;
     color: #f5f5f5;
     overflow: hidden;
   }
@@ -88,7 +88,7 @@
     position: absolute;
     inset: 0;
     z-index: 0;
-    background: #080808;
+    background: #000000;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -98,11 +98,13 @@
     width: 100%;
     height: 100%;
     object-fit: contain;
-    object-position: center center;
+    object-position: center 60%;
     display: block;
     user-select: none;
     filter: contrast(1.05) brightness(0.95);
     opacity: 1;
+    padding-top: 40px;
+    box-sizing: border-box;
   }
 
   /* ─── Vignette Overlay ───────────────────────────────────── */
@@ -115,14 +117,14 @@
       /* Bottom-right vignette for text card readability */
       radial-gradient(
         ellipse 55% 45% at 100% 100%,
-        rgba(5, 5, 5, 0.88) 0%,
-        rgba(5, 5, 5, 0.55) 45%,
+        rgba(0, 0, 0, 0.88) 0%,
+        rgba(0, 0, 0, 0.55) 45%,
         transparent 75%
       ),
       /* Top navbar space tint */
-        linear-gradient(to bottom, rgba(5, 5, 5, 0.4) 0%, transparent 16%),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.4) 0%, transparent 16%),
       /* Bottom edge tint */
-        linear-gradient(to top, rgba(5, 5, 5, 0.5) 0%, transparent 20%);
+        linear-gradient(to top, rgba(0, 0, 0, 0.5) 0%, transparent 20%);
   }
 
   /* ─── Text card — bottom right corner ────────────────────── */
@@ -302,7 +304,9 @@
   @media (max-width: 768px) {
     .hero-bg-img {
       object-fit: cover;
-      object-position: center 20%;
+      object-position: center 10%;
+      padding-top: 55px;
+      box-sizing: border-box;
     }
     .hero-card {
       right: 24px;
@@ -319,6 +323,11 @@
   }
 
   @media (max-width: 480px) {
+    .hero-bg-img {
+      object-fit: cover;
+      object-position: center 8%;
+      padding-top: 60px;
+    }
     .hero-card {
       right: 20px;
       bottom: 40px;

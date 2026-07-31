@@ -108,6 +108,76 @@
 </script>
 
 <section id="about" class="about section">
+  <!-- Irregular Lines Background Pattern -->
+  <div class="irregular-lines-bg" aria-hidden="true">
+    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern
+          id="about-irregular-lines"
+          width="240"
+          height="240"
+          patternUnits="userSpaceOnUse"
+        >
+          <line
+            x1="0"
+            y1="20"
+            x2="240"
+            y2="220"
+            stroke="currentColor"
+            stroke-width="1"
+            opacity="0.09"
+          />
+          <line
+            x1="40"
+            y1="0"
+            x2="200"
+            y2="240"
+            stroke="currentColor"
+            stroke-width="0.6"
+            opacity="0.07"
+          />
+          <line
+            x1="0"
+            y1="170"
+            x2="240"
+            y2="50"
+            stroke="currentColor"
+            stroke-width="1.2"
+            opacity="0.08"
+          />
+          <line
+            x1="100"
+            y1="0"
+            x2="15"
+            y2="240"
+            stroke="currentColor"
+            stroke-width="0.7"
+            opacity="0.06"
+          />
+          <line
+            x1="180"
+            y1="0"
+            x2="220"
+            y2="240"
+            stroke="currentColor"
+            stroke-width="0.8"
+            opacity="0.1"
+          />
+          <line
+            x1="0"
+            y1="110"
+            x2="240"
+            y2="130"
+            stroke="currentColor"
+            stroke-width="0.5"
+            opacity="0.06"
+          />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#about-irregular-lines)" />
+    </svg>
+  </div>
+
   <div class="container">
     <!-- Section top row -->
     <div class="about-header reveal">
@@ -122,34 +192,125 @@
       <!-- Left: Headline + Description -->
       <div class="about-left">
         <h2 class="about-headline section-title reveal">
-          <span class="hl-block">I Build</span>
-          <span class="hl-block hl-italic">Things.</span>
+          <span class="hl-block">Ready To</span>
+          <span class="hl-block hl-italic">Contribute.</span>
         </h2>
 
         <div class="about-text-col reveal reveal-delay-1">
           <p class="about-para">
-            Halo!, Saya <strong>Dwi Wahyu Fauzan</strong>, seorang Fullstack
-            Software Engineer asal Indonesia. Saya membangun sistem web modern
-            yang presisi, elegan, dan siap scale dari UI/UX responsif hingga
-            arsitektur backend solid.
+            Halo! Saya <strong>Dwi Wahyu Fauzan</strong>, seorang Fullstack
+            Developer Engineer yang
+            <strong>siap bekerja dan melamar posisi baru (Open to Work)</strong
+            >. Saya berdedikasi tinggi untuk bergabung dengan tim engineering
+            dan berkontribusi langsung dalam pengembangan sistem web modern yang
+            presisi, efisien, dan siap scale.
           </p>
           <p class="about-para">
-            Dengan pengalaman di SvelteKit, Node.js, TypeScript, dan ekosistem
-            database modern, saya berfokus pada performa, keterbacaan kode, dan
-            pengalaman pengguna yang intuitif. Setiap proyek adalah kesempatan
-            untuk membangun sesuatu yang benar-benar bermanfaat.
+            Dengan keahlian teknis dalam <strong>JavaScript (ES6+)</strong>,
+            <strong>TypeScript</strong>, <strong>SvelteKit</strong>,
+            <strong>PHP & Laravel</strong>, <strong>Node.js</strong>,
+            <strong>Docker</strong>, serta
+            <strong>Bootstrap / Tailwind</strong>, saya terbiasa menangani alur
+            kerja penuh dari perancangan UI/UX yang intuitif hingga pengolahan
+            bisnis logika backend & arsitektur database.
           </p>
 
+          <!-- Core Skills Badges with Official Logos -->
+          <div class="about-tech-tags" aria-label="Key Technologies">
+            <span class="tech-tag">
+              <img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg"
+                alt=""
+                class="tech-tag-icon"
+                loading="lazy"
+              />
+              JavaScript
+            </span>
+            <span class="tech-tag">
+              <img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg"
+                alt=""
+                class="tech-tag-icon"
+                loading="lazy"
+              />
+              TypeScript
+            </span>
+            <span class="tech-tag">
+              <img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg"
+                alt=""
+                class="tech-tag-icon"
+                loading="lazy"
+              />
+              PHP
+            </span>
+            <span class="tech-tag">
+              <img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg"
+                alt=""
+                class="tech-tag-icon"
+                loading="lazy"
+              />
+              Laravel
+            </span>
+            <span class="tech-tag">
+              <img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/svelte/svelte-original.svg"
+                alt=""
+                class="tech-tag-icon"
+                loading="lazy"
+              />
+              SvelteKit
+            </span>
+            <span class="tech-tag">
+              <img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg"
+                alt=""
+                class="tech-tag-icon"
+                loading="lazy"
+              />
+              Node.js
+            </span>
+            <span class="tech-tag">
+              <img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg"
+                alt=""
+                class="tech-tag-icon"
+                loading="lazy"
+              />
+              Docker
+            </span>
+            <span class="tech-tag">
+              <img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg"
+                alt=""
+                class="tech-tag-icon"
+                loading="lazy"
+              />
+              Vite.js
+            </span>
+            <span class="tech-tag">
+              <img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg"
+                alt=""
+                class="tech-tag-icon"
+                loading="lazy"
+              />
+              Bootstrap
+            </span>
+            <span class="tech-tag">
+              <img
+                src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg"
+                alt=""
+                class="tech-tag-icon"
+                loading="lazy"
+              />
+              TailwindCSS
+            </span>
+          </div>
+
           <div class="about-cta-row">
-            <a href="#contact" class="btn btn-dark">Get in Touch</a>
-            <a
-              href="https://github.com/dwiwahyufauzan"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn btn-ghost"
-            >
-              GitHub Profile <ArrowRight size={12} />
-            </a>
+            <a href="#contact" class="btn btn-dark">Hire Me / Hubungi Saya</a>
             <a
               href="/cv.pdf"
               download="CV-DwiWahyuFauzan.pdf"
@@ -157,6 +318,14 @@
               aria-label="Download CV Dwi Wahyu Fauzan"
             >
               <Download size={12} /> Download CV
+            </a>
+            <a
+              href="https://github.com/dwiwahyufauzan"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-ghost"
+            >
+              GitHub Profile <ArrowRight size={12} />
             </a>
           </div>
         </div>
@@ -206,9 +375,27 @@
 </section>
 
 <style>
-  /* ─── Section ─────────────────────────────────────────────── */
+  /* ─── Section Base ────────────────────────────────────────── */
   .about {
+    position: relative;
     background: var(--bg-alt);
+    overflow: hidden;
+  }
+
+  .about :global(.container) {
+    position: relative;
+    z-index: 1;
+  }
+
+  .irregular-lines-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    color: var(--ink);
+    opacity: 0.85;
+    mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 40%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 40%, transparent 100%);
   }
 
   /* ─── Header Row ──────────────────────────────────────────── */
@@ -286,6 +473,47 @@
   .about-para strong {
     color: var(--ink);
     font-weight: 600;
+  }
+
+  /* ─── Tech Stack Badges ───────────────────────────────────── */
+  .about-tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+    margin-bottom: 8px;
+  }
+
+  .tech-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 6px 13px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--ink);
+    border: 1px solid var(--border);
+    transition: all 0.22s cubic-bezier(0.23, 1, 0.32, 1);
+    user-select: none;
+  }
+
+  .tech-tag-icon {
+    width: 15px;
+    height: 15px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  .tech-tag:hover {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
   .about-cta-row {
@@ -389,7 +617,6 @@
       grid-template-columns: 1fr;
       gap: 48px;
     }
-
   }
 
   @media (max-width: 640px) {

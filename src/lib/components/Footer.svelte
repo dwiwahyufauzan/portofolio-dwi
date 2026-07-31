@@ -56,9 +56,22 @@
   </div>
 </footer>
 
-<!-- Giant Editorial PORTFOLIO Banner -->
+<!-- Giant Editorial PORTFOLIO Banner — Infinite Horizontal Marquee -->
 <div class="footer-giant-banner" aria-hidden="true">
-  <h1 class="giant-portfolio-text">PORTFOLIO</h1>
+  <div class="marquee-track">
+    <div class="marquee-group">
+      <span class="giant-portfolio-text">PORTFOLIO</span>
+      <span class="giant-portfolio-text">PORTFOLIO</span>
+      <span class="giant-portfolio-text">PORTFOLIO</span>
+      <span class="giant-portfolio-text">PORTFOLIO</span>
+    </div>
+    <div class="marquee-group" aria-hidden="true">
+      <span class="giant-portfolio-text">PORTFOLIO</span>
+      <span class="giant-portfolio-text">PORTFOLIO</span>
+      <span class="giant-portfolio-text">PORTFOLIO</span>
+      <span class="giant-portfolio-text">PORTFOLIO</span>
+    </div>
+  </div>
 </div>
 
 <style>
@@ -175,35 +188,86 @@
     background: var(--ink, #111111);
   }
 
-  /* ─── Giant Editorial PORTFOLIO Banner ───────────────────── */
+  /* ─── Giant Editorial PORTFOLIO Banner (Infinite Marquee) ─── */
   .footer-giant-banner {
     width: 100%;
     overflow: hidden;
     background: var(--bg-alt, #f5f4f0);
     border-top: 1px solid var(--border, #e2e2e2);
-    padding: 16px 0 28px;
+    padding: 20px 0 32px;
     display: flex;
-    justify-content: center;
-    align-items: center;
     user-select: none;
+    position: relative;
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee-scroll 28s linear infinite;
+    will-change: transform;
+  }
+
+  .footer-giant-banner:hover .marquee-track {
+    animation-play-state: paused;
+  }
+
+  .marquee-group {
+    display: flex;
+    align-items: center;
+    gap: 2.5vw;
+    padding-right: 2.5vw;
+    flex-shrink: 0;
   }
 
   .giant-portfolio-text {
     font-family: var(--font-head);
-    font-size: clamp(4.5rem, 18vw, 22rem);
+    font-size: clamp(4.5rem, 14vw, 16rem);
     font-weight: 900;
-    line-height: 0.8;
+    line-height: 0.85;
     letter-spacing: -0.04em;
     text-transform: uppercase;
     color: transparent;
     -webkit-text-fill-color: transparent;
     -webkit-text-stroke: 2px var(--ink, #111111);
-    opacity: 0.12;
+    opacity: 0.15;
     margin: 0;
-    text-align: center;
     white-space: nowrap;
-    position: relative;
-    transform: none;
+    cursor: pointer;
+    transition:
+      color 0.35s ease,
+      -webkit-text-fill-color 0.35s ease,
+      -webkit-text-stroke-color 0.35s ease,
+      opacity 0.35s ease,
+      filter 0.35s ease,
+      transform 0.35s ease;
+  }
+
+  /* Red color state ONLY on the specific touched/hovered PORTFOLIO text */
+  .giant-portfolio-text:hover,
+  .giant-portfolio-text:active {
+    color: #e63946;
+    -webkit-text-fill-color: #e63946;
+    -webkit-text-stroke: 2px #e63946;
+    opacity: 1;
+    filter: drop-shadow(0 0 28px rgba(230, 57, 70, 0.45));
+  }
+
+  .giant-portfolio-sep {
+    font-family: var(--font-head);
+    font-size: clamp(3rem, 9vw, 11rem);
+    font-weight: 300;
+    color: var(--ink, #111111);
+    opacity: 0.15;
+    white-space: nowrap;
+  }
+
+  @keyframes marquee-scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
   }
 
   /* ─── Responsive ──────────────────────────────────────────── */
