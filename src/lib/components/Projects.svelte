@@ -93,7 +93,7 @@
 <section id="projects" class="projects section section-alt">
   <div class="container">
     <!-- Eyebrow -->
-    <p class="section-eyebrow reveal">06 — Projects</p>
+    <p class="section-eyebrow reveal">03 — Projects</p>
 
     <!-- Header -->
     <div class="projects-header reveal">

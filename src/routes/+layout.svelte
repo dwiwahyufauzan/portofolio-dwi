@@ -1,6 +1,6 @@
 <script lang="ts">
 	import './layout.css';
-	import favicon from '$lib/assets/favicon.svg';
+	import favicon from '$lib/assets/favicon-logo.png';
 	import { onMount } from 'svelte';
 	import Preloader from '$lib/components/Preloader.svelte';
 
@@ -51,7 +51,8 @@
 
 <svelte:head>
 	<title>Dwi Wahyu Fauzan — Fullstack Software Engineer</title>
-	<link rel="icon" href={favicon} />
+	<link rel="icon" type="image/png" href={favicon} />
+	<link rel="apple-touch-icon" href={favicon} />
 	<meta name="description" content="Portfolio Dwi Wahyu Fauzan — Fullstack Software Engineer. Membangun produk digital modern yang presisi, elegan, dan siap scale dengan SvelteKit, Node.js, dan TypeScript." />
 	<meta name="keywords" content="fullstack developer, web developer, SvelteKit, Node.js, TypeScript, portfolio, Dwi Wahyu Fauzan, Indonesia" />
 	<meta property="og:title" content="Dwi Wahyu Fauzan — Fullstack Software Engineer" />
