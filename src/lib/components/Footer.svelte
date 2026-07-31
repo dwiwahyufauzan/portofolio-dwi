@@ -198,7 +198,7 @@
     color: transparent;
     -webkit-text-fill-color: transparent;
     -webkit-text-stroke: 2px var(--ink, #111111);
-    opacity: 1;
+    opacity: 0.12;
     margin: 0;
     text-align: center;
     white-space: nowrap;
