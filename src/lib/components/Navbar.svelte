@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { fade, fly } from "svelte/transition";
   import { ArrowUpRight, X } from "@lucide/svelte";
+  import logoImg from "$lib/assets/logo.png";
 
   let scrolled = $state(false);
   let menuOpen = $state(false);
@@ -78,8 +79,8 @@
   aria-label="Main navigation"
 >
   <!-- Logo -->
-  <a href="#hero" class="nav-logo" aria-label="Dwi Wahyu Fauzan — Home">
-    <img src="/logo.png" alt="Logo" class="nav-logo-img" />
+  <a href="#hero" class="nav-logo" aria-label="Dwi Wahyu Fauzan - Home">
+    <img src={logoImg} alt="Logo" class="nav-logo-img" />
   </a>
 
   <!-- Desktop Nav Links -->
@@ -134,7 +135,7 @@
     <!-- Overlay Top Bar -->
     <div class="mobile-top-bar">
       <a href="#hero" class="mobile-logo" onclick={closeMenu} aria-label="Home">
-        <img src="/logo.png" alt="Logo" class="mobile-logo-img" />
+        <img src={logoImg} alt="Logo" class="mobile-logo-img" />
       </a>
       <button
         class="mobile-close-btn"
