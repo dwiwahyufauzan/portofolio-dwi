@@ -108,10 +108,6 @@
     transform: scale(1.08);
   }
 
-  .footer-dot {
-    color: var(--ink, #111111);
-    opacity: 0.35;
-  }
 
   .footer-copy {
     font-family: var(--font-mono);

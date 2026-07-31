@@ -323,7 +323,7 @@
     transition: transform 0s;
   }
 
-  .skill-bar.bar-animate {
+  :global(.skill-bar.bar-animate) {
     transform: scaleX(1);
     transition: transform 0.8s var(--ease) calc(var(--i, 0) * 0.06s);
   }

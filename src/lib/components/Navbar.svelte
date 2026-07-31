@@ -113,7 +113,6 @@
       aria-expanded={menuOpen}
       type="button"
     >
-      <span class="hamburger-label">{menuOpen ? "CLOSE" : "MENU"}</span>
       <div class="hamburger-lines">
         <span class="line line-1"></span>
         <span class="line line-2"></span>
@@ -346,11 +345,13 @@
   .hamburger-btn {
     display: none;
     align-items: center;
-    gap: 10px;
-    padding: 8px 16px;
-    border-radius: var(--radius-full);
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     color: inherit;
     cursor: pointer;
     backdrop-filter: blur(8px);
@@ -361,14 +362,6 @@
     background: rgba(0, 0, 0, 0.05);
     border-color: rgba(0, 0, 0, 0.15);
     color: #111111;
-  }
-
-  .hamburger-label {
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
   }
 
   .hamburger-lines {
@@ -501,18 +494,7 @@
     color: #ef4444;
   }
 
-  .mobile-link-arrow {
-    opacity: 0;
-    transform: translate(-10px, 10px);
-    transition: all 0.25s ease;
-    color: #ffffff;
-  }
 
-  .mobile-link:hover .mobile-link-arrow,
-  .mobile-link.active .mobile-link-arrow {
-    opacity: 1;
-    transform: none;
-  }
 
   /* Overlay Footer */
   .mobile-footer {

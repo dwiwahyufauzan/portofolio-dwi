@@ -389,10 +389,7 @@
       grid-template-columns: 1fr;
       gap: 48px;
     }
-    .about-skills-section {
-      grid-template-columns: 1fr;
-      gap: 24px;
-    }
+
   }
 
   @media (max-width: 640px) {
