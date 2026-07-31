@@ -336,9 +336,7 @@
       opacity: 0.3;
       transform: none;
     }
-    .avail-dot {
-      animation: none;
-    }
+
     .hero-card {
       transition: none;
     }

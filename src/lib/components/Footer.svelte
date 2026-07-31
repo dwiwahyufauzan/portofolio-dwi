@@ -1,5 +1,6 @@
 <script lang="ts">
   import { ArrowUp } from "@lucide/svelte";
+  import logoImg from "$lib/assets/logo.png";
 
   const year = new Date().getFullYear();
 
@@ -19,7 +20,7 @@
     <!-- Left: Brand + Copyright -->
     <div class="footer-left">
       <a href="#hero" class="footer-logo" aria-label="Back to top">
-        <img src="/logo.png" alt="Logo" class="footer-logo-img" />
+        <img src={logoImg} alt="Logo" class="footer-logo-img" />
       </a>
       <p class="footer-copy">
         © {year} Dwi Wahyu Fauzan. All rights reserved.

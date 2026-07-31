@@ -85,12 +85,7 @@
 <section id="skills" class="skills section">
   <!-- Background Image Layer -->
   <div class="skills-bg-layer" aria-hidden="true">
-    <img
-      src={japanBg}
-      alt=""
-      class="skills-bg-img"
-      draggable="false"
-    />
+    <img src={japanBg} alt="" class="skills-bg-img" draggable="false" />
     <!-- Multi-layer overlay: dark vignette + red accent wash -->
     <div class="skills-dark-overlay"></div>
     <div class="skills-red-overlay"></div>
@@ -99,7 +94,7 @@
 
   <div class="container skills-container">
     <!-- Eyebrow -->
-    <p class="section-eyebrow skills-eyebrow reveal">03 — Skills</p>
+    <p class="section-eyebrow skills-eyebrow reveal">02 — Skills</p>
 
     <!-- Header Row -->
     <div class="skills-header reveal">
@@ -202,9 +197,14 @@
   .skills-vignette {
     position: absolute;
     inset: 0;
-    background:
-      linear-gradient(to bottom, rgba(5,3,3,0.55) 0%, transparent 28%, transparent 65%, rgba(5,3,3,0.7) 100%),
-      linear-gradient(to right, rgba(5,3,3,0.45) 0%, transparent 35%);
+    background: linear-gradient(
+        to bottom,
+        rgba(5, 3, 3, 0.55) 0%,
+        transparent 28%,
+        transparent 65%,
+        rgba(5, 3, 3, 0.7) 100%
+      ),
+      linear-gradient(to right, rgba(5, 3, 3, 0.45) 0%, transparent 35%);
   }
 
   .skills-container {
