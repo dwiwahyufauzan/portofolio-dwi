@@ -63,9 +63,9 @@
 
 <style>
   .footer {
-    background: var(--bg-alt, #F5F4F0);
+    background: var(--bg-alt, #f5f4f0);
     color: var(--ink, #111111);
-    border-top: 1px solid var(--border, #E2E2E2);
+    border-top: 1px solid var(--border, #e2e2e2);
     padding: 0 60px;
     height: 80px;
     display: flex;
@@ -108,7 +108,6 @@
   .footer-logo:hover .footer-logo-img {
     transform: scale(1.08);
   }
-
 
   .footer-copy {
     font-family: var(--font-mono);
@@ -158,7 +157,7 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    border: 1px solid var(--border, #E2E2E2);
+    border: 1px solid var(--border, #e2e2e2);
     color: var(--ink-2, #444444);
     display: flex;
     align-items: center;
@@ -180,8 +179,8 @@
   .footer-giant-banner {
     width: 100%;
     overflow: hidden;
-    background: var(--bg-alt, #F5F4F0);
-    border-top: 1px solid var(--border, #E2E2E2);
+    background: var(--bg-alt, #f5f4f0);
+    border-top: 1px solid var(--border, #e2e2e2);
     padding: 16px 0 28px;
     display: flex;
     justify-content: center;
@@ -199,7 +198,7 @@
     color: transparent;
     -webkit-text-fill-color: transparent;
     -webkit-text-stroke: 2px var(--ink, #111111);
-    opacity: 0.12;
+    opacity: 1;
     margin: 0;
     text-align: center;
     white-space: nowrap;
@@ -229,5 +228,4 @@
       padding: 16px 0 24px;
     }
   }
-
 </style>
