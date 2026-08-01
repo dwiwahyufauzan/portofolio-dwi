@@ -60,6 +60,7 @@
     { href: "#about", label: "About", id: "about" },
     { href: "#skills", label: "Skills", id: "skills" },
     { href: "#projects", label: "Projects", id: "projects" },
+    { href: "#roadmap", label: "Roadmap", id: "roadmap" },
     { href: "#contact", label: "Contact", id: "contact" },
   ];
 

@@ -242,14 +242,14 @@
       transform 0.35s ease;
   }
 
-  /* Red color state ONLY on the specific touched/hovered PORTFOLIO text */
+  /* Ink fill state on hovered/touched PORTFOLIO text */
   .giant-portfolio-text:hover,
   .giant-portfolio-text:active {
-    color: #e63946;
-    -webkit-text-fill-color: #e63946;
-    -webkit-text-stroke: 2px #e63946;
+    color: var(--ink, #111111);
+    -webkit-text-fill-color: var(--ink, #111111);
+    -webkit-text-stroke: 2px var(--ink, #111111);
     opacity: 1;
-    filter: drop-shadow(0 0 28px rgba(230, 57, 70, 0.45));
+    filter: none;
   }
 
   .giant-portfolio-sep {

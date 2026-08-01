@@ -54,7 +54,7 @@
     <!-- Left Aligned Content Box -->
     <div class="contact-left-wrapper">
       <!-- Eyebrow -->
-      <p class="section-eyebrow reveal">04 — Contact</p>
+      <p class="section-eyebrow reveal">06 — Contact</p>
 
       <!-- Headline -->
       <div class="contact-header reveal">

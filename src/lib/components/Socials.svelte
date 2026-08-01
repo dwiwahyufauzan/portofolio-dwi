@@ -115,8 +115,8 @@
           <span class="hl-block hl-italic">Connected.</span>
         </h2>
         <p class="section-subtitle">
-          Temukan saya di berbagai platform — dari coding, visual, hingga
-          diskusi komunitas.
+          Temukan saya di berbagai platform dari coding, visual, hingga diskusi
+          komunitas.
         </p>
       </div>
     </div>
