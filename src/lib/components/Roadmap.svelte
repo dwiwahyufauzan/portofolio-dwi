@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { slide } from "svelte/transition";
   import logoImg from "$lib/assets/logo.png";
-  import roadmapBg from "$lib/assets/1294983.png";
+  import roadmapBg from "$lib/assets/wallpaperflare.com_wallpaper.jpg";
   import {
     FileText,
     Palette,
@@ -39,7 +39,7 @@
       pctX: 6,
       posY: 140,
       mobileX: 20,
-      mobileY: 50,
+      mobileY: 60,
     },
     {
       number: "02",
@@ -62,7 +62,7 @@
       pctX: 28,
       posY: 40,
       mobileX: 80,
-      mobileY: 170,
+      mobileY: 190,
     },
     {
       number: "03",
@@ -85,7 +85,7 @@
       pctX: 50,
       posY: 140,
       mobileX: 20,
-      mobileY: 290,
+      mobileY: 320,
     },
     {
       number: "04",
@@ -108,7 +108,7 @@
       pctX: 72,
       posY: 240,
       mobileX: 80,
-      mobileY: 410,
+      mobileY: 450,
     },
     {
       number: "05",
@@ -131,7 +131,7 @@
       pctX: 94,
       posY: 140,
       mobileX: 50,
-      mobileY: 530,
+      mobileY: 570,
     },
   ];
 
@@ -140,6 +140,12 @@
       activeStep = null;
     } else {
       activeStep = i;
+      setTimeout(() => {
+        const detailEl = document.querySelector(".dropdown-detail-panel");
+        if (detailEl) {
+          detailEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+      }, 120);
     }
   }
 
@@ -161,10 +167,10 @@
 
 <section
   id="roadmap"
-  class="roadmap section"
+  class="roadmap section section-alt"
   aria-label="Work Roadmap Wave Map"
 >
-  <!-- Natural Background Image 1294983.png Layer -->
+  <!-- Natural Background Image Layer -->
   <div class="roadmap-bg-layer" aria-hidden="true">
     <img src={roadmapBg} alt="" class="roadmap-bg-img" draggable="false" />
     <div class="roadmap-bg-overlay"></div>
@@ -174,15 +180,15 @@
   <div class="roadmap-grid-bg" aria-hidden="true"></div>
 
   <div class="container">
-    <!-- Header with Light Typography -->
+    <!-- Header -->
     <div class="roadmap-top reveal">
-      <p class="section-eyebrow light-eyebrow">04 — Work Roadmap</p>
+      <p class="section-eyebrow">04 — Work Roadmap</p>
       <div class="roadmap-head-row">
-        <h2 class="section-title light-title">
+        <h2 class="section-title">
           <span class="hl-block">Project</span>
           <span class="hl-block hl-italic">Roadmap.</span>
         </h2>
-        <p class="section-subtitle light-subtitle">
+        <p class="section-subtitle">
           Peta rute kerja berurutan 5 tahap dari analisis kebutuhan hingga rilis
           produksi. Klik logo pada gelombang di bawah ini untuk melihat detail.
         </p>
@@ -200,22 +206,33 @@
             preserveAspectRatio="none"
             aria-hidden="true"
           >
-            <!-- Base Thin Light Dashed Track -->
+            <!-- Soft Ambient Base Line -->
             <path
-              d="M 60,140 C 150,40 210,40 280,40 C 350,40 410,140 500,140 C 590,240 650,240 720,240 C 790,240 850,140 940,140"
+              d="M 60,140 C 170,40 210,40 280,40 C 350,40 390,140 500,140 C 610,240 650,240 720,240 C 790,240 830,140 940,140"
               fill="none"
-              stroke="rgba(255, 255, 255, 0.25)"
-              stroke-width="2"
-              stroke-dasharray="6 8"
+              stroke="rgba(17, 17, 17, 0.06)"
+              stroke-width="8"
+              stroke-linecap="round"
             />
 
-            <!-- Thin Crisp Animated Light Wave Line -->
+            <!-- Base Thin Dashed Track -->
             <path
-              d="M 60,140 C 150,40 210,40 280,40 C 350,40 410,140 500,140 C 590,240 650,240 720,240 C 790,240 850,140 940,140"
+              d="M 60,140 C 170,40 210,40 280,40 C 350,40 390,140 500,140 C 610,240 650,240 720,240 C 790,240 830,140 940,140"
               fill="none"
-              stroke="#ffffff"
-              stroke-width="2.5"
-              stroke-dasharray="14 10"
+              stroke="rgba(17, 17, 17, 0.2)"
+              stroke-width="1.8"
+              stroke-dasharray="6 8"
+              stroke-linecap="round"
+            />
+
+            <!-- Smooth Animated Dark Wave Line -->
+            <path
+              d="M 60,140 C 170,40 210,40 280,40 C 350,40 390,140 500,140 C 610,240 650,240 720,240 C 790,240 830,140 940,140"
+              fill="none"
+              stroke="#111111"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-dasharray="16 12"
               class="active-wave-path"
             />
           </svg>
@@ -232,7 +249,6 @@
                 type="button"
                 aria-label={`Click to open step ${step.number}: ${step.title}`}
               >
-                <div class="node-halo" aria-hidden="true"></div>
                 <span class="node-num-badge">{step.number}</span>
                 <div class="node-logo-wrapper">
                   <img
@@ -240,6 +256,12 @@
                     alt={`Step ${step.number} Logo`}
                     class="node-logo-img"
                   />
+                </div>
+
+                <!-- Hover / Touch Title Tooltip -->
+                <div class="node-hover-tooltip">
+                  <span class="tooltip-num">0{i + 1}</span>
+                  <span class="tooltip-title">{step.title}</span>
                 </div>
               </button>
             {/each}
@@ -250,23 +272,35 @@
         <div class="wave-canvas mobile-wave">
           <svg
             class="wave-svg-line-mobile"
-            viewBox="0 0 300 600"
+            viewBox="0 0 300 640"
             preserveAspectRatio="none"
             aria-hidden="true"
           >
+            <!-- Ambient Line Mobile -->
             <path
-              d="M 60,50 C 240,110 240,110 240,170 C 240,230 60,230 60,290 C 60,350 240,350 240,410 C 240,470 150,470 150,530"
+              d="M 60,60 C 180,60 240,120 240,190 C 240,260 60,250 60,320 C 60,390 240,380 240,450 C 240,510 150,510 150,570"
               fill="none"
-              stroke="rgba(255, 255, 255, 0.25)"
-              stroke-width="2"
-              stroke-dasharray="6 8"
+              stroke="rgba(17, 17, 17, 0.06)"
+              stroke-width="8"
+              stroke-linecap="round"
             />
+            <!-- Dashed Line Mobile -->
             <path
-              d="M 60,50 C 240,110 240,110 240,170 C 240,230 60,230 60,290 C 60,350 240,350 240,410 C 240,470 150,470 150,530"
+              d="M 60,60 C 180,60 240,120 240,190 C 240,260 60,250 60,320 C 60,390 240,380 240,450 C 240,510 150,510 150,570"
               fill="none"
-              stroke="#ffffff"
-              stroke-width="2.5"
-              stroke-dasharray="14 10"
+              stroke="rgba(17, 17, 17, 0.2)"
+              stroke-width="1.8"
+              stroke-dasharray="6 8"
+              stroke-linecap="round"
+            />
+            <!-- Animated Dark Wave Line Mobile -->
+            <path
+              d="M 60,60 C 180,60 240,120 240,190 C 240,260 60,250 60,320 C 60,390 240,380 240,450 C 240,510 150,510 150,570"
+              fill="none"
+              stroke="#111111"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-dasharray="16 12"
               class="active-wave-path"
             />
           </svg>
@@ -283,7 +317,6 @@
                 type="button"
                 aria-label={`Click to open step ${step.number}: ${step.title}`}
               >
-                <div class="node-halo" aria-hidden="true"></div>
                 <span class="node-num-badge">{step.number}</span>
                 <div class="node-logo-wrapper">
                   <img
@@ -291,6 +324,12 @@
                     alt={`Step ${step.number} Logo`}
                     class="node-logo-img"
                   />
+                </div>
+
+                <!-- Hover / Touch Title Tooltip Mobile -->
+                <div class="node-hover-tooltip">
+                  <span class="tooltip-num">0{i + 1}</span>
+                  <span class="tooltip-title">{step.title}</span>
                 </div>
               </button>
             {/each}
@@ -303,31 +342,10 @@
         {@const current = steps[activeStep]}
         {@const IconComponent = current.icon}
         <div class="dropdown-detail-panel" transition:slide={{ duration: 300 }}>
-          <div class="detail-card light-detail-card">
-            <!-- Card Header -->
-            <div class="detail-card-head">
-              <div class="head-badge-group">
-                <span class="detail-station">
-                  <MapPin size={14} />
-                  {current.station}
-                </span>
-                <span class="detail-tag">{current.tag}</span>
-                <span class="detail-duration">{current.duration}</span>
-              </div>
-              <button
-                class="close-detail-btn"
-                onclick={() => (activeStep = null)}
-                type="button"
-                aria-label="Close detail panel"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <!-- Detail Grid Layout with Vertical Image -->
+          <div class="detail-card">
             <div class="detail-card-grid">
-              <!-- Left Column: Vertical Portrait Stage Image -->
-              <div class="detail-image-vertical">
+              <!-- Left Column: Full Bleed Edge-to-Edge Vertical Image -->
+              <div class="detail-image-column">
                 <img
                   src={current.image}
                   alt={current.title}
@@ -339,8 +357,28 @@
                 </div>
               </div>
 
-              <!-- Right Column: Content Body -->
-              <div class="detail-content-body">
+              <!-- Right Column: Content Body & Header -->
+              <div class="detail-content-column">
+                <!-- Card Header -->
+                <div class="detail-card-head">
+                  <div class="head-badge-group">
+                    <span class="detail-station">
+                      <MapPin size={14} />
+                      {current.station}
+                    </span>
+                    <span class="detail-tag">{current.tag}</span>
+                    <span class="detail-duration">{current.duration}</span>
+                  </div>
+                  <button
+                    class="close-detail-btn"
+                    onclick={() => (activeStep = null)}
+                    type="button"
+                    aria-label="Close detail panel"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+
                 <div class="detail-main-row">
                   <div class="detail-icon-box">
                     <IconComponent size={28} strokeWidth={1.8} />
@@ -388,12 +426,12 @@
 <style>
   .roadmap {
     position: relative;
-    background-color: #080808;
-    color: #ffffff;
+    background-color: var(--bg-alt, #f5f4f0);
+    color: var(--ink, #111111);
     overflow: hidden;
   }
 
-  /* Natural Full-Color Background Image Layer */
+  /* Natural Background Image Layer */
   .roadmap-bg-layer {
     position: absolute;
     inset: 0;
@@ -407,30 +445,21 @@
     height: 100%;
     object-fit: cover;
     object-position: center;
+    opacity: 0.85;
     filter: none;
     display: block;
     user-select: none;
-  }
-
-  .roadmap-bg-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      to bottom,
-      rgba(8, 8, 8, 0.75) 0%,
-      rgba(8, 8, 8, 0.85) 50%,
-      rgba(8, 8, 8, 0.95) 100%
-    );
   }
 
   .roadmap-grid-bg {
     position: absolute;
     inset: 0;
     background-image: radial-gradient(
-      rgba(255, 255, 255, 0.12) 1px,
+      var(--border, #e2e2e2) 1px,
       transparent 1px
     );
     background-size: 36px 36px;
+    opacity: 0.45;
     pointer-events: none;
   }
 
@@ -439,7 +468,7 @@
     z-index: 2;
   }
 
-  /* ─── Light Typography Header ─────────────────────────────── */
+  /* ─── Header ──────────────────────────────────────────────── */
   .roadmap-top {
     margin-bottom: 56px;
   }
@@ -452,24 +481,16 @@
     flex-wrap: wrap;
   }
 
-  .light-eyebrow {
-    color: rgba(255, 255, 255, 0.65) !important;
-  }
-
-  .light-eyebrow::after {
-    background: rgba(255, 255, 255, 0.25) !important;
-  }
-
-  .roadmap-top .section-title.light-title {
+  .roadmap-top .section-title {
     margin: 8px 0 0;
-    color: #ffffff !important;
+    color: var(--ink, #111111);
   }
 
-  .roadmap-top .section-subtitle.light-subtitle {
+  .roadmap-top .section-subtitle {
     max-width: 520px;
     font-size: 0.95rem;
     line-height: 1.65;
-    color: rgba(255, 255, 255, 0.8) !important;
+    color: var(--ink-2, #444444);
   }
 
   /* ─── Horizontal Wave Stage ───────────────────────────────── */
@@ -482,7 +503,7 @@
     width: 100%;
     overflow-x: auto;
     scrollbar-width: none;
-    padding: 30px 0 40px;
+    padding: 30px 0 60px;
   }
   .wave-scroll-container::-webkit-scrollbar {
     display: none;
@@ -501,7 +522,7 @@
   .wave-canvas.mobile-wave {
     position: relative;
     width: 100%;
-    height: 600px;
+    height: 640px;
     margin: 0 auto;
     display: none;
   }
@@ -559,39 +580,7 @@
     outline: none;
   }
 
-  /* Outer Pulse Halo */
-  .node-halo {
-    position: absolute;
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    opacity: 0;
-    transform: scale(0.7);
-    transition:
-      opacity 0.3s var(--ease),
-      transform 0.3s var(--ease);
-  }
 
-  .logo-node-btn:hover .node-halo,
-  .logo-node-btn.active .node-halo {
-    opacity: 1;
-    transform: scale(1.15);
-    animation: light-wave-pulse 2s infinite ease-in-out;
-  }
-
-  @keyframes light-wave-pulse {
-    0%,
-    100% {
-      transform: scale(1.1);
-      opacity: 0.5;
-    }
-    50% {
-      transform: scale(1.25);
-      opacity: 0.25;
-    }
-  }
 
   /* Step Number Badge */
   .node-num-badge {
@@ -600,12 +589,12 @@
     font-family: var(--font-mono);
     font-size: 0.78rem;
     font-weight: 800;
-    background: #ffffff;
-    color: #111111;
+    background: var(--ink, #111111);
+    color: var(--bg, #ffffff);
     padding: 3px 10px;
     border-radius: var(--radius-full, 9999px);
     z-index: 3;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
 
   /* Large Prominent Logo Core Button */
@@ -613,13 +602,13 @@
     width: 105px;
     height: 105px;
     border-radius: 50%;
-    background: #ffffff;
-    border: 2px solid #ffffff;
+    background: var(--bg, #ffffff);
+    border: 2px solid var(--ink, #111111);
     padding: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
     transition:
       border-color 0.3s var(--ease),
       transform 0.3s var(--ease),
@@ -635,14 +624,73 @@
 
   .logo-node-btn:hover .node-logo-wrapper {
     transform: scale(1.08);
-    box-shadow: 0 12px 32px rgba(255, 255, 255, 0.25);
+    border-color: var(--ink, #111111);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14);
   }
 
   .logo-node-btn.active .node-logo-wrapper {
     transform: scale(1.15);
-    background: #ffffff;
-    box-shadow: 0 14px 40px rgba(255, 255, 255, 0.35);
-    outline: 2px solid #ffffff;
+    border-color: var(--ink, #111111);
+    background: var(--bg, #ffffff);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+    outline: 2px solid var(--ink, #111111);
+  }
+
+  /* ─── Hover / Touch Title Tooltip ──────────────────────────── */
+  .node-hover-tooltip {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    opacity: 0;
+    pointer-events: none;
+    white-space: nowrap;
+    background: var(--ink, #111111);
+    color: var(--bg, #ffffff);
+    padding: 6px 14px;
+    border-radius: var(--radius-sm, 6px);
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 700;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    transition:
+      opacity 0.25s var(--ease),
+      transform 0.25s var(--ease);
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .node-hover-tooltip::before {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid var(--ink, #111111);
+  }
+
+  .tooltip-num {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 800;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+
+  .tooltip-title {
+    letter-spacing: -0.01em;
+  }
+
+  .logo-node-btn:hover .node-hover-tooltip,
+  .logo-node-btn:focus-visible .node-hover-tooltip,
+  .logo-node-btn.active .node-hover-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
 
   /* ─── Dropdown Detail Panel ────────────────────────────────── */
@@ -651,15 +699,67 @@
     margin: 20px auto 0;
   }
 
-  .light-detail-card {
-    background: rgba(15, 15, 15, 0.92) !important;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.18) !important;
-    color: #ffffff !important;
-    padding: 36px;
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+  .detail-card {
+    background: var(--bg, #ffffff);
+    border: 1px solid var(--border);
+    padding: 0;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg, 0 12px 36px rgba(0, 0, 0, 0.08));
     position: relative;
+    color: var(--ink, #111111);
+  }
+
+  /* ─── Detail Grid Layout (Full Bleed Image Column + Content) ── */
+  .detail-card-grid {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    align-items: stretch;
+    min-height: 480px;
+  }
+
+  /* Full Bleed Image Column (Flush to outer card border) */
+  .detail-image-column {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    overflow: hidden;
+    border-right: 1px solid var(--border);
+    background: var(--bg-alt, #f5f4f0);
+  }
+
+  .detail-stage-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s var(--ease);
+  }
+
+  .detail-image-column:hover .detail-stage-img {
+    transform: scale(1.05);
+  }
+
+  .image-overlay-badge {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    background: var(--ink, #111111);
+    color: var(--bg, #ffffff);
+    padding: 5px 12px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Content Column (Padded) */
+  .detail-content-column {
+    padding: 32px 36px;
+    display: flex;
+    flex-direction: column;
   }
 
   .detail-card-head {
@@ -668,7 +768,7 @@
     justify-content: space-between;
     margin-bottom: 24px;
     padding-bottom: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    border-bottom: 1px solid var(--border);
   }
 
   .head-badge-group {
@@ -687,28 +787,28 @@
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #ffffff;
+    color: var(--ink, #111111);
   }
 
   .detail-tag {
     font-family: var(--font-mono);
     font-size: 0.7rem;
     font-weight: 600;
-    background: #ffffff;
-    color: #111111;
+    background: var(--ink, #111111);
+    color: var(--bg, #ffffff);
     padding: 4px 11px;
   }
 
   .detail-duration {
     font-family: var(--font-mono);
     font-size: 0.72rem;
-    color: rgba(255, 255, 255, 0.65);
+    color: var(--ink-3, #888888);
   }
 
   .close-detail-btn {
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.65);
+    color: var(--ink-3, #888888);
     cursor: pointer;
     padding: 4px;
     display: flex;
@@ -717,58 +817,7 @@
     transition: color 0.2s var(--ease);
   }
   .close-detail-btn:hover {
-    color: #ffffff;
-  }
-
-  /* ─── Detail Grid Layout (Vertical Image + Content Side-by-side) ── */
-  .detail-card-grid {
-    display: grid;
-    grid-template-columns: 320px 1fr;
-    gap: 32px;
-    align-items: stretch;
-  }
-
-  .detail-image-vertical {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    min-height: 380px;
-    aspect-ratio: 3 / 4;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    background: rgba(0, 0, 0, 0.4);
-  }
-
-  .detail-stage-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.5s var(--ease);
-  }
-
-  .detail-image-vertical:hover .detail-stage-img {
-    transform: scale(1.05);
-  }
-
-  .image-overlay-badge {
-    position: absolute;
-    bottom: 14px;
-    left: 14px;
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    background: #ffffff;
-    color: #111111;
-    padding: 5px 12px;
-    text-transform: uppercase;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  }
-
-  .detail-content-body {
-    display: flex;
-    flex-direction: column;
+    color: var(--ink, #111111);
   }
 
   .detail-main-row {
@@ -781,12 +830,12 @@
   .detail-icon-box {
     width: 52px;
     height: 52px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #ffffff;
+    color: var(--ink);
     flex-shrink: 0;
   }
 
@@ -794,7 +843,7 @@
     font-family: var(--font-mono);
     font-size: 0.72rem;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.65);
+    color: var(--ink-3, #888888);
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
@@ -803,7 +852,7 @@
     font-family: var(--font-head);
     font-size: 1.5rem;
     font-weight: 800;
-    color: #ffffff;
+    color: var(--ink, #111111);
     letter-spacing: -0.02em;
     margin: 2px 0 0;
   }
@@ -811,22 +860,22 @@
   .detail-sub {
     font-family: var(--font-mono);
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.65);
+    color: var(--ink-3, #888888);
     margin-top: 2px;
   }
 
   .detail-desc {
     font-size: 0.95rem;
     line-height: 1.68;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--ink-2, #444444);
     margin-bottom: 24px;
   }
 
   /* Deliverables */
   .detail-deliverables {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--bg-alt, #f5f4f0);
     padding: 22px 26px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid var(--border);
     margin-bottom: 24px;
   }
 
@@ -836,7 +885,7 @@
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #ffffff;
+    color: var(--ink, #111111);
     margin-bottom: 14px;
   }
 
@@ -854,12 +903,12 @@
     align-items: flex-start;
     gap: 10px;
     font-size: 0.88rem;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--ink-2, #444444);
     line-height: 1.4;
   }
 
   .deliverable-item :global(.chk-icon) {
-    color: #ffffff;
+    color: var(--ink, #111111);
     flex-shrink: 0;
     margin-top: 2px;
   }
@@ -871,13 +920,14 @@
     gap: 14px;
     flex-wrap: wrap;
     padding-top: 14px;
-    border-top: 1px dashed rgba(255, 255, 255, 0.15);
+    border-top: 1px dashed var(--border);
+    margin-top: auto;
   }
 
   .tools-label {
     font-family: var(--font-mono);
     font-size: 0.72rem;
-    color: rgba(255, 255, 255, 0.65);
+    color: var(--ink-3, #888888);
   }
 
   .tools-pills {
@@ -891,21 +941,26 @@
     font-family: var(--font-mono);
     font-size: 0.7rem;
     font-weight: 500;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--bg, #ffffff);
+    border: 1px solid var(--border);
     padding: 5px 12px;
-    color: #ffffff;
+    color: var(--ink-2, #444444);
   }
 
   /* ─── Responsive ──────────────────────────────────────────── */
   @media (max-width: 900px) {
     .detail-card-grid {
       grid-template-columns: 1fr;
-      gap: 24px;
     }
-    .detail-image-vertical {
-      min-height: 260px;
-      aspect-ratio: 16 / 9;
+    .detail-image-column {
+      height: 220px;
+      min-height: 220px;
+      max-height: 220px;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+    }
+    .detail-content-column {
+      padding: 24px;
     }
   }
 
@@ -919,17 +974,72 @@
     .wave-canvas.mobile-wave {
       display: block;
     }
-    .detail-card {
-      padding: 24px;
+    .node-logo-wrapper {
+      width: 75px;
+      height: 75px;
+      padding: 10px;
+    }
+    .dropdown-detail-panel {
+      margin-top: 12px;
+    }
+    .detail-image-column {
+      height: 180px;
+      min-height: 180px;
+      max-height: 180px;
+    }
+    .detail-content-column {
+      padding: 18px 16px;
+    }
+    .detail-card-head {
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+    }
+    .head-badge-group {
+      gap: 8px;
     }
     .detail-main-row {
-      flex-direction: column;
-      align-items: flex-start;
+      flex-direction: row;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
     }
-    .node-logo-wrapper {
-      width: 85px;
-      height: 85px;
-      padding: 12px;
+    .detail-icon-box {
+      width: 42px;
+      height: 42px;
+    }
+    .detail-h3 {
+      font-size: 1.18rem;
+    }
+    .detail-sub {
+      font-size: 0.75rem;
+    }
+    .detail-desc {
+      font-size: 0.85rem;
+      line-height: 1.55;
+      margin-bottom: 16px;
+    }
+    .detail-deliverables {
+      padding: 14px 16px;
+      margin-bottom: 16px;
+    }
+    .deliverables-heading {
+      font-size: 0.7rem;
+      margin-bottom: 10px;
+    }
+    .deliverables-list {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .deliverable-item {
+      font-size: 0.8rem;
+    }
+    .detail-footer-tools {
+      padding-top: 10px;
+      gap: 8px;
+    }
+    .tool-pill {
+      font-size: 0.65rem;
+      padding: 4px 9px;
     }
   }
 </style>

@@ -70,38 +70,74 @@
   });
 </script>
 
-<section id="socials" class="socials section section-alt">
+<section id="socials" class="socials section">
   <!-- Irregular Lines Bg -->
   <div class="irregular-lines-bg" aria-hidden="true">
     <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <pattern
-          id="socials-lines"
-          width="250"
-          height="250"
+          id="about-irregular-lines"
+          width="240"
+          height="240"
           patternUnits="userSpaceOnUse"
         >
           <line
             x1="0"
-            y1="40"
-            x2="250"
-            y2="210"
+            y1="20"
+            x2="240"
+            y2="220"
+            stroke="currentColor"
+            stroke-width="1"
+            opacity="0.09"
+          />
+          <line
+            x1="40"
+            y1="0"
+            x2="200"
+            y2="240"
+            stroke="currentColor"
+            stroke-width="0.6"
+            opacity="0.07"
+          />
+          <line
+            x1="0"
+            y1="170"
+            x2="240"
+            y2="50"
             stroke="currentColor"
             stroke-width="1.2"
             opacity="0.08"
           />
           <line
-            x1="60"
+            x1="100"
             y1="0"
-            x2="190"
-            y2="250"
+            x2="15"
+            y2="240"
             stroke="currentColor"
             stroke-width="0.7"
             opacity="0.06"
           />
+          <line
+            x1="180"
+            y1="0"
+            x2="220"
+            y2="240"
+            stroke="currentColor"
+            stroke-width="0.8"
+            opacity="0.1"
+          />
+          <line
+            x1="0"
+            y1="110"
+            x2="240"
+            y2="130"
+            stroke="currentColor"
+            stroke-width="0.5"
+            opacity="0.06"
+          />
         </pattern>
       </defs>
-      <rect width="100%" height="100%" fill="url(#socials-lines)" />
+      <rect width="100%" height="100%" fill="url(#about-irregular-lines)" />
     </svg>
   </div>
 
@@ -220,7 +256,7 @@
 <style>
   .socials {
     position: relative;
-    background: var(--bg-alt);
+    background-color: var(--bg);
     overflow: hidden;
   }
 
