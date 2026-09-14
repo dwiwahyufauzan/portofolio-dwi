@@ -164,10 +164,10 @@
   /* Name */
   .hero-name {
     font-family: var(--font-head);
-    font-size: clamp(1.5rem, 3vw, 2.6rem);
+    font-size: clamp(1.1rem, 2.2vw, 1.8rem);
     font-weight: 800;
-    line-height: 1.05;
-    letter-spacing: -0.03em;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
     color: #ffffff;
     text-transform: uppercase;
   }
@@ -313,7 +313,7 @@
       bottom: 48px;
     }
     .hero-name {
-      font-size: clamp(1.3rem, 5vw, 2rem);
+      font-size: clamp(0.95rem, 3.8vw, 1.4rem);
     }
     .hero-prison-spin {
       width: 110px;
@@ -331,6 +331,9 @@
     .hero-card {
       right: 20px;
       bottom: 40px;
+    }
+    .hero-name {
+      font-size: clamp(0.85rem, 3.5vw, 1.2rem);
     }
     .hero-prison-spin {
       width: 90px;

@@ -196,8 +196,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 60px;
-    height: 76px;
+    padding: 0 44px;
+    height: 58px;
     transition:
       background 0.35s cubic-bezier(0.23, 1, 0.32, 1),
       box-shadow 0.35s cubic-bezier(0.23, 1, 0.32, 1),
@@ -233,9 +233,9 @@
   }
 
   .nav-logo-img {
-    height: 48px;
+    height: 36px;
     width: auto;
-    max-width: 160px;
+    max-width: 130px;
     object-fit: contain;
     background: transparent;
     border: none;
@@ -258,20 +258,20 @@
   .nav-links {
     display: flex;
     align-items: center;
-    gap: 40px;
+    gap: 28px;
   }
 
   .nav-link {
     font-family: var(--font-head);
-    font-size: 0.76rem;
+    font-size: 0.68rem;
     font-weight: 600;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: inherit;
     text-decoration: none;
     opacity: 0.65;
     position: relative;
-    padding: 6px 0;
+    padding: 4px 0;
     transition: opacity 0.22s var(--ease);
   }
 
@@ -301,16 +301,16 @@
   .nav-actions {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 14px;
   }
 
   .nav-cta {
     font-family: var(--font-head);
-    font-size: 0.68rem;
+    font-size: 0.62rem;
     font-weight: 700;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    padding: 10px 24px;
+    padding: 7px 18px;
     border-radius: var(--radius-full);
     text-decoration: none;
     transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1);

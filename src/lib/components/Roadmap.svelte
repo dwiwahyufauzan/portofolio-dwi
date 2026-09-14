@@ -37,8 +37,8 @@
       ],
       tools: ["Brainstorming", "Technical Specs", "Architecture Plan"],
       pctX: 6,
-      posY: 140,
-      mobileX: 20,
+      posY: 100,
+      mobileX: 50,
       mobileY: 60,
     },
     {
@@ -60,9 +60,9 @@
       ],
       tools: ["Figma", "Design System", "Interactive Prototype"],
       pctX: 28,
-      posY: 40,
-      mobileX: 80,
-      mobileY: 190,
+      posY: 100,
+      mobileX: 50,
+      mobileY: 180,
     },
     {
       number: "03",
@@ -83,9 +83,9 @@
       ],
       tools: ["SvelteKit / React", "TypeScript", "Node.js / Laravel"],
       pctX: 50,
-      posY: 140,
-      mobileX: 20,
-      mobileY: 320,
+      posY: 100,
+      mobileX: 50,
+      mobileY: 300,
     },
     {
       number: "04",
@@ -106,9 +106,9 @@
       ],
       tools: ["Lighthouse", "Cross-Browser QA", "Security Check"],
       pctX: 72,
-      posY: 240,
-      mobileX: 80,
-      mobileY: 450,
+      posY: 100,
+      mobileX: 50,
+      mobileY: 420,
     },
     {
       number: "05",
@@ -129,9 +129,9 @@
       ],
       tools: ["Vercel / VPS", "CI/CD Pipeline", "SEO & Analytics"],
       pctX: 94,
-      posY: 140,
+      posY: 100,
       mobileX: 50,
-      mobileY: 570,
+      mobileY: 540,
     },
   ];
 
@@ -202,13 +202,13 @@
         <div class="wave-canvas desktop-wave">
           <svg
             class="wave-svg-line"
-            viewBox="0 0 1000 280"
+            viewBox="0 0 1000 200"
             preserveAspectRatio="none"
             aria-hidden="true"
           >
             <!-- Soft Ambient Base Line -->
             <path
-              d="M 60,140 C 170,40 210,40 280,40 C 350,40 390,140 500,140 C 610,240 650,240 720,240 C 790,240 830,140 940,140"
+              d="M 60,100 L 940,100"
               fill="none"
               stroke="rgba(17, 17, 17, 0.06)"
               stroke-width="8"
@@ -217,7 +217,7 @@
 
             <!-- Base Thin Dashed Track -->
             <path
-              d="M 60,140 C 170,40 210,40 280,40 C 350,40 390,140 500,140 C 610,240 650,240 720,240 C 790,240 830,140 940,140"
+              d="M 60,100 L 940,100"
               fill="none"
               stroke="rgba(17, 17, 17, 0.2)"
               stroke-width="1.8"
@@ -227,7 +227,7 @@
 
             <!-- Smooth Animated Dark Wave Line -->
             <path
-              d="M 60,140 C 170,40 210,40 280,40 C 350,40 390,140 500,140 C 610,240 650,240 720,240 C 790,240 830,140 940,140"
+              d="M 60,100 L 940,100"
               fill="none"
               stroke="#111111"
               stroke-width="2.2"
@@ -237,7 +237,7 @@
             />
           </svg>
 
-          <!-- 5 Desktop Logo Nodes Positioned EXACTLY on the Wave -->
+          <!-- 5 Desktop Logo Nodes Positioned EXACTLY on the Line -->
           <div class="wave-logo-nodes">
             {#each steps as step, i}
               {@const isActive = activeStep === i}
@@ -268,17 +268,17 @@
           </div>
         </div>
 
-        <!-- Mobile Vertical S-Curve Wave Canvas -->
+        <!-- Mobile Vertical Wave Canvas -->
         <div class="wave-canvas mobile-wave">
           <svg
             class="wave-svg-line-mobile"
-            viewBox="0 0 300 640"
+            viewBox="0 0 300 600"
             preserveAspectRatio="none"
             aria-hidden="true"
           >
             <!-- Ambient Line Mobile -->
             <path
-              d="M 60,60 C 180,60 240,120 240,190 C 240,260 60,250 60,320 C 60,390 240,380 240,450 C 240,510 150,510 150,570"
+              d="M 150,60 L 150,540"
               fill="none"
               stroke="rgba(17, 17, 17, 0.06)"
               stroke-width="8"
@@ -286,16 +286,16 @@
             />
             <!-- Dashed Line Mobile -->
             <path
-              d="M 60,60 C 180,60 240,120 240,190 C 240,260 60,250 60,320 C 60,390 240,380 240,450 C 240,510 150,510 150,570"
+              d="M 150,60 L 150,540"
               fill="none"
               stroke="rgba(17, 17, 17, 0.2)"
               stroke-width="1.8"
               stroke-dasharray="6 8"
               stroke-linecap="round"
             />
-            <!-- Animated Dark Wave Line Mobile -->
+            <!-- Animated Dark Line Mobile -->
             <path
-              d="M 60,60 C 180,60 240,120 240,190 C 240,260 60,250 60,320 C 60,390 240,380 240,450 C 240,510 150,510 150,570"
+              d="M 150,60 L 150,540"
               fill="none"
               stroke="#111111"
               stroke-width="2.2"
@@ -513,27 +513,27 @@
   .wave-canvas.desktop-wave {
     position: relative;
     min-width: 1080px;
-    height: 310px;
+    height: 200px;
     margin: 0 auto;
     display: block;
   }
 
-  /* Mobile Vertical S-Curve Wave Canvas */
+  /* Mobile Vertical Wave Canvas */
   .wave-canvas.mobile-wave {
     position: relative;
     width: 100%;
-    height: 640px;
+    height: 600px;
     margin: 0 auto;
     display: none;
   }
 
-  /* Horizontal SVG Wave Line */
+  /* Horizontal SVG Track Line */
   .wave-svg-line {
     position: absolute;
-    top: 15px;
+    top: 0;
     left: 0;
     width: 100%;
-    height: 280px;
+    height: 200px;
     overflow: visible;
   }
 
@@ -579,8 +579,6 @@
     z-index: 5;
     outline: none;
   }
-
-
 
   /* Step Number Badge */
   .node-num-badge {
