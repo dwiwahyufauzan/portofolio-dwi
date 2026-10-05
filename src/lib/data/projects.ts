@@ -1,68 +1,76 @@
 export interface Project {
   id: string;
+  num: string;
   title: string;
-  category: "Fullstack" | "Backend" | "Frontend" | "Mobile";
-  desc: string;
-  longDesc: string;
+  subtitle: string;
+  category: "Web App" | "Mobile" | "Backend" | "UI/UX";
+  description: string;
   image: string;
-  tags: string[];
-  demoUrl?: string;
-  githubUrl?: string;
-  featured: boolean;
-  year: string;
+  stack: string[];
+  github: string;
+  demo?: string;
+  size?: "large" | "small";
 }
 
 export const projectsData: Project[] = [
   {
-    id: "dwisycoo-store",
-    title: "Dwisycoo E-Commerce Platform",
-    category: "Fullstack",
-    desc: "Platform toko online modern berkecepatan tinggi dengan pembayaran otomatis, manajemen stok real-time, dan analitik dashboard.",
-    longDesc: "Aplikasi e-commerce skala penuh yang dibangun menggunakan SvelteKit, PostgreSQL, dan Stripe/Midtrans integration. Dilengkapi fitur manajemen inventaris, sistem keranjang belanja interaktif, proteksi transaksi, serta dashboard analitik penjualan.",
-    image: "https://images.unsplash.com/photo-1556742049-0a67568d0d9f?auto=format&fit=crop&w=1200&q=80",
-    tags: ["SvelteKit", "TypeScript", "PostgreSQL", "TailwindCSS", "Stripe API"],
-    demoUrl: "https://github.com/dwiwahyufauzan",
-    githubUrl: "https://github.com/dwiwahyufauzan",
-    featured: true,
-    year: "2025",
+    id: "pzn",
+    num: "01",
+    title: "Programmer Zaman Now",
+    subtitle: "Online Course Platform — Frontend",
+    category: "Web App",
+    description:
+      "Aplikasi kelas online interaktif untuk platform PZN yang menghubungkan ribuan siswa dengan streaming video terproteksi, kuis, dan modul belajar terintegrasi.",
+    image:
+      "https://i.pinimg.com/1200x/bd/d2/9f/bdd29fa21e8785e25fcce834d0ae46c5.jpg",
+    stack: ["SvelteKit 5", "Svelte 5", "TypeScript", "Bun"],
+    github: "https://github.com/dwiwahyufauzan",
+    demo: "https://web.kelas.programmerzamannow.com",
+    size: "large",
   },
   {
-    id: "taskflow-agile",
-    title: "TaskFlow — Agile Project Manager",
-    category: "Fullstack",
-    desc: "Aplikasi manajemen tugas tim bergaya Kanban interaktif dengan drag-and-drop dan kolaborasi real-time.",
-    longDesc: "Sistem manajemen proyek kolaboratif untuk tim pengembang software. Mendukung papan Kanban interaktif, kolaborasi websockets real-time, pengolahan dokumen markdown, serta statistik produktivitas anggota tim.",
-    image: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&w=1200&q=80",
-    tags: ["React", "Node.js", "Express", "MongoDB", "Socket.io"],
-    demoUrl: "https://github.com/dwiwahyufauzan",
-    githubUrl: "https://github.com/dwiwahyufauzan",
-    featured: true,
-    year: "2024",
+    id: "glamstitch",
+    num: "02",
+    title: "Glamstitch POS",
+    subtitle: "Convection Point of Sale",
+    category: "Mobile",
+    description:
+      "Aplikasi POS komprehensif untuk manajemen industri konveksi — pencatatan pesanan khusus, inventaris bahan bertingkat, dan cetak invoice struk otomatis.",
+    image:
+      "https://i.pinimg.com/736x/21/e5/0e/21e50ebbf29bff9b6b0598455bf4afc2.jpg",
+    stack: ["SvelteKit 5", "Tailwind CSS 4", "TypeScript"],
+    github: "https://github.com/glamstitch/glamstitch.github.io",
+    demo: "",
+    size: "small",
   },
   {
-    id: "nexus-api-gateway",
-    title: "Nexus Microservice API Gateway",
+    id: "dp2kbp3a",
+    num: "03",
+    title: "DP2KBP3A System",
+    subtitle: "Field Activity Reporting",
     category: "Backend",
-    desc: "Arsitektur API Gateway dengan autentikasi JWT, rate-limiting, Caching Redis, dan log monitoring terpusat.",
-    longDesc: "High-performance API Gateway yang mampu menangani ribuan request per detik. Mengimplementasikan autentikasi JWT berkecepatan tinggi, rate limiting berbasis IP, caching Redis, dan tracing log terdistribusi.",
-    image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80",
-    tags: ["Node.js", "Express", "Redis", "Docker", "JWT"],
-    demoUrl: "https://github.com/dwiwahyufauzan",
-    githubUrl: "https://github.com/dwiwahyufauzan",
-    featured: true,
-    year: "2024",
+    description:
+      "Sistem pelaporan kegiatan lapangan pemerintah dengan alur verifikasi bertingkat, integritas transaksi MySQL 8+, dan auth JWT terdistribusi.",
+    image:
+      "https://i.pinimg.com/736x/42/8f/b1/428fb1d0a30ed2ee1cd3d6957d06c3bf.jpg",
+    stack: ["Elysia (Bun)", "Drizzle ORM", "MySQL 8+", "JWT"],
+    github: "https://github.com/dwiwahyufauzan",
+    demo: "",
+    size: "small",
   },
   {
-    id: "zenith-ui-kit",
-    title: "Zenith Design System & UI Kit",
-    category: "Frontend",
-    desc: "Kumpulan komponen UI Web ultra-ringan dengan aksesibilitas WCAG, animasi mikro, dan skema warna dinamis.",
-    longDesc: "Sistem desain antarmuka berbasis web yang dibuat dengan pendekatan headless & modular. Menyediakan lebih dari 40+ komponen siap pakai dengan animasi ultra-smooth dan dukungan penuh aksesibilitas pembaca layar.",
-    image: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1200&q=80",
-    tags: ["Svelte", "CSS Variables", "Storybook", "TypeScript"],
-    demoUrl: "https://github.com/dwiwahyufauzan",
-    githubUrl: "https://github.com/dwiwahyufauzan",
-    featured: false,
-    year: "2024",
+    id: "sahabat-anak",
+    num: "04",
+    title: "Sahabat Anak",
+    subtitle: "Education & Charity Platform",
+    category: "UI/UX",
+    description:
+      "Perancangan UX dan antarmuka web interaktif portal donasi dan advokasi edukasi sosial anak dengan pendekatan human-centered design.",
+    image:
+      "https://i.pinimg.com/736x/27/01/83/270183aaba377f63e529d91594d02a4e.jpg",
+    stack: ["Figma", "SvelteKit", "Tailwind CSS"],
+    github: "https://github.com/dwiwahyufauzan",
+    demo: "",
+    size: "large",
   },
 ];

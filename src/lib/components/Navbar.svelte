@@ -67,7 +67,7 @@
   const socials = [
     { label: "GitHub", href: "https://github.com/dwiwahyufauzan" },
     { label: "LinkedIn", href: "https://linkedin.com/in/dwiwahyufauzan" },
-    { label: "Instagram", href: "https://instagram.com/dwiwahyufauzan" },
+    { label: "Instagram", href: "https://instagram.com/dwisycoo" },
   ];
 
   const isOnHero = $derived(heroVisible && !scrolled);

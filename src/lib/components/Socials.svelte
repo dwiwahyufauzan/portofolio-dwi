@@ -10,7 +10,7 @@
     {
       id: "instagram",
       name: "Instagram",
-      url: "https://instagram.com/dwiwahyufauzan",
+      url: "https://instagram.com/dwisycoo",
       imgUrl: instagramLogo,
     },
     {
@@ -151,8 +151,7 @@
           <span class="hl-block hl-italic">Connected.</span>
         </h2>
         <p class="section-subtitle">
-          Temukan saya di berbagai platform dari coding, visual, hingga diskusi
-          komunitas.
+          Temukan dan hubungi saya di berbagai jejaring profesional & platform komunitas berikut.
         </p>
       </div>
     </div>
@@ -404,6 +403,13 @@
     .node-icon-btn {
       width: 85px;
       height: 85px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .socials-diagram,
+    .node-icon-btn {
+      animation: none !important;
     }
   }
 </style>

@@ -1,69 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { ArrowRight, ExternalLink } from "@lucide/svelte";
-
-  const projects = [
-    {
-      id: "pzn",
-      num: "01",
-      title: "Programmer Zaman Now",
-      subtitle: "Online Course Platform — Frontend",
-      category: "Web App",
-      description:
-        "Aplikasi kelas online interaktif untuk platform PZN menghubungkan ribuan siswa dengan streaming video, kuis, dan modul belajar terintegrasi.",
-      image:
-        "https://i.pinimg.com/1200x/bd/d2/9f/bdd29fa21e8785e25fcce834d0ae46c5.jpg",
-      stack: ["SvelteKit", "Svelte 5", "TypeScript", "Bun"],
-      github: "https://github.com/dwiwahyufauzan",
-      demo: "https://web.kelas.programmerzamannow.com",
-      size: "large",
-    },
-    {
-      id: "glamstitch",
-      num: "02",
-      title: "Glamstitch POS",
-      subtitle: "Convection Point of Sale",
-      category: "Mobile",
-      description:
-        "Aplikasi POS untuk manajemen konveksi — pencatatan pesanan, inventaris bahan, dan cetak struk invoice secara real-time.",
-      image:
-        "https://i.pinimg.com/736x/21/e5/0e/21e50ebbf29bff9b6b0598455bf4afc2.jpg",
-      stack: ["SvelteKit 5", "Tailwind CSS 4", "TypeScript"],
-      github: "https://github.com/glamstitch/glamstitch.github.io",
-      demo: "#",
-      size: "small",
-    },
-    {
-      id: "dp2kbp3a",
-      num: "03",
-      title: "DP2KBP3A System",
-      subtitle: "Field Activity Reporting",
-      category: "Backend",
-      description:
-        "Sistem pelaporan kegiatan lapangan dengan alur verifikasi bertingkat dan rekapitulasi data demografis interaktif.",
-      image:
-        "https://i.pinimg.com/736x/42/8f/b1/428fb1d0a30ed2ee1cd3d6957d06c3bf.jpg",
-      stack: ["Elysia (Bun)", "Drizzle ORM", "MySQL 8+", "JWT"],
-      github: "https://github.com/dwiwahyufauzan",
-      demo: "",
-      size: "small",
-    },
-    {
-      id: "sahabat-anak",
-      num: "04",
-      title: "Sahabat Anak",
-      subtitle: "Education & Charity Platform",
-      category: "UI/UX",
-      description:
-        "Perancangan UX dan antarmuka web interaktif portal donasi dan advokasi anak jalanan dengan pendekatan human-centered design.",
-      image:
-        "https://i.pinimg.com/736x/27/01/83/270183aaba377f63e529d91594d02a4e.jpg",
-      stack: ["Figma", "SvelteKit", "Tailwind CSS"],
-      github: "https://github.com/dwiwahyufauzan",
-      demo: "",
-      size: "large",
-    },
-  ];
+  import { projectsData as projects } from "$lib/data/projects";
 
   const techLogos = [
     "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg",

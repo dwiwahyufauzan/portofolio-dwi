@@ -1,50 +1,70 @@
-export interface SkillCategory {
-  title: string;
-  desc: string;
-  iconName: string;
-  skills: { name: string; level: number; highlight?: boolean }[];
+export interface SkillItem {
+  name: string;
+  level: number;
+  icon: string;
 }
 
-export const skillsData: SkillCategory[] = [
+export interface SkillCategory {
+  name: string;
+  desc: string;
+  items: SkillItem[];
+}
+
+const dev = (name: string, variant = "original") =>
+  `https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${name}/${name}-${variant}.svg`;
+const si = (slug: string) => `https://cdn.simpleicons.org/${slug}/ffffff`;
+
+export const skillsCategories: SkillCategory[] = [
   {
-    title: "Frontend Engineering",
-    desc: "Perancangan antarmuka yang presisi, responsif, dan interaktif dengan teknologi web terkini.",
-    iconName: "Layout",
-    skills: [
-      { name: "JavaScript (ES6+)", level: 92, highlight: true },
-      { name: "TypeScript", level: 88, highlight: true },
-      { name: "Svelte / SvelteKit", level: 92, highlight: true },
-      { name: "React.js", level: 80 },
-      { name: "HTML5 / Modern CSS", level: 95 },
-      { name: "TailwindCSS", level: 90 },
-      { name: "Bootstrap", level: 85 },
+    name: "Frontend",
+    desc: "Antarmuka & pengalaman pengguna",
+    items: [
+      { name: "JavaScript (ES6+)", level: 92, icon: dev("javascript") },
+      { name: "TypeScript", level: 88, icon: dev("typescript") },
+      { name: "SvelteKit 5", level: 92, icon: dev("svelte") },
+      { name: "React.js", level: 80, icon: dev("react") },
+      { name: "HTML5 / CSS3", level: 95, icon: dev("html5") },
+      { name: "Tailwind CSS", level: 90, icon: dev("tailwindcss") },
+      { name: "Bootstrap", level: 85, icon: dev("bootstrap") },
     ],
   },
   {
-    title: "Backend & Systems",
-    desc: "Arsitektur server, API berkecepatan tinggi, integrasi database, dan pengelolaan bisnis logika.",
-    iconName: "Server",
-    skills: [
-      { name: "PHP", level: 86 },
-      { name: "Laravel", level: 88, highlight: true },
-      { name: "Node.js / Express", level: 90, highlight: true },
-      { name: "RESTful API / GraphQL", level: 92 },
-      { name: "PostgreSQL", level: 85, highlight: true },
-      { name: "Redis Caching", level: 80 },
-      { name: "MongoDB", level: 82 },
+    name: "Backend",
+    desc: "Server, API & autentikasi",
+    items: [
+      { name: "PHP", level: 86, icon: dev("php") },
+      { name: "Laravel", level: 88, icon: dev("laravel") },
+      { name: "Node.js", level: 90, icon: dev("nodejs") },
+      { name: "Express.js", level: 82, icon: dev("express") },
+      { name: "Elysia (Bun)", level: 85, icon: si("elysia") },
+      {
+        name: "REST API & GraphQL",
+        level: 90,
+        icon: dev("graphql", "plain"),
+      },
+      { name: "JWT / Auth", level: 85, icon: si("jsonwebtokens") },
     ],
   },
   {
-    title: "Tools & Ecosystem",
-    desc: "Alat pengembang, kontrol versi, deployment cloud, dan workflow CI/CD modern.",
-    iconName: "Wrench",
-    skills: [
-      { name: "Git / GitHub", level: 90 },
-      { name: "Docker", level: 84, highlight: true },
-      { name: "Vite.js", level: 88 },
-      { name: "Bun / npm", level: 92 },
-      { name: "Vercel / Cloudflare", level: 88 },
-      { name: "Postman / Insomnia", level: 90 },
+    name: "Database",
+    desc: "Penyimpanan & manajemen data",
+    items: [
+      { name: "MySQL", level: 86, icon: dev("mysql") },
+      { name: "PostgreSQL", level: 82, icon: dev("postgresql") },
+      { name: "Redis", level: 75, icon: dev("redis") },
+      { name: "Drizzle ORM", level: 88, icon: si("drizzle") },
+      { name: "Prisma ORM", level: 78, icon: dev("prisma") },
+    ],
+  },
+  {
+    name: "Tools & DevOps",
+    desc: "Workflow, build & deployment",
+    items: [
+      { name: "Git & GitHub", level: 92, icon: dev("git") },
+      { name: "Docker", level: 84, icon: dev("docker") },
+      { name: "Vite.js", level: 88, icon: dev("vitejs") },
+      { name: "Bun Runtime", level: 85, icon: dev("bun") },
+      { name: "Linux / Bash", level: 75, icon: dev("linux") },
     ],
   },
 ];
