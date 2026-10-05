@@ -1,32 +1,13 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { ArrowRight, Send } from "@lucide/svelte";
+  import { ArrowRight } from "@lucide/svelte";
   import contactBg from "$lib/assets/contact.jpg";
 
   const socials = [
     { label: "GitHub", href: "https://github.com/dwiwahyufauzan" },
     { label: "LinkedIn", href: "https://linkedin.com/in/dwiwahyufauzan" },
-    { label: "Instagram", href: "https://instagram.com/dwiwahyufauzan" },
+    { label: "Instagram", href: "https://instagram.com/dwisycoo" },
   ];
-
-  let name = $state("");
-  let email = $state("");
-  let message = $state("");
-  let sending = $state(false);
-  let sent = $state(false);
-
-  async function handleSubmit(e: Event) {
-    e.preventDefault();
-    if (!name || !email || !message) return;
-    sending = true;
-    await new Promise((r) => setTimeout(r, 1400));
-    sending = false;
-    sent = true;
-    name = "";
-    email = "";
-    message = "";
-    setTimeout(() => (sent = false), 4000);
-  }
 
   onMount(() => {
     const io = new IntersectionObserver(
@@ -63,7 +44,11 @@
           <span class="hl-block hl-italic">Together.</span>
         </h2>
         <p class="contact-desc">
-          Saya saat ini <strong>siap bekerja & melamar posisi baru (Open for Hire)</strong>. Jika perusahaan atau tim engineering Anda sedang mencari Fullstack Software Engineer yang siap berkontribusi, silakan hubungi saya melalui formulir di bawah ini atau email langsung.
+          Saya saat ini <strong
+            >siap bekerja & melamar posisi baru (Open for Hire)</strong
+          >. Jika perusahaan atau tim engineering Anda sedang mencari Fullstack
+          Software Engineer yang siap berkontribusi, silakan hubungi saya
+          melalui email langsung atau jejaring profesional di bawah ini.
         </p>
       </div>
 
@@ -88,71 +73,6 @@
       </div>
 
       <hr class="hr-line reveal" />
-
-      <!-- Contact Form — Left Aligned -->
-      <div class="contact-form-wrap reveal reveal-delay-2">
-        <form
-          class="contact-form"
-          onsubmit={handleSubmit}
-          aria-label="Contact form"
-        >
-          <div class="form-row">
-            <div class="form-group">
-              <label for="cf-name" class="form-label">Name</label>
-              <input
-                id="cf-name"
-                type="text"
-                bind:value={name}
-                placeholder="Your Name"
-                class="form-input"
-                required
-                autocomplete="name"
-              />
-            </div>
-            <div class="form-group">
-              <label for="cf-email" class="form-label">Email</label>
-              <input
-                id="cf-email"
-                type="email"
-                bind:value={email}
-                placeholder="your@email.com"
-                class="form-input"
-                required
-                autocomplete="email"
-              />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="cf-message" class="form-label">Message</label>
-            <textarea
-              id="cf-message"
-              bind:value={message}
-              placeholder="Tuliskan tawaran posisi kerja, detail perusahaan, atau pesan Anda di sini..."
-              class="form-textarea"
-              rows={4}
-              required
-            ></textarea>
-          </div>
-
-          <div class="form-footer">
-            <button
-              type="submit"
-              class="btn btn-dark form-submit"
-              disabled={sending}
-            >
-              {#if sent}
-                Message Sent ✓
-              {:else if sending}
-                Sending...
-              {:else}
-                Send Message <Send size={13} />
-              {/if}
-            </button>
-            <p class="form-note">Response within 24 hours.</p>
-          </div>
-        </form>
-      </div>
     </div>
   </div>
 </section>
@@ -293,110 +213,5 @@
   }
   .social-link:hover::after {
     transform: scaleX(1);
-  }
-
-  /* ─── Form ────────────────────────────────────────────────── */
-  .contact-form-wrap {
-    width: 100%;
-    padding-top: 36px;
-  }
-
-  .contact-form {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    width: 100%;
-  }
-
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-  }
-
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .form-label {
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.45);
-  }
-
-  .form-input,
-  .form-textarea {
-    width: 100%;
-    padding: 14px 0;
-    border: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 0;
-    background: transparent;
-    color: #ffffff;
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    outline: none;
-    transition: border-color 0.2s var(--ease);
-    resize: none;
-  }
-
-  .form-input::placeholder,
-  .form-textarea::placeholder {
-    color: rgba(255, 255, 255, 0.3);
-  }
-  .form-input:focus,
-  .form-textarea:focus {
-    border-bottom-color: #ffffff;
-  }
-
-  .form-textarea {
-    min-height: 110px;
-  }
-
-  .form-footer {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    margin-top: 8px;
-  }
-
-  .form-submit {
-    min-width: 180px;
-    justify-content: center;
-    background: #ffffff !important;
-    color: #080808 !important;
-    border-color: #ffffff !important;
-  }
-  .form-submit:hover {
-    background: transparent !important;
-    color: #ffffff !important;
-  }
-
-  .form-note {
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    font-weight: 400;
-    letter-spacing: 0.1em;
-    color: rgba(255, 255, 255, 0.4);
-  }
-
-  /* ─── Responsive ──────────────────────────────────────────── */
-  @media (max-width: 768px) {
-    .contact-left-wrapper {
-      max-width: 100%;
-    }
-    .form-row {
-      grid-template-columns: 1fr;
-    }
-    .form-footer {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 12px;
-    }
   }
 </style>

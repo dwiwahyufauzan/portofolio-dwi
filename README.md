@@ -1,4 +1,4 @@
-# ⚡ Dwisycoo — Premium Interactive Portfolio
+# ⚡ Dwi Wahyu Fauzan — Premium Editorial Portfolio
 
 [![Svelte 5](https://img.shields.io/badge/Svelte-5.0-FF3E00?style=for-the-badge&logo=svelte&logoColor=white)](https://svelte.dev)
 [![SvelteKit](https://img.shields.io/badge/SvelteKit-2.0-FF3E00?style=for-the-badge&logo=svelte&logoColor=white)](https://svelte.dev/docs/kit)
@@ -7,129 +7,134 @@
 [![Bun](https://img.shields.io/badge/Bun-1.x-fbf0e9?style=for-the-badge&logo=bun&logoColor=black)](https://bun.sh)
 [![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-Active-22c55e?style=for-the-badge&logo=github&logoColor=white)](https://dwiwahyufauzan.github.io/portofolio-dwi/)
 
-Selamat datang di repository personal portfolio saya. Website ini dibangun dengan fokus pada performa kilat, animasi interaktif bernilai seni tinggi (*high-end animations*), serta elemen interaktif unik seperti simulator retro game arcade.
+Selamat datang di repositori personal portfolio **Dwi Wahyu Fauzan** (Fullstack Software Engineer). Website ini dirancang dengan gaya **Editorial Neo-Agency** yang mengombinasikan tipografi kontras tinggi, palet monokromatik bersih, mikro-interaksi responsif, dan performa tinggi berkecepatan kilat.
 
-🚀 **Live Demo:** [https://dwiwahyufauzan.github.io/portofolio-dwi/](https://dwiwahyufauzan.github.io/portofolio-dwi/)
+🚀 **Live Website:** [https://dwiwahyufauzan.github.io/portofolio-dwi/](https://dwiwahyufauzan.github.io/portofolio-dwi/)
 
 ---
 
-## 🎨 Fitur Utama & Keunggulan Desain
+## 🎨 Fitur Utama & Pengalaman Pengguna
 
-Website ini didesain menggunakan pendekatan **Neo-Agency & Wireframe Cyber** yang bersih, rapi, dan penuh dengan transisi dinamis:
+### 🌟 1. Cinematic Hero Header
+* **Cinematic Visual**: Latar belakang bernuansa artistik gelap dengan tipografi tebal dan aksen miring (*Instrument Serif*).
+* **3D Rotating Emblem**: Elemen emblem berputar 3D secara kontinu dengan keyframes presisi.
+* **Smart Navbar**: Bilah navigasi transparan saat di hero section dan otomatis berubah menjadi *frosted glass* saat di-scroll.
 
-### 🌟 1. Parallax Hero Header
-- **Split-Text Staggered Entrance**: Animasi teks nama yang meluncur naik secara bertahap pada loading pertama.
-- **Mouse-Tracking Parallax**: Elemen kartu di belakang bergerak mengikuti arah pergerakan kursor mouse secara interaktif.
-- **Weightless Floating Drift**: Kartu polaroid melayang secara acak di udara menggunakan CSS keyframes untuk kesan 3D.
+### 🔍 2. About & Spotlight Lens Reveal
+* **Interactive Mask Reveal**: Lapisan foto tersembunyi (*katana layer*) yang diungkap menggunakan *radial gradient mask* halus yang mengikuti kursor mouse secara *lerped* (smooth interpolation).
+* **Direct CV Download**: Tautan instan untuk mengunduh resume PDF resmi (`CV-DwiWahyuFauzan.pdf`).
+* **Core Technology Badges**: Lencana teknologi utama dengan logo resmi beresolusi tajam.
 
-### 🍱 2. Bento Grid About & Skills
-- **Bento Box Layout**: Layout modern yang membagi informasi ke dalam kotak bento dengan rasio seimbang.
-- **Rainbow Border Sweep**: Efek border gradien dinamis warna-warni yang berputar tanpa henti pada status ketersediaan kerja.
-- **Micro-interactions**: Hover chip keterampilan (*skills*) membal memantul (*spring bounce*) dan berputar sedikit secara acak.
+### ⚡ 3. Categorized Tech Stack Grid
+* **Pengelompokan 4 Pilar**: Frontend, Backend, Database, serta Tools & DevOps.
+* **Animated Progress Track**: Pengukur tingkat kemahiran dengan transisi *spring-reveal* saat memasuki viewport.
+* **Single Source of Truth**: Struktur data terpusat dan ber-tipe ketat di [`src/lib/data/skills.ts`](src/lib/data/skills.ts).
 
-### 📁 3. Dynamic Projects Showcase
-Menampilkan daftar proyek nyata yang telah saya kerjakan dengan detail deskripsi, tantangan teknis, serta tautan repositori/demo:
-* **Programmer Zaman Now (PZN)** — Online Course Frontend & Backend
-* **Glamstitch POS** — Convection Point of Sale Frontend
-* **DP2KBP3A** — Sistem Pelaporan Kegiatan Lapangan Dinas Pemerintah
-* **Sahabat Anak** — Platform Advokasi & Edukasi Sosial
-* *Filter dinamis* instan berbasis animasi `animate:flip` Svelte untuk transisi pemfilteran kartu proyek tanpa *lag*.
+### 📁 4. Selected Work Showcase & Interactive Physics
+* **Proyek Nyata**:
+  1. **Programmer Zaman Now (PZN)** — Platform kelas daring Frontend (SvelteKit 5, TypeScript).
+  2. **Glamstitch POS** — Sistem Point of Sale konveksi (SvelteKit, Tailwind CSS).
+  3. **DP2KBP3A System** — Backend pelaporan dinas pemerintah (Elysia Bun, Drizzle ORM, MySQL).
+  4. **Sahabat Anak** — Perancangan UX dan antarmuka web edukasi sosial.
+* **Interactive Drag & Throw Physics**: Ikon-ikon teknologi berjatuhan di latar belakang yang dapat di-klik, diseret (*drag*), dan dilempar (*throw*) dengan kalkulasi kecepatan (*velocity*), gravitasi, dan gesekan real-time.
+* **Instant Category Filter**: Pemfilteran instan antar kategori (*Web App, Mobile, Backend, UI/UX*).
 
-### 🎮 4. Retro Arcade Cabinet Game (Coffee Break)
-Game klasik Ular (*Snake*) yang diintegrasikan ke dalam simulator layar tabung CRT fiktif:
-* **Sintesis Suara (AudioContext)**: Efek suara *chiptune* retro (musik latar, suara makan, fanfare saat lampaui rekor, serta efek kalah) yang dihasilkan secara langsung oleh web audio API tanpa memuat file audio statis (.mp3/.wav).
-* **Speedometer Engine Boost**: Indikator persentase peningkatan kecepatan dinamis yang reaktif menggunakan Svelte derived state.
-* **Canvas Shake & Particle Burst**: Guncangan layar pada canvas saat ular makan atau mati, dikombinasikan dengan efek pecahan partikel warna-warni secara real-time.
-* **Mute Control**: Tombol mute/unmute audio dengan status ikon yang reaktif.
+### 🗺️ 5. Project Roadmap (5-Stage Fluid Wave)
+* **Fluid Wave Canvas**: Alur kerja berurutan dari *Requirement*, *Design*, *Development*, *Testing*, hingga *Deployment*.
+* **Interactive Checkpoint Drawer**: Panel detail geser (*slide drawer*) yang menampilkan deliverable, estimasi durasi, dan perkakas teknis tiap fase kerja.
 
-### 🌗 5. Liquid Morphing Dark Mode
-* **Smooth Cross-fade Gradients**: Transisi perpindahan warna latar belakang tombol yang menggunakan metode *opacity overlay opacity* untuk menghindari patahan visual.
-* **Spinning Icons**: Ikon matahari dan bulan berputar 180 derajat dan membesar secara elastis saat diaktifkan.
-* **Active Squish**: Tombol geser (*thumb*) yang memanjang secara fleksibel (efek elastis cair) saat ditekan lama.
+### 🌐 6. Circular Socials Network
+* **Kinetic Windmill Network**: Diagram orbit melingkar yang berputar lembut dengan logo sosial yang melakukan *counter-rotation* agar selalu tegak lurus.
+* **Aksesibilitas Penuh**: Dilengkapi perlindungan `prefers-reduced-motion` untuk kenyamanan pengguna sensitif gerakan.
+
+### 📮 7. Direct Contact & Marquee Footer
+* **Direct Reach**: Tautan langsung email dan sosial terverifikasi.
+* **Infinite Editorial Marquee**: Teks *PORTFOLIO* raksasa monokromatik berputar tanpa henti dengan efek interaktif *ink-fill* saat disentuh/hover.
 
 ---
 
 ## 🛠️ Tech Stack & Perkakas
 
-* **Framework**: [SvelteKit](https://svelte.dev/docs/kit) (Static SPA adapter) & [Svelte 5](https://svelte.dev) (Runes: `$state`, `$derived`, `$effect`)
-* **Styling**: Vanilla CSS, Tailwind CSS v4, Google Fonts (Outfit & Plus Jakarta Sans)
+* **Framework**: [SvelteKit 2](https://svelte.dev/docs/kit) (Static SPA Adapter)
+* **Reactivity Engine**: [Svelte 5](https://svelte.dev) Runes (`$state`, `$derived`, `$props`)
+* **Styling**: Tailwind CSS v4 & Custom CSS Editorial Design Tokens
+* **Typography**: Google Fonts (*Plus Jakarta Sans*, *Instrument Serif*, *JetBrains Mono*)
 * **Icons**: [Lucide Svelte](https://lucide.dev/guide/packages/lucide-svelte)
-* **Runtime & PM**: [Bun](https://bun.sh)
+* **Runtime & Package Manager**: [Bun](https://bun.sh)
+* **Testing**: [Vitest](https://vitest.dev)
 * **Deployment**: GitHub Actions + GitHub Pages
 
 ---
 
-## ⚡ Struktur Kode Utama
+## ⚡ Struktur Direktori
 
 ```
 src/
 ├── lib/
-│   ├── actions/        # Kustom Svelte actions (misal countUp)
-│   └── components/     # Komponen portofolio reusable
-│       ├── About.svelte        # Bio bento grid
-│       ├── Contact.svelte      # Form kontak dengan Web3Forms
-│       ├── Footer.svelte       # Footer + live timezone clock
-│       ├── Game.svelte         # Mesin game retro arcade & AudioContext
-│       ├── Hero.svelte         # Header parallax interaktif
-│       ├── Navbar.svelte       # Floating navbar + morphing dark mode
-│       ├── Projects.svelte     # Galeri projek dengan modal & flip filter
-│       └── Skills.svelte       # Tech stack chips & animas stat
+│   ├── assets/         # Aset grafis, logo, dan wallpaper
+│   ├── components/     # Komponen Svelte 5 modular
+│   │   ├── About.svelte      # Bio, tech tags, & interactive spotlight mask
+│   │   ├── Contact.svelte    # Saluran kontak langsung & media sosial
+│   │   ├── Footer.svelte     # Footer hak cipta & marquee raksasa
+│   │   ├── Hero.svelte       # Header sinematik & 3D rotating emblem
+│   │   ├── Navbar.svelte     # Floating header & mobile drawer
+│   │   ├── Projects.svelte   # Galeri proyek & interactive physics logos
+│   │   ├── Roadmap.svelte    # Peta rute 5 tahap & detail drawer
+│   │   ├── Skills.svelte     # Grid keahlian 4 kategori & progress bar
+│   │   └── Socials.svelte    # Kinetic windmill orbit diagram
+│   └── data/           # Single source of truth data
+│       ├── projects.ts       # Data proyek terpilih & interface
+│       ├── skills.ts         # Data keahlian teknis & kategori
+│       └── data.spec.ts      # Unit test validasi data
 ├── routes/
-│   ├── +layout.svelte          # Entry layout utama website
-│   ├── +layout.ts              # Konfigurasi static prerender
-│   ├── +page.svelte            # Halaman landing page gabungan
-│   └── layout.css              # Custom design token & global CSS
-└── svelte.config.js            # Konfigurasi static adapter & base path
+│   ├── +layout.svelte        # Shell layout, metadata SEO & scroll bar
+│   ├── +layout.ts            # Konfigurasi prerender statis
+│   ├── +page.svelte          # Halaman utama (one-page portfolio)
+│   └── layout.css            # Token desain global, typography & reset
+└── static/
+    ├── cv.pdf                # Berkas resume resmi yang siap diunduh
+    ├── favicon.png           # Favicon branding
+    └── robots.txt            # Konfigurasi crawler mesin pencari
 ```
 
 ---
 
-## ⚙️ Cara Instalasi & Menjalankan Lokal
+## ⚙️ Menjalankan di Komputer Lokal
 
-### Prasyarat
-
-- Pastikan Anda sudah menginstal [Bun](https://bun.sh/) di komputer Anda.
-
-### 1. Kloning Projek
+### 1. Kloning Repositori
 ```sh
 git clone https://github.com/dwiwahyufauzan/portofolio-dwi.git
 cd portofolio-dwi
 ```
 
-### 2. Install Dependensi
+### 2. Pasang Dependensi
 ```sh
 bun install
 ```
 
-### 3. Jalankan Development Server
+### 3. Jalankan Mode Pengembangan
 ```sh
 bun run dev
 ```
-Buka browser Anda di: **http://localhost:5173**
+Akses di peramban Anda: `http://localhost:5173`
 
-### 4. Build & Preview Hasil Produksi
+### 4. Uji Coba & Pengecekan Tipe
 ```sh
-# Build untuk file statis
-bun run build
+# Menjalankan pengujian unit
+bun run test
 
-# Uji coba preview build lokal
+# Menjalankan type-check Svelte
+bun run check
+```
+
+### 5. Kompilasi Produksi (Static Build)
+```sh
+bun run build
 bun run preview
 ```
 
 ---
 
-## 🚢 Deployment Otomatis ke GitHub Pages
-
-Projek ini sudah dikonfigurasi menggunakan GitHub Actions (`.github/workflows/deploy.yml`). 
-Setiap kali Anda melakukan `git push` ke branch `main`, workflow akan otomatis berjalan untuk:
-1. Membaca repositori dan menginstal dependensi menggunakan Bun.
-2. Melakukan build statis dengan set `BASE_PATH=/portofolio-dwi`.
-3. Mempublikasikan hasilnya ke branch `gh-pages`.
-
-Website Anda akan terupdate otomatis di: **https://dwiwahyufauzan.github.io/portofolio-dwi/**
-
----
-
 ## 📄 Lisensi
 
-Hak Cipta © 2026 Dwi Wahyu Fauzan. Dibuat dengan penuh dedikasi menggunakan Svelte 5.
+Hak Cipta © 2026 **Dwi Wahyu Fauzan**. Seluruh hak cipta dilindungi undang-undang.

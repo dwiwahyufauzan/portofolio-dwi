@@ -7,7 +7,7 @@
   const socials = [
     { label: "GitHub", href: "https://github.com/dwiwahyufauzan" },
     { label: "LinkedIn", href: "https://linkedin.com/in/dwiwahyufauzan" },
-    { label: "Instagram", href: "https://instagram.com/dwiwahyufauzan" },
+    { label: "Instagram", href: "https://instagram.com/dwisycoo" },
   ];
 
   function scrollToTop() {
@@ -250,15 +250,6 @@
     -webkit-text-stroke: 2px var(--ink, #111111);
     opacity: 1;
     filter: none;
-  }
-
-  .giant-portfolio-sep {
-    font-family: var(--font-head);
-    font-size: clamp(3rem, 9vw, 11rem);
-    font-weight: 300;
-    color: var(--ink, #111111);
-    opacity: 0.15;
-    white-space: nowrap;
   }
 
   @keyframes marquee-scroll {

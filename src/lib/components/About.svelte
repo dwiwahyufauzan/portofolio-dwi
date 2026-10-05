@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { base } from "$app/paths";
   import profilePhoto from "$lib/assets/www.png";
   import katanaPhoto from "$lib/assets/ppp.png";
   import { ArrowRight, Download } from "@lucide/svelte";
@@ -312,7 +313,7 @@
           <div class="about-cta-row">
             <a href="#contact" class="btn btn-dark">Hire Me / Hubungi Saya</a>
             <a
-              href="/cv.pdf"
+              href="{base}/cv.pdf"
               download="CV-DwiWahyuFauzan.pdf"
               class="btn btn-ghost cv-btn"
               aria-label="Download CV Dwi Wahyu Fauzan"
@@ -394,8 +395,16 @@
     z-index: 0;
     color: var(--ink);
     opacity: 0.85;
-    mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 40%, transparent 100%);
-    -webkit-mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 40%, transparent 100%);
+    mask-image: radial-gradient(
+      ellipse 90% 90% at 50% 50%,
+      black 40%,
+      transparent 100%
+    );
+    -webkit-mask-image: radial-gradient(
+      ellipse 90% 90% at 50% 50%,
+      black 40%,
+      transparent 100%
+    );
   }
 
   /* ─── Header Row ──────────────────────────────────────────── */

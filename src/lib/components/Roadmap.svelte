@@ -189,8 +189,7 @@
           <span class="hl-block hl-italic">Roadmap.</span>
         </h2>
         <p class="section-subtitle">
-          Peta rute kerja berurutan 5 tahap dari analisis kebutuhan hingga rilis
-          produksi. Klik logo pada gelombang di bawah ini untuk melihat detail.
+          Alur kerja 5 tahap dari perencanaan kebutuhan hingga peluncuran produksi. Klik tiap titik checkpoint untuk melihat detailnya.
         </p>
       </div>
     </div>

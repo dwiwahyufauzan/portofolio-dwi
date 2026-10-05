@@ -3,27 +3,6 @@
    Style: 510 Official · Zara · COS Inspired
    ═══════════════════════════════════════════════════════════ */
 
-/* ── Custom Fonts — Aerosoldier & Sanseriffic ─────────────── */
-@font-face {
-  font-family: 'Aerosoldier';
-  src: url('/fonts/Aerosoldier.otf') format('opentype'),
-       url('/fonts/Aerosoldier.ttf') format('truetype'),
-       url('/fonts/Aerosoldier.woff2') format('woff2');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Sanseriffic';
-  src: url('/fonts/Sanseriffic.otf') format('opentype'),
-       url('/fonts/Sanseriffic.ttf') format('truetype'),
-       url('/fonts/Sanseriffic.woff2') format('woff2');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
 /* ── Google Fonts — Plus Jakarta Sans (Thin Formal) + Instrument Serif (Cool Accent) ── */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:ital,wght@0,200;0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500&display=swap');
 

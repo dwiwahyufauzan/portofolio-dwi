@@ -1,492 +1,729 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import japanBg from "$lib/assets/japan-artistic-3840x2160-25406.jpg";
+  import { skillsCategories as categories } from "$lib/data/skills";
 
-  const categories = [
-    {
-      name: "Frontend",
-      items: [
-        {
-          name: "JavaScript (ES6+)",
-          level: 92,
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg",
-        },
-        {
-          name: "TypeScript",
-          level: 88,
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg",
-        },
-        {
-          name: "SvelteKit 5",
-          level: 92,
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/svelte/svelte-original.svg",
-        },
-        {
-          name: "React.js",
-          level: 80,
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg",
-        },
-        {
-          name: "HTML5 / CSS3",
-          level: 95,
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg",
-        },
-        {
-          name: "Tailwind CSS",
-          level: 90,
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg",
-        },
-        {
-          name: "Bootstrap",
-          level: 85,
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg",
-        },
-      ],
-    },
-    {
-      name: "Backend",
-      items: [
-        {
-          name: "PHP",
-          level: 86,
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg",
-        },
-        {
-          name: "Laravel",
-          level: 88,
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg",
-        },
-        {
-          name: "Node.js",
-          level: 90,
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg",
-        },
-        {
-          name: "Express.js",
-          level: 82,
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/express/express-original.svg",
-        },
-        {
-          name: "Elysia (Bun)",
-          level: 85,
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bun/bun-original.svg",
-        },
-        {
-          name: "REST API & GraphQL",
-          level: 90,
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/graphql/graphql-plain.svg",
-        },
-        {
-          name: "JWT / Auth",
-          level: 85,
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/json/json-original.svg",
-        },
-      ],
-    },
-    {
-      name: "Database",
-      items: [
-        {
-          name: "MySQL",
-          level: 86,
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg",
-        },
-        {
-          name: "PostgreSQL",
-          level: 82,
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg",
-        },
-        {
-          name: "Redis",
-          level: 75,
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/redis/redis-original.svg",
-        },
-        {
-          name: "Drizzle ORM",
-          level: 88,
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sqlite/sqlite-original.svg",
-        },
-        {
-          name: "Prisma ORM",
-          level: 78,
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/prisma/prisma-original.svg",
-        },
-      ],
-    },
-    {
-      name: "Tools & DevOps",
-      items: [
-        {
-          name: "Git & GitHub",
-          level: 92,
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg",
-        },
-        {
-          name: "Docker",
-          level: 84,
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg",
-        },
-        {
-          name: "Vite.js",
-          level: 88,
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg",
-        },
-        {
-          name: "Bun Runtime",
-          level: 85,
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bun/bun-original.svg",
-        },
-        {
-          name: "Linux / Bash",
-          level: 75,
-          icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linux/linux-original.svg",
-        },
-      ],
-    },
+  const all = categories.flatMap((c) => c.items);
+  const stats = [
+    { n: all.length, label: "Teknologi" },
+    { n: categories.length, label: "Kategori" },
+    { n: all.filter((i) => i.level >= 90).length, label: "Level Expert" },
   ];
+  const tabs = ["Semua", ...categories.map((c) => c.name)];
 
-  onMount(() => {
+  let active = $state("Semua");
+  let failed = $state<Record<string, boolean>>({});
+  const visible = $derived(
+    active === "Semua"
+      ? categories
+      : categories.filter((c) => c.name === active),
+  );
+
+  const levelLabel = (l: number) =>
+    l >= 90 ? "Expert" : l >= 82 ? "Advanced" : "Proficient";
+
+  /* ── Actions ── */
+  function reveal(node: HTMLElement) {
     const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) e.target.classList.add("visible");
-        });
+      ([e]) => {
+        if (e.isIntersecting) {
+          node.classList.add("in");
+          io.disconnect();
+        }
       },
-      { threshold: 0.1, rootMargin: "0px 0px -8% 0px" },
+      { threshold: 0.12 },
     );
-    document
-      .querySelectorAll("#skills .reveal")
-      .forEach((el) => io.observe(el));
+    io.observe(node);
+    return { destroy: () => io.disconnect() };
+  }
 
-    // Animate bars
-    const barIO = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            const bar = e.target as HTMLElement;
-            const level = bar.dataset.level || "0";
-            bar.style.setProperty("--target-w", level + "%");
-            bar.classList.add("bar-animate");
-            barIO.unobserve(e.target);
-          }
-        });
+  function skill(node: HTMLElement, level: number) {
+    const num = node.querySelector<HTMLElement>(".pct-num");
+    const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (num && !calm) num.textContent = "0";
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        io.disconnect();
+        node.classList.add("in");
+        if (!num || calm) return;
+        const t0 = performance.now();
+        const tick = (t: number) => {
+          const p = Math.min((t - t0) / 1100, 1);
+          num.textContent = String(
+            Math.round(level * (1 - Math.pow(1 - p, 3))),
+          );
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
       },
-      { threshold: 0.3 },
+      { threshold: 0.4 },
     );
-    document.querySelectorAll(".skill-bar").forEach((el) => barIO.observe(el));
+    io.observe(node);
+    return { destroy: () => io.disconnect() };
+  }
 
-    return () => {
-      io.disconnect();
-      barIO.disconnect();
-    };
-  });
+  function spot(e: PointerEvent) {
+    const el = e.currentTarget as HTMLElement;
+    const r = el.getBoundingClientRect();
+    el.style.setProperty("--mx", `${e.clientX - r.left}px`);
+    el.style.setProperty("--my", `${e.clientY - r.top}px`);
+  }
 </script>
 
-<section id="skills" class="skills section">
-  <!-- Background Image Layer -->
-  <div class="skills-bg-layer" aria-hidden="true">
-    <img src={japanBg} alt="" class="skills-bg-img" draggable="false" />
-    <!-- Multi-layer overlay: dark vignette + red accent wash -->
-    <div class="skills-dark-overlay"></div>
-    <div class="skills-red-overlay"></div>
-    <div class="skills-vignette"></div>
+{#snippet ico(item: { name: string; icon: string })}
+  <span class="ico">
+    {#if failed[item.name]}
+      <span class="ico-fb">{item.name[0]}</span>
+    {:else}
+      <img
+        src={item.icon}
+        alt=""
+        loading="lazy"
+        onerror={() => (failed[item.name] = true)}
+      />
+    {/if}
+  </span>
+{/snippet}
+
+<section id="skills" class="skills">
+  <div class="bg" aria-hidden="true">
+    <img
+      src={japanBg}
+      alt=""
+      class="bg-img"
+      draggable="false"
+      loading="lazy"
+      decoding="async"
+    />
+    <div class="bg-shade"></div>
+    <div class="bg-grid"></div>
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
   </div>
 
-  <div class="container skills-container">
-    <!-- Eyebrow -->
-    <p class="section-eyebrow skills-eyebrow reveal">02 — Skills</p>
+  <div class="wrap">
+    <p class="eyebrow" use:reveal><span class="dot"></span>02 — Skills</p>
 
-    <!-- Header Row -->
-    <div class="skills-header reveal">
-      <h2 class="section-title skills-title">
-        <span class="hl-block">Tech</span>
-        <span class="hl-block hl-italic">Stack.</span>
-      </h2>
-      <p class="section-subtitle skills-subtitle">
-        Alat dan teknologi yang saya gunakan untuk membangun produk digital
-        berkualitas tinggi.
-      </p>
+    <header class="head" use:reveal>
+      <h2 class="title">Tech <em>Stack.</em></h2>
+      <div class="head-side">
+        <p class="subtitle">
+          Alat dan teknologi yang saya gunakan untuk membangun produk digital
+          berkualitas tinggi.
+        </p>
+        <dl class="stats">
+          {#each stats as s}
+            <div class="stat">
+              <dt>{s.label}</dt>
+              <dd>{s.n}<span>+</span></dd>
+            </div>
+          {/each}
+        </dl>
+      </div>
+    </header>
+  </div>
+
+  <!-- Marquee -->
+  <div class="marquee" aria-hidden="true" use:reveal>
+    {#each [0, 1] as row}
+      <div class="m-row" class:rev={row === 1}>
+        <div class="m-track">
+          {#each [...(row ? [...all].reverse() : all), ...(row ? [...all].reverse() : all)] as item}
+            <span class="chip">{@render ico(item)}{item.name}</span>
+          {/each}
+        </div>
+      </div>
+    {/each}
+  </div>
+
+  <div class="wrap">
+    <!-- Filter -->
+    <div class="tabs" role="tablist" aria-label="Filter kategori" use:reveal>
+      {#each tabs as t}
+        <button
+          role="tab"
+          aria-selected={active === t}
+          class="tab"
+          class:on={active === t}
+          onclick={() => (active = t)}
+        >
+          {t}
+        </button>
+      {/each}
     </div>
 
-    <!-- Categories Grid -->
-    <div class="skills-grid">
-      {#each categories as cat, ci}
-        <div class="skill-category reveal" style="--delay:{ci * 0.08}s">
-          <h3 class="cat-name">{cat.name}</h3>
-          <div class="skill-list">
-            {#each cat.items as item, ii}
-              <div class="skill-row">
-                <div class="skill-info">
-                  <span class="skill-name-wrap">
-                    {#if item.icon}
-                      <img
-                        src={item.icon}
-                        alt=""
-                        class="skill-logo-icon"
-                        loading="lazy"
-                      />
-                    {/if}
-                    <span class="skill-name">{item.name}</span>
-                  </span>
-                  <span class="skill-pct">{item.level}%</span>
-                </div>
-                <div class="skill-track">
+    {#key active}
+      <div class="grid" class:solo={visible.length === 1}>
+        {#each visible as cat, ci (cat.name)}
+          <article
+            class="card"
+            style="--d:{ci * 0.08}s"
+            onpointermove={spot}
+            use:reveal
+          >
+            <div class="card-head">
+              <div>
+                <h3 class="cat-name">{cat.name}</h3>
+                <p class="cat-desc">{cat.desc}</p>
+              </div>
+              <span class="count"
+                >{String(cat.items.length).padStart(2, "0")}</span
+              >
+            </div>
+
+            <ul class="list">
+              {#each cat.items as item, ii (item.name)}
+                <li
+                  class="row"
+                  style="--i:{ii}; --d:{ci * 0.08}s"
+                  use:skill={item.level}
+                >
+                  <div class="info">
+                    {@render ico(item)}
+                    <div class="name-block">
+                      <span class="name">{item.name}</span>
+                      <span
+                        class="lvl lvl-{levelLabel(item.level).toLowerCase()}"
+                        >{levelLabel(item.level)}</span
+                      >
+                    </div>
+                    <span class="pct"
+                      ><span class="pct-num">{item.level}</span>%</span
+                    >
+                  </div>
                   <div
-                    class="skill-bar"
-                    data-level={item.level}
-                    style="--target-w: 0%"
-                    aria-label="{item.name}: {item.level}%"
+                    class="track"
                     role="progressbar"
+                    aria-label={item.name}
                     aria-valuenow={item.level}
                     aria-valuemin={0}
                     aria-valuemax={100}
-                  ></div>
-                </div>
-              </div>
-            {/each}
-          </div>
-        </div>
-      {/each}
-    </div>
+                  >
+                    <div class="bar" style="--w:{item.level}%"></div>
+                  </div>
+                </li>
+              {/each}
+            </ul>
+          </article>
+        {/each}
+      </div>
+    {/key}
   </div>
 </section>
 
 <style>
-  /* ─── Section ─────────────────────────────────────────────── */
   .skills {
+    --red: #ff4d4d;
     position: relative;
-    background: #080808;
-    color: #ffffff;
+    isolation: isolate;
     overflow: hidden;
+    background: #070505;
+    color: #fff;
+    padding: clamp(64px, 10vw, 128px) 0;
+  }
+  .wrap {
+    width: min(100% - 2.5rem, 1280px);
+    margin-inline: auto;
   }
 
-  /* ─── Background Layer ────────────────────────────────────── */
-  .skills-bg-layer {
+  /* ── Background ── */
+  .bg {
     position: absolute;
     inset: 0;
-    z-index: 0;
-    overflow: hidden;
+    z-index: -1;
   }
-
-  .skills-bg-img {
+  .bg-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center 30%;
-    display: block;
+    filter: saturate(0.8) contrast(1.05);
     user-select: none;
-    /* Desaturate slightly so red accents from the overlay pop */
-    filter: saturate(0.85) contrast(1.05) brightness(0.95);
-    transform: scale(1.02);
-    transition: transform 8s ease-out;
   }
-
-  .skills:hover .skills-bg-img {
-    transform: scale(1.055);
-  }
-
-  /* Ink-black base darken */
-  .skills-dark-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(5, 3, 3, 0.52);
-  }
-
-  /* Subtle red ink wash — mirrors the maple red in the image */
-  .skills-red-overlay {
+  .bg-shade {
     position: absolute;
     inset: 0;
     background: radial-gradient(
-      ellipse 70% 60% at 15% 40%,
-      rgba(140, 20, 20, 0.22) 0%,
-      transparent 70%
-    );
+        ellipse 70% 60% at 12% 30%,
+        rgba(160, 25, 25, 0.3),
+        transparent 70%
+      ),
+      linear-gradient(
+        to bottom,
+        rgba(5, 3, 3, 0.82),
+        rgba(5, 3, 3, 0.62) 40%,
+        rgba(5, 3, 3, 0.92)
+      );
   }
-
-  /* Edge vignette for text readability */
-  .skills-vignette {
+  .bg-grid {
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-        to bottom,
-        rgba(5, 3, 3, 0.55) 0%,
-        transparent 28%,
-        transparent 65%,
-        rgba(5, 3, 3, 0.7) 100%
+    background-image: linear-gradient(
+        rgba(255, 255, 255, 0.04) 1px,
+        transparent 1px
       ),
-      linear-gradient(to right, rgba(5, 3, 3, 0.45) 0%, transparent 35%);
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(
+      ellipse 80% 70% at 50% 40%,
+      #000,
+      transparent 75%
+    );
+    -webkit-mask-image: radial-gradient(
+      ellipse 80% 70% at 50% 40%,
+      #000,
+      transparent 75%
+    );
+  }
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.35;
+    animation: float 14s ease-in-out infinite;
+  }
+  .orb-a {
+    width: 340px;
+    height: 340px;
+    background: #b91c1c;
+    top: -80px;
+    right: 8%;
+  }
+  .orb-b {
+    width: 260px;
+    height: 260px;
+    background: #7f1d1d;
+    bottom: 10%;
+    left: -60px;
+    animation-delay: -7s;
+  }
+  @keyframes float {
+    50% {
+      transform: translate(30px, -40px) scale(1.12);
+    }
   }
 
-  .skills-container {
-    position: relative;
-    z-index: 1;
-  }
-
-  /* ─── Typography & White Colors ───────────────────────────── */
-  .skills-eyebrow {
-    color: rgba(255, 255, 255, 0.7) !important;
-  }
-
-  .skills-eyebrow::after {
-    background: rgba(255, 255, 255, 0.3) !important;
-  }
-
-  .skills-title {
-    color: #ffffff !important;
-  }
-
-  .skills-subtitle {
-    color: rgba(255, 255, 255, 0.85) !important;
-  }
-
-  /* ─── Header ──────────────────────────────────────────────── */
-  .skills-header {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    margin-bottom: 72px;
-    align-items: end;
-  }
-
-  /* ─── Grid ────────────────────────────────────────────────── */
-  .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-  }
-
-  .skill-category {
-    padding: 48px 40px 48px 0;
-    border-right: 1px solid rgba(255, 255, 255, 0.2);
-    transition-delay: var(--delay, 0s);
-  }
-  .skill-category:last-child {
-    border-right: none;
-  }
-  .skill-category + .skill-category {
-    padding-left: 40px;
-  }
-
-  /* ─── Category Title ──────────────────────────────────────── */
-  .cat-name {
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    font-weight: 600;
+  /* ── Header ── */
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 22px;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 0.72rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: #ffffff !important;
-    margin-bottom: 32px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.75);
   }
-
-  /* ─── Skill List ──────────────────────────────────────────── */
-  .skill-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.6);
+    animation: pulse 2s infinite;
   }
-
-  .skill-row {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+  @keyframes pulse {
+    to {
+      box-shadow: 0 0 0 10px rgba(255, 77, 77, 0);
+    }
   }
-
-  .skill-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  .head {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: clamp(24px, 5vw, 64px);
+    align-items: end;
+    margin-bottom: clamp(32px, 5vw, 56px);
   }
-
-  .skill-name-wrap {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+  .title {
+    margin: 0;
+    font-size: clamp(3rem, 9vw, 6.5rem);
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    font-weight: 700;
   }
-
-  .skill-logo-icon {
-    width: 17px;
-    height: 17px;
-    object-fit: contain;
-    flex-shrink: 0;
+  .title em {
+    font-style: italic;
+    font-weight: 400;
+    background: linear-gradient(100deg, #fff 20%, var(--red));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    padding-right: 0.06em;
   }
-
-  .skill-name {
-    font-family: var(--font-head);
-    font-size: 0.88rem;
-    font-weight: 500;
-    color: #ffffff !important;
+  .subtitle {
+    margin: 0 0 28px;
+    max-width: 46ch;
+    font-size: clamp(0.95rem, 1.6vw, 1.08rem);
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.8);
   }
-
-  .skill-pct {
-    font-family: var(--font-mono);
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 0;
+  }
+  .stat {
+    padding: 14px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .stat dt {
+    font-family: var(--font-mono, ui-monospace, monospace);
     font-size: 0.62rem;
-    font-weight: 600;
-    color: #ffffff !important;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .stat dd {
+    margin: 6px 0 0;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    line-height: 1;
+  }
+  .stat dd span {
+    color: var(--red);
   }
 
-  /* ─── Skill Bar ───────────────────────────────────────────── */
-  .skill-track {
-    height: 2px;
-    background: rgba(255, 255, 255, 0.25);
-    border-radius: 2px;
+  /* ── Marquee ── */
+  .marquee {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: clamp(36px, 5vw, 56px);
+    mask-image: linear-gradient(
+      90deg,
+      transparent,
+      #000 12%,
+      #000 88%,
+      transparent
+    );
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent,
+      #000 12%,
+      #000 88%,
+      transparent
+    );
+  }
+  .m-row {
     overflow: hidden;
   }
+  .m-track {
+    display: flex;
+    width: max-content;
+    animation: scroll 55s linear infinite;
+  }
+  .m-row.rev .m-track {
+    animation-direction: reverse;
+    animation-duration: 65s;
+  }
+  .marquee:hover .m-track {
+    animation-play-state: paused;
+  }
+  @keyframes scroll {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 12px;
+    padding: 8px 16px 8px 8px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.05);
+    font-size: 0.85rem;
+    white-space: nowrap;
+    color: rgba(255, 255, 255, 0.85);
+  }
 
-  .skill-bar {
+  /* ── Tabs ── */
+  .tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 28px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .tab {
+    flex-shrink: 0;
+    padding: 10px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.75);
+    font: inherit;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  .tab:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+    color: #fff;
+  }
+  .tab.on {
+    background: #fff;
+    border-color: #fff;
+    color: #120606;
+    font-weight: 600;
+  }
+  .tab:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 3px;
+  }
+
+  /* ── Cards ── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr));
+    gap: clamp(14px, 2vw, 22px);
+  }
+  .card {
+    position: relative;
+    padding: clamp(20px, 2.5vw, 30px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 24px;
+    background: rgba(18, 12, 12, 0.5);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 0.7s ease var(--d, 0s),
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0s);
+  }
+  .card:global(.in) {
+    opacity: 1;
+    transform: none;
+  }
+  .card::before,
+  .card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+  .card::before {
+    background: radial-gradient(
+      420px circle at var(--mx, 50%) var(--my, 0%),
+      rgba(255, 77, 77, 0.16),
+      transparent 60%
+    );
+  }
+  .card::after {
+    padding: 1px;
+    background: radial-gradient(
+      320px circle at var(--mx, 50%) var(--my, 0%),
+      rgba(255, 255, 255, 0.8),
+      transparent 60%
+    );
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+  .card:hover::before,
+  .card:hover::after {
+    opacity: 1;
+  }
+
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  .cat-name {
+    margin: 0 0 4px;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .cat-desc {
+    margin: 0;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.55);
+  }
+  .count {
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 0.7rem;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(255, 77, 77, 0.15);
+    color: #ffb4b4;
+  }
+
+  /* ── Skill rows ── */
+  .list {
+    display: grid;
+    gap: 18px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .solo {
+    grid-template-columns: 1fr;
+  }
+  .solo .list {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: 22px 40px;
+  }
+  .info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .name-block {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+  }
+  .name {
+    font-size: 0.92rem;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+  }
+  .lvl {
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+  }
+  .lvl-expert {
+    color: #ff9a9a;
+  }
+  .pct {
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 0.78rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .ico {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.09);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .ico img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+  }
+  .ico-fb {
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .track {
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    overflow: hidden;
+  }
+  .bar {
     height: 100%;
-    width: var(--target-w, 0%);
-    background: #ffffff !important;
-    border-radius: 2px;
+    width: var(--w);
+    border-radius: inherit;
+    background: linear-gradient(90deg, #fff, var(--red));
+    box-shadow: 0 0 12px rgba(255, 77, 77, 0.6);
     transform: scaleX(0);
     transform-origin: left;
-    transition: transform 0s;
   }
-
-  :global(.skill-bar.bar-animate) {
+  .row:global(.in) .bar {
     transform: scaleX(1);
-    transition: transform 0.8s var(--ease) calc(var(--i, 0) * 0.06s);
+    transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1)
+      calc(var(--i, 0) * 0.07s);
   }
 
-  /* ─── Responsive ──────────────────────────────────────────── */
-  @media (max-width: 1024px) {
-    .skills-grid {
-      grid-template-columns: repeat(2, 1fr);
+  /* ── Responsive ── */
+  @media (max-width: 860px) {
+    .head {
+      grid-template-columns: 1fr;
     }
-    .skill-category {
-      border-right: none;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  @media (max-width: 520px) {
+    .stats {
+      gap: 8px;
     }
-    .skill-category:nth-child(odd) {
-      border-right: 1px solid rgba(255, 255, 255, 0.2);
+    .stat {
+      padding: 12px;
     }
-    .skill-category + .skill-category {
-      padding-left: 0;
+    .bg-img {
+      object-position: 62% center;
     }
-    .skill-category:nth-child(even) {
-      padding-left: 40px;
+    .card {
+      border-radius: 20px;
     }
   }
 
-  @media (max-width: 768px) {
-    .skills-header {
-      grid-template-columns: 1fr;
-      gap: 20px;
+  /* Reveal untuk eyebrow / header / marquee / tabs */
+  .eyebrow,
+  .head,
+  .marquee,
+  .tabs {
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+      opacity 0.7s ease,
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  :global(.eyebrow.in),
+  :global(.head.in),
+  :global(.marquee.in),
+  :global(.tabs.in) {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .m-track,
+    .orb,
+    .dot {
+      animation: none;
     }
-    .skills-grid {
-      grid-template-columns: 1fr;
+    .card,
+    .eyebrow,
+    .head,
+    .marquee,
+    .tabs {
+      opacity: 1;
+      transform: none;
+      transition: none;
     }
-    .skill-category:nth-child(odd) {
-      border-right: none;
-    }
-    .skill-category:nth-child(even) {
-      padding-left: 0;
-    }
-    .skill-category {
-      padding: 32px 0;
+    .bar {
+      transform: none;
+      transition: none;
     }
   }
 </style>
