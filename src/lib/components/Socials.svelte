@@ -20,12 +20,6 @@
       imgUrl: tiktokLogo,
     },
     {
-      id: "discord",
-      name: "Discord",
-      url: "https://discord.com",
-      imgUrl: discordLogo,
-    },
-    {
       id: "github",
       name: "GitHub",
       url: "https://github.com/dwiwahyufauzan",
@@ -34,7 +28,7 @@
     {
       id: "linkedin",
       name: "LinkedIn",
-      url: "https://linkedin.com/in/dwiwahyufauzan",
+      url: "www.linkedin.com/in/dwi-wahyu-0866943bb/?isSelfProfile=true",
       imgUrl: linkedinLogo,
     },
   ];
@@ -151,7 +145,8 @@
           <span class="hl-block hl-italic">Connected.</span>
         </h2>
         <p class="section-subtitle">
-          Temukan dan hubungi saya di berbagai jejaring profesional & platform komunitas berikut.
+          Temukan dan hubungi saya di berbagai jejaring profesional & platform
+          komunitas berikut.
         </p>
       </div>
     </div>

@@ -37,6 +37,7 @@ export const skillsCategories: SkillCategory[] = [
       { name: "Node.js", level: 90, icon: dev("nodejs") },
       { name: "Express.js", level: 82, icon: dev("express") },
       { name: "Elysia (Bun)", level: 85, icon: si("elysia") },
+      { name: "Spring Boot", level: 85, icon: dev("spring") },
       {
         name: "REST API & GraphQL",
         level: 90,
@@ -63,8 +64,7 @@ export const skillsCategories: SkillCategory[] = [
       { name: "Git & GitHub", level: 92, icon: dev("git") },
       { name: "Docker", level: 84, icon: dev("docker") },
       { name: "Vite.js", level: 88, icon: dev("vitejs") },
-      { name: "Bun Runtime", level: 85, icon: dev("bun") },
-      { name: "Linux / Bash", level: 75, icon: dev("linux") },
+      { name: "Jenkins", level: 85, icon: dev("jenkins") },
     ],
   },
 ];
