@@ -160,14 +160,7 @@
     physicsRaf = requestAnimationFrame(runPhysicsLoop);
   }
 
-  let activeFilter = $state("All");
-  const filters = ["All", "Web App", "Mobile", "Backend", "UI/UX"];
-
-  const filtered = $derived(
-    activeFilter === "All"
-      ? projects
-      : projects.filter((p) => p.category === activeFilter),
-  );
+  const filtered = $derived(projects);
 
   onMount(() => {
     physicsRaf = requestAnimationFrame(runPhysicsLoop);
@@ -326,20 +319,6 @@
           <ArrowRight size={13} />
         </a>
       </div>
-    </div>
-
-    <!-- Filter Bar -->
-    <div class="filter-bar reveal">
-      {#each filters as f}
-        <button
-          class="filter-btn"
-          class:active={activeFilter === f}
-          onclick={() => (activeFilter = f)}
-          type="button"
-        >
-          {f}
-        </button>
-      {/each}
     </div>
 
     <!-- Project Grid -->
